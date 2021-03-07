@@ -69,6 +69,10 @@ tree_ind_es <- sqlQuery(my_channel, "select * from [Trees]") %>%
   mutate(carbon_storage_value = 51.2/10000*carbon_storage, 
          carbon_seq_value = 51.2/1000*carbon_seq, 
          avo_runoff_value = 2.36*avo_runoff) %>% 
+  group_by(res_tree_id) %>% 
+  mutate(es_value = sum(carbon_storage_value, carbon_seq_value, 
+                        no2_value, o3_value, pm25_value, so2_value,  
+                        avo_runoff_value)) %>% 
   select(res_tree_id, plot_id, in_tree_id, species_code, 
          spo_pla, dbh, height, crown_width_ew, crown_width_ns, per_crow_mis, 
          light_expo, per_shrub_below, per_impervious_below, 
@@ -80,6 +84,21 @@ tree_ind_es <- sqlQuery(my_channel, "select * from [Trees]") %>%
          carbon_storage_value, carbon_seq_value, 
          no2_value, o3_value, pm25_value, so2_value,  
          avo_runoff_value, 
+         es_value, 
          total_value) 
+species_summary <- sqlQuery(my_channel, "select * from [SpeciesSummary]")
+Sys.setlocale(category = "LC_ALL", locale = "Japanese")
+sum(species_summary$`樹木補償額合計 (円)`)
+# 5,705,830,792
+# 1 dollar = 105.37496 yen in input i-Tree data
+sum(tree_ind_es$total_value)*105.37496
+# 5,465,924,468
+# 1 dollar = 108.40 yen on Mar. 7, 2021
+sum(tree_ind_es$total_value)*108.40
+# 5,622,836,890
+sum(tree_ind_es$es_value)*105.37496
+# 373,879.9
+sum(tree_ind_es$es_value)*108.40
+# 384,613
 close(my_channel)
 
