@@ -115,7 +115,11 @@ tree_plot_es <- tree_ind_es %>%
          es_value, 
          total_value) %>% 
   group_by(plot_id) %>% 
-  summarise(across(!starts_with("plot_id"), sum))
+  summarise(across(!starts_with("plot_id"), sum)) %>% 
+  ungroup() %>% 
+  left_join(info_plot, by = "plot_id")
+
+
 
 
 
