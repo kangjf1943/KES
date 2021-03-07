@@ -16,7 +16,9 @@ library(RODBC)
 info_plot <- read.csv("In_land_use.csv") %>% 
   select(KES_plot_id, Landuse_class) %>% 
   rename(plot_id = KES_plot_id, 
-         landuse_class = Landuse_class)
+         landuse_class = Landuse_class) %>% 
+  subset(plot_id != "#N/A") %>% 
+  mutate(plot_id = as.numeric(plot_id))
 
 # In_TreesWithID.csv is a file shared by Dr. Hirabayashi
 itree_input <- read.csv("In_TreesWithID.csv") %>% 
@@ -117,8 +119,9 @@ tree_plot_es <- tree_ind_es %>%
   group_by(plot_id) %>% 
   summarise(across(!starts_with("plot_id"), sum)) %>% 
   ungroup() %>% 
+  as.data.frame() %>%
+  mutate(plot_id = as.numeric(plot_id)) %>% 
   left_join(info_plot, by = "plot_id")
-
 
 
 
