@@ -73,6 +73,7 @@ tree_ind_es <- sqlQuery(my_channel, "select * from [Trees]") %>%
   mutate(es_value = sum(carbon_storage_value, carbon_seq_value, 
                         no2_value, o3_value, pm25_value, so2_value,  
                         avo_runoff_value)) %>% 
+  ungroup() %>% 
   select(res_tree_id, plot_id, in_tree_id, species_code, 
          spo_pla, dbh, height, crown_width_ew, crown_width_ns, per_crow_mis, 
          light_expo, per_shrub_below, per_impervious_below, 
@@ -87,6 +88,7 @@ tree_ind_es <- sqlQuery(my_channel, "select * from [Trees]") %>%
          es_value, 
          total_value) 
 species_summary <- sqlQuery(my_channel, "select * from [SpeciesSummary]")
+close(my_channel)
 Sys.setlocale(category = "LC_ALL", locale = "Japanese")
 sum(species_summary$`樹木補償額合計 (円)`)
 # 5,705,830,792
@@ -100,5 +102,22 @@ sum(tree_ind_es$es_value)*105.37496
 # 373,879.9
 sum(tree_ind_es$es_value)*108.40
 # 384,613
-close(my_channel)
+
+# ES of each plot
+tree_plot_es <- tree_ind_es %>% 
+  select(plot_id, lai, biomass, 
+         carbon_storage, carbon_seq, 
+         no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
+         avo_runoff, 
+         carbon_storage_value, carbon_seq_value, 
+         no2_value, o3_value, pm25_value, so2_value,  
+         avo_runoff_value, 
+         es_value, 
+         total_value) %>% 
+  group_by(plot_id) %>% 
+  summarise(across(!starts_with("plot_id"), sum))
+
+
+
+
 
