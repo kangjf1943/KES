@@ -274,33 +274,6 @@ func_es_interpara(subset(tree_ind_es, land_cover %in% target_land_cover),
 
 
 ## species-specific analysis
-func_species_es_para <- function(var_es, name_dependent_var, name_independ_var) {
-  for (var_loop_species in target_species) {
-    print(var_loop_species)
-    par(mfrow = c(floor(sqrt(length(es_annual))),ceiling(sqrt(length(es_annual)))))
-    var_loop_df <- subset(var_es, species_code == var_loop_species) %>% 
-      as.data.frame()
-    for (var_loop_colname in name_dependent_var) {
-      var_loop_fit <- aov(var_loop_df[, var_loop_colname] ~ 
-                            var_loop_df[, name_independ_var])
-      var_loop_aov_pvalue <- summary(var_loop_fit)[[1]]$`Pr(>F)`[1]
-      if (var_loop_aov_pvalue < 0.05) {
-        print(var_loop_colname)
-        cat("anova result p-value:", var_loop_aov_pvalue, "\n")
-        var_loop_tukey <- TukeyHSD(var_loop_fit)
-        cat("Tukey result: \n")
-        print(subset(as.data.frame(var_loop_tukey[[1]]), `p adj` < 0.05))
-        cat("\n")
-        plotmeans(var_loop_df[, var_loop_colname] ~ var_loop_df[, name_independ_var], 
-                  main = var_loop_species, 
-                  ylab = var_loop_colname, 
-                  xlab = c("anova p-value:", round(var_loop_aov_pvalue, 2)))
-      }
-    }
-    cat("\n\n")
-  }
-}
-
 # individual ES ~ land use
 target_species <- table(tree_ind_es$species_code, tree_ind_es$land_use) %>% 
   as.data.frame() %>% 
@@ -310,7 +283,9 @@ target_species <- table(tree_ind_es$species_code, tree_ind_es$land_use) %>%
   subset(num >= 3) %>% 
   .$Var1 %>% 
   as.character()
-func_species_es_para(tree_ind_es, es_annual, "land_use")
+tar_tree_ind_es <- subset(tree_ind_es, species_code %in% target_species)
+lapply(split(tar_tree_ind_es, tar_tree_ind_es$species_code), 
+       func_es_para, name_depend_var = es_annual, name_independ_var = "land_use")
 
 # individual ES ~ land cover
 target_species <- table(tree_ind_es$species_code, tree_ind_es$land_cover) %>% 
@@ -321,6 +296,9 @@ target_species <- table(tree_ind_es$species_code, tree_ind_es$land_cover) %>%
   subset(num >= 3) %>% 
   .$Var1 %>% 
   as.character()
-func_species_es_para(tree_ind_es, es_annual, "land_cover")
+tar_tree_ind_es <- subset(tree_ind_es, species_code %in% target_species)
+lapply(split(tar_tree_ind_es, tar_tree_ind_es$species_code), 
+       func_es_para, name_depend_var = es_annual, name_independ_var = "land_cover")
+
 
 
