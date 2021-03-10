@@ -23,10 +23,9 @@ es_annual_value <- c("carbon_seq_value",
 
 ## import the data
 # In_land_use.csv is a file copied from KUP_Plots_info.xlsx, including the plot land use class information 
-info_abb_land_cover <- read.csv("In_abb_land_cover.csv") %>% 
-  rename(land_cover_abb = ï..Code, 
-         description = Description, 
-         land_cover = Category) %>% 
+info_abb_land_cover <- read.csv("In_abb_land_cover.csv")
+names(info_abb_land_cover) <- c("land_cover_abb", "description", "land_cover")
+info_abb_land_cover <- info_abb_land_cover %>% 
   select(land_cover_abb, land_cover)
 info_plot <- read.csv("In_land_use.csv") %>% 
   select(KES_plot_id, Landuse_class) %>% 
@@ -187,7 +186,11 @@ ggplot(tree_plot_es) + geom_line(aes(plot_id, carbon_seq)) +
 ## ind-based and plot-based ES across land use or land use cover
 # parameter method - ANOVA
 func_es_para <- function(var_es, name_depend_var, name_independ_var) {
-  if (length(unique(var_es$species_code)) == 1) {print(var_es$species_code[1])}
+  if (length(unique(var_es$species_code)) == 1) {
+    var_species_name <- var_es$species_code[1]
+    print(var_species_name)
+    } else {
+      var_species_name <- ""}
   par(mfrow = c(floor(sqrt(length(es_annual))),ceiling(sqrt(length(es_annual)))))
   for (var_loop_colname in name_depend_var) {
     var_loop_fit <- aov(var_es[, var_loop_colname] ~ 
@@ -202,11 +205,13 @@ func_es_para <- function(var_es, name_depend_var, name_independ_var) {
       cat("\n")
       plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
                 ylab = var_loop_colname, 
-                xlab = c("anova p-value =", round(var_loop_aov_pvalue,2)))
+                xlab = paste0("anova p-value = ", round(var_loop_aov_pvalue,2)), 
+                main = var_species_name)
     } else {
       plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
                 ylab = var_loop_colname, 
-                xlab = c("anova p-value =", round(var_loop_aov_pvalue,2)), 
+                xlab = paste0("anova p-value = ", round(var_loop_aov_pvalue,2)),
+                main = var_species_name, 
                 col = "grey")
     }
     
