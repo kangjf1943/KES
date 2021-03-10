@@ -196,7 +196,8 @@ func_es_para <- function(var_es, name_depend_var, name_independ_var) {
     print(var_species_name)
     } else {
       var_species_name <- ""}
-  par(mfrow = c(floor(sqrt(length(es_annual))),ceiling(sqrt(length(es_annual)))))
+  par(mfrow = c(floor(sqrt(length(name_depend_var))),
+                ceiling(sqrt(length(name_depend_var)))))
   for (var_loop_colname in name_depend_var) {
     var_loop_fit <- aov(var_es[, var_loop_colname] ~ 
                           var_es[, name_independ_var])
@@ -230,7 +231,8 @@ func_es_para(tree_plot_es, es_annual, "land_use")
 
 # non-parameter method - Kruskal test
 func_es_nonpara <- function(var_plot_es, name_depend_var, name_independ_var) {
-  par(mfrow = c(3,3))
+  par(mfrow = c(floor(sqrt(length(name_depend_var))),
+                ceiling(sqrt(length(name_depend_var)))))
   for (var_loop_colname in name_depend_var) {
     var_loop_kruskal <- kruskal.test(var_plot_es[, var_loop_colname] ~ 
                                        var_plot_es[, name_independ_var])
