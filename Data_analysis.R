@@ -182,12 +182,13 @@ ggplot(subset(tree_plot_es_long, es %in% c("es_annual_value", "total_value", "ca
 ggplot(tree_plot_es) + geom_line(aes(plot_id, carbon_seq)) +
   geom_line(aes(plot_id, carbon_storage), color = "red")
 
-  
-## land use type based analysis 
+
+## non-species-specific analysis 
 ## ind-based and plot-based ES across land use or land use cover
 # parameter method - ANOVA
 func_es_para <- function(var_es, name_depend_var, name_independ_var) {
-  par(mfrow = c(3,3))
+  if (length(unique(var_es$species_code)) == 1) {print(var_es$species_code[1])}
+  par(mfrow = c(floor(sqrt(length(es_annual))),ceiling(sqrt(length(es_annual)))))
   for (var_loop_colname in name_depend_var) {
     var_loop_fit <- aov(var_es[, var_loop_colname] ~ 
                           var_es[, name_independ_var])
@@ -198,12 +199,19 @@ func_es_para <- function(var_es, name_depend_var, name_independ_var) {
       var_loop_tukey <- TukeyHSD(var_loop_fit)
       cat("Tukey result: \n")
       print(subset(as.data.frame(var_loop_tukey[[1]]), `p adj` < 0.05))
+      cat("\n")
+      plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
+                ylab = var_loop_colname, 
+                xlab = c("anova p-value =", round(var_loop_aov_pvalue,2)))
+    } else {
+      plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
+                ylab = var_loop_colname, 
+                xlab = c("anova p-value =", round(var_loop_aov_pvalue,2)), 
+                col = "grey")
     }
-    cat("\n")
-    plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
-              ylab = var_loop_colname, 
-              xlab = c("anova p-value =", round(var_loop_aov_pvalue,2)))
+    
   }
+  cat("\n\n")
   par(mfrow = c(1,1))
 }
 func_es_para(tree_ind_es, es_annual, "land_use")
@@ -264,6 +272,7 @@ func_es_interpara <-
 func_es_interpara(subset(tree_ind_es, land_cover %in% target_land_cover), 
                   es_annual, "land_use", "land_cover")
 
+
 ## species-specific analysis
 func_species_es_para <- function(var_es, name_dependent_var, name_independ_var) {
   for (var_loop_species in target_species) {
@@ -292,7 +301,7 @@ func_species_es_para <- function(var_es, name_dependent_var, name_independ_var) 
   }
 }
 
-# ind-es ~ land use
+# individual ES ~ land use
 target_species <- table(tree_ind_es$species_code, tree_ind_es$land_use) %>% 
   as.data.frame() %>% 
   group_by(Var1) %>% 
@@ -303,7 +312,7 @@ target_species <- table(tree_ind_es$species_code, tree_ind_es$land_use) %>%
   as.character()
 func_species_es_para(tree_ind_es, es_annual, "land_use")
 
-# ind-es ~ land cover
+# individual ES ~ land cover
 target_species <- table(tree_ind_es$species_code, tree_ind_es$land_cover) %>% 
   as.data.frame() %>% 
   group_by(Var1) %>% 
