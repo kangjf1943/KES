@@ -141,8 +141,9 @@ tree_plot_es <- tree_ind_es %>%
 ## general description
 
 ## structure across land use types
-ggplot(tree_ind_es) + geom_bar(aes(land_use, fill = dbh_class), 
+plot_dbh <- ggplot(tree_ind_es) + geom_bar(aes(land_use, fill = dbh_class), 
                                position = "fill")
+plot_dbh
 tree_ind_landuse <- tree_ind_es %>% group_by(land_use) %>% 
   summarise(num_ind = n())
 tree_dbh_str <- tree_ind_es %>% 
@@ -160,9 +161,9 @@ tree_dbh_str <- tree_ind_es %>%
             "n(50,  )" = sum(dbh_class == "(50,  )")) %>% 
   ungroup() %>% 
   left_join(tree_ind_landuse, by = "land_use")
-tree_dbh_str <- cbind(
-  tree_dbh_str$land_use, 
+tree_dbh_str <- cbind(tree_dbh_str$land_use, 
   round(tree_dbh_str[, grep("n\\(", colnames(tree_dbh_str))]/tree_dbh_str$num_ind, 2))
+
 
 ## compare sum of each ES value
 tree_plot_es_long <- pivot_longer(
@@ -172,12 +173,16 @@ tree_plot_es_long <- pivot_longer(
 subset(tree_plot_es_long, 
        es %in% c("es_annual_value", "total_value", "carbon_storage_value")) %>% 
   group_by(es) %>% 
-  summarise(sum = sum(es_annual_value), mean = mean(es_annual_value), sd = sd(es_annual_value))
-  
-ggplot(subset(tree_plot_es_long, es %in% c("es_annual_value", "total_value", "carbon_storage_value") == FALSE)) + 
-  geom_bar(aes(land_use, es_annual_value, fill = es), 
-           stat = "identity", position = "fill")
+  summarise(sum = sum(es_annual_value), 
+            mean = mean(es_annual_value), 
+            sd = sd(es_annual_value))
 
+plot_es_annual <- ggplot(subset(tree_plot_es_long, 
+                                es %in% c("es_annual_value", "total_value",
+                                          "carbon_storage_value") == FALSE)) +
+  geom_bar(aes(land_use, es_annual_value, fill = es), 
+           stat = "identity", position = "stack")
+plot_es_annual
 ggplot(tree_plot_es) + geom_line(aes(plot_id, carbon_seq)) +
   geom_line(aes(plot_id, carbon_storage), color = "red")
 
