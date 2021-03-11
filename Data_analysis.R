@@ -282,7 +282,7 @@ func_es_interpara <-
   par(mfrow = c(1,1))
 }
 # target land cover: wide-spread over land use types and with trees >= 3
-func_target_var <- function(var_es, name_target_var, name_inter_var = NULL) {
+func_target_var <- function(var_es, name_target_var, name_inter_var) {
   table(var_es[, name_target_var], var_es[, name_inter_var]) %>% 
     as.data.frame() %>% 
     group_by(Var1) %>% 
@@ -305,14 +305,7 @@ lapply(split(tar_tree_ind_es, tar_tree_ind_es$species_code),
        func_es_para, name_depend_var = es_annual, name_independ_var = "land_use")
 
 # individual ES ~ land cover
-target_species <- table(tree_ind_es$species_code, tree_ind_es$land_cover) %>% 
-  as.data.frame() %>% 
-  group_by(Var1) %>% 
-  summarise(num = sum(Freq > 3)) %>% 
-  ungroup() %>% 
-  subset(num >= 3) %>% 
-  .$Var1 %>% 
-  as.character()
+target_species <- func_target_var(tree_ind_es, "species_code", "land_cover")
 tar_tree_ind_es <- subset(tree_ind_es, species_code %in% target_species)
 lapply(split(tar_tree_ind_es, tar_tree_ind_es$species_code), 
        func_es_para, name_depend_var = es_annual, name_independ_var = "land_cover")
