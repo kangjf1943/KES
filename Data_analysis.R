@@ -14,7 +14,7 @@ es_annual_value <- c("carbon_seq_value",
                      "no2_value", "o3_value", "pm25_value", "so2_value", 
                      "avo_runoff_value")
 
-## import the data
+## data import 
 # In_land_use.csv is copied from KUP_Plots_info.xlsx, including the plot land use class information 
 info_abb_land_cover <- read.csv("In_abb_land_cover.csv")
 names(info_abb_land_cover) <- c("land_cover_abb", "description", "land_cover")
@@ -35,6 +35,7 @@ info_species_code <- read.csv("In_itree_species_list.csv") %>%
          species_name = Species.Name, 
          common_name = Common.Name) %>%
   select(species_code, species, common_name)
+info_species_code$species[info_species_code$species == " "] <- NA
 
 # In_TreesWithID.csv is from Dr. Hirabayashi - i-Tree input data
 itree_input <- read.csv("In_TreesWithID.csv") %>% 
@@ -281,9 +282,14 @@ func_es_inter <- function(var_es, name_depend_var,
   par(mfrow = c(1,1))
 }
 
-# parameter method analysis
+# plot ES ~ land use
+func_es_para(tree_plot_es, es_annual, "land_use")
+func_es_nonpara(tree_plot_es, es_annual, "land_use")
+
 # individual ES ~ land use
 func_es_para(tree_ind_es, es_annual, "land_use")
+func_es_nonpara(tree_ind_es, es_annual, "land_use")
+
 # individual ES ~ land cover
 target_land_cover <- table(tree_ind_es$land_cover) %>% 
   as.data.frame() %>% 
@@ -295,24 +301,9 @@ target_land_cover <- table(tree_ind_es$land_cover) %>%
   as.character()
 func_es_para(subset(tree_ind_es, land_cover %in% target_land_cover), 
              es_annual, "land_cover")
-# plot ES ~ land use
-func_es_para(tree_plot_es, es_annual, "land_use")
+func_es_nonpara(subset(tree_ind_es, land_cover %in% target_land_cover), 
+                es_annual, "land_cover")
 
-# non-parameter method analysis
-# individual ES ~ land use
-func_es_nonpara(tree_ind_es, es_annual, "land_use")
-# individual ES ~ land cover
-target_land_cover <- table(tree_ind_es$land_cover) %>% 
-  as.data.frame() %>% 
-  group_by(Var1) %>% 
-  summarise(num = sum(Freq > 3)) %>% 
-  ungroup() %>% 
-  subset(num == 1) %>% 
-  .$Var1 %>% 
-  as.character()
-func_es_nonpara(tree_ind_es, es_annual, "land_cover")
-# plot ES ~ land use
-func_es_nonpara(tree_plot_es, es_annual, "land_use")
 
 # individual ES ~ land use * land cover
 # target land cover: wide-spread over land use types and with trees >= 3
