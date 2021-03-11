@@ -291,7 +291,7 @@ func_es_para(tree_ind_es, es_annual, "land_use")
 func_es_nonpara(tree_ind_es, es_annual, "land_use")
 
 # individual ES ~ land cover
-target_land_cover <- table(tree_ind_es$land_cover) %>% 
+tar_land_cover_sgl <- table(tree_ind_es$land_cover) %>% 
   as.data.frame() %>% 
   group_by(Var1) %>% 
   summarise(num = sum(Freq > 3)) %>% 
@@ -299,9 +299,9 @@ target_land_cover <- table(tree_ind_es$land_cover) %>%
   subset(num == 1) %>% 
   .$Var1 %>% 
   as.character()
-func_es_para(subset(tree_ind_es, land_cover %in% target_land_cover), 
+func_es_para(subset(tree_ind_es, land_cover %in% tar_land_cover_sgl), 
              es_annual, "land_cover")
-func_es_nonpara(subset(tree_ind_es, land_cover %in% target_land_cover), 
+func_es_nonpara(subset(tree_ind_es, land_cover %in% tar_land_cover_sgl), 
                 es_annual, "land_cover")
 
 
@@ -317,23 +317,23 @@ func_target_var <- function(var_es, name_target_var, name_inter_var) {
     .$Var1 %>% 
     as.character()
 }
-target_land_cover <- func_target_var(tree_ind_es, "land_cover", "land_use")
-func_es_inter(subset(tree_ind_es, land_cover %in% target_land_cover), 
+tar_land_cover_dbl <- func_target_var(tree_ind_es, "land_cover", "land_use")
+func_es_inter(subset(tree_ind_es, land_cover %in% tar_land_cover_dbl), 
                   es_annual, "land_use", "land_cover")
 
 
 ## species-specific analysis
 # individual ES ~ land use 
-target_species <- func_target_var(tree_ind_es, "species", "land_use")
-tar_tree_ind_es <- subset(tree_ind_es, species %in% target_species)
+tar_species_land_use <- func_target_var(tree_ind_es, "species", "land_use")
+tar_tree_ind_es <- subset(tree_ind_es, species %in% tar_species_land_use)
 lapply(split(tar_tree_ind_es, tar_tree_ind_es$species), 
        func_es_para, name_depend_var = es_annual, name_independ_var = "land_use")
 lapply(split(tar_tree_ind_es, tar_tree_ind_es$species), 
        func_es_nonpara, name_depend_var = es_annual, name_independ_var = "land_use")
 
 # individual ES ~ land cover 
-target_species <- func_target_var(tree_ind_es, "species", "land_cover")
-tar_tree_ind_es <- subset(tree_ind_es, species %in% target_species)
+tar_species_land_cover <- func_target_var(tree_ind_es, "species", "land_cover")
+tar_tree_ind_es <- subset(tree_ind_es, species %in% tar_species_land_cover)
 lapply(split(tar_tree_ind_es, tar_tree_ind_es$species), 
        func_es_para, name_depend_var = es_annual, name_independ_var = "land_cover")
 lapply(split(tar_tree_ind_es, tar_tree_ind_es$species), 
