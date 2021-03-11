@@ -1,10 +1,3 @@
-## questions: 
-# 四类绿地空间分布#对应我论文的土地覆盖分布？#
-# 四类绿地结构差异：外推的树和树种数量，密度，多样性如richness，年龄DBH结构，叶面积密度，叶生物量分布等
-# 碳储存和碳捕捉：总量，各类绿地对比#做总储存量和捕获效率的差异对比？
-# 空气净化：各类污染物去除总量对比-趋势和叶面积类似#结果之间的联系#，各类对比-去除总量和去除效率排序有差异
-# 径流减少：各类绿地雨水拦截总量、个体树拦截效率对比
-
 library(car)
 library(gplots)
 library(ggplot2)
@@ -22,7 +15,7 @@ es_annual_value <- c("carbon_seq_value",
                      "avo_runoff_value")
 
 ## import the data
-# In_land_use.csv is a file copied from KUP_Plots_info.xlsx, including the plot land use class information 
+# In_land_use.csv is copied from KUP_Plots_info.xlsx, including the plot land use class information 
 info_abb_land_cover <- read.csv("In_abb_land_cover.csv")
 names(info_abb_land_cover) <- c("land_cover_abb", "description", "land_cover")
 info_abb_land_cover <- info_abb_land_cover %>% 
@@ -34,7 +27,16 @@ info_plot <- read.csv("In_land_use.csv") %>%
   subset(plot_id != "#N/A") %>% 
   mutate(plot_id = as.numeric(plot_id))
 
-# In_TreesWithID.csv is a file shared by Dr. Hirabayashi
+# In_itree_species_list.csv is downloaded from web, parsed by R
+info_species_code <- read.csv("In_itree_species_list.csv") %>% 
+  mutate(species = paste(Genus, Species.Name)) %>% 
+  rename(species_code = SppCode, 
+         genus = Genus, 
+         species_name = Species.Name, 
+         common_name = Common.Name) %>%
+  select(species_code, species, common_name)
+
+# In_TreesWithID.csv is from Dr. Hirabayashi - i-Tree input data
 itree_input <- read.csv("In_TreesWithID.csv") %>% 
   select(ID, PlotId, TreeId, FieldLandUse, TreeStatus, 
          Species, TreeHeightTotal, CrownWidth1, CrownWidth2, CrownLightExposure,
@@ -55,9 +57,10 @@ itree_input <- read.csv("In_TreesWithID.csv") %>%
          ) %>% 
   mutate(plot_id = as.numeric(plot_id)) %>% 
   left_join(info_plot, by = "plot_id") %>% 
-  left_join(info_abb_land_cover, by = "land_cover_abb")
+  left_join(info_abb_land_cover, by = "land_cover_abb") %>% 
+  left_join(info_species_code, by = "species_code")
 
-# data from Access database
+# individual ES data from Access database
 my_channel <- odbcDriverConnect("Driver={Microsoft Access Driver (*.mdb, *.accdb)};
         DBQ=C:/Users/kangj/Documents/OneDrive/KES/Tree/IndividualTree.mdb")
 tree_ind_es <- sqlQuery(my_channel, "select * from [Trees]") %>% 
@@ -91,7 +94,7 @@ tree_ind_es <- sqlQuery(my_channel, "select * from [Trees]") %>%
                         no2_value, o3_value, pm25_value, so2_value,  
                         avo_runoff_value)) %>% 
   ungroup() %>% 
-  select(res_tree_id, plot_id, in_tree_id, species_code, 
+  select(res_tree_id, plot_id, in_tree_id, species_code, species, common_name, 
          spo_pla, dbh, height, crown_width_ew, crown_width_ns, per_crow_mis, 
          light_expo, per_shrub_below, per_impervious_below, 
          land_use, land_cover, 
@@ -189,15 +192,14 @@ ggplot(tree_plot_es) + geom_line(aes(plot_id, carbon_seq)) +
 
 ## non-species-specific analysis 
 ## individual ES and plot ES across land use or land use cover
-
 # functions for test
 # function for parameter method - ANOVA
 func_es_para <- function(var_es, name_depend_var, name_independ_var) {
-  if (length(unique(var_es$species_code)) == 1) {
-    var_species_name <- var_es$species_code[1]
+  if (length(unique(var_es$species)) == 1) {
+    var_species_name <- var_es$species[1]
     print(var_species_name)
-    } else {
-      var_species_name <- ""}
+  } else {
+    var_species_name <- ""}
   par(mfrow = c(floor(sqrt(length(name_depend_var))),
                 ceiling(sqrt(length(name_depend_var)))))
   for (var_loop_colname in name_depend_var) {
@@ -228,8 +230,8 @@ func_es_para <- function(var_es, name_depend_var, name_independ_var) {
 }
 # function for non-parameter method - Kruskal test
 func_es_nonpara <- function(var_es, name_depend_var, name_independ_var) {
-  if (length(unique(var_es$species_code)) == 1) {
-    var_species_name <- var_es$species_code[1]
+  if (length(unique(var_es$species)) == 1) {
+    var_species_name <- var_es$species[1]
     print(var_species_name)
   } else {
     var_species_name <- ""}
@@ -275,7 +277,7 @@ func_es_inter <- function(var_es, name_depend_var,
                      xlab = "", 
                      col = c("black", "red", "violet", "orange", 
                              "green", "blue", "lightblue"))
-    }
+  }
   par(mfrow = c(1,1))
 }
 
@@ -325,25 +327,25 @@ func_target_var <- function(var_es, name_target_var, name_inter_var) {
     as.character()
 }
 target_land_cover <- func_target_var(tree_ind_es, "land_cover", "land_use")
-func_es_interpara(subset(tree_ind_es, land_cover %in% target_land_cover), 
+func_es_inter(subset(tree_ind_es, land_cover %in% target_land_cover), 
                   es_annual, "land_use", "land_cover")
 
 
 ## species-specific analysis
 # individual ES ~ land use 
-target_species <- func_target_var(tree_ind_es, "species_code", "land_use")
-tar_tree_ind_es <- subset(tree_ind_es, species_code %in% target_species)
-lapply(split(tar_tree_ind_es, tar_tree_ind_es$species_code), 
+target_species <- func_target_var(tree_ind_es, "species", "land_use")
+tar_tree_ind_es <- subset(tree_ind_es, species %in% target_species)
+lapply(split(tar_tree_ind_es, tar_tree_ind_es$species), 
        func_es_para, name_depend_var = es_annual, name_independ_var = "land_use")
-lapply(split(tar_tree_ind_es, tar_tree_ind_es$species_code), 
+lapply(split(tar_tree_ind_es, tar_tree_ind_es$species), 
        func_es_nonpara, name_depend_var = es_annual, name_independ_var = "land_use")
 
 # individual ES ~ land cover 
-target_species <- func_target_var(tree_ind_es, "species_code", "land_cover")
-tar_tree_ind_es <- subset(tree_ind_es, species_code %in% target_species)
-lapply(split(tar_tree_ind_es, tar_tree_ind_es$species_code), 
+target_species <- func_target_var(tree_ind_es, "species", "land_cover")
+tar_tree_ind_es <- subset(tree_ind_es, species %in% target_species)
+lapply(split(tar_tree_ind_es, tar_tree_ind_es$species), 
        func_es_para, name_depend_var = es_annual, name_independ_var = "land_cover")
-lapply(split(tar_tree_ind_es, tar_tree_ind_es$species_code), 
+lapply(split(tar_tree_ind_es, tar_tree_ind_es$species), 
        func_es_nonpara, name_depend_var = es_annual, name_independ_var = "land_cover")
 
 
