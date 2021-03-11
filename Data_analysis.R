@@ -189,7 +189,9 @@ ggplot(tree_plot_es) + geom_line(aes(plot_id, carbon_seq)) +
 
 ## non-species-specific analysis 
 ## individual ES and plot ES across land use or land use cover
-# parameter method - ANOVA
+
+# functions for test
+# function for parameter method - ANOVA
 func_es_para <- function(var_es, name_depend_var, name_independ_var) {
   if (length(unique(var_es$species_code)) == 1) {
     var_species_name <- var_es$species_code[1]
@@ -211,62 +213,56 @@ func_es_para <- function(var_es, name_depend_var, name_independ_var) {
       cat("\n")
       plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
                 ylab = var_loop_colname, 
-                xlab = paste0("anova p-value = ", round(var_loop_aov_pvalue,2)), 
-                main = var_species_name)
+                main = var_species_name, 
+                xlab = paste0("anova p-value = ", round(var_loop_aov_pvalue,2)))
     } else {
       plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
                 ylab = var_loop_colname, 
-                xlab = paste0("anova p-value = ", round(var_loop_aov_pvalue,2)),
                 main = var_species_name, 
+                xlab = paste0("anova p-value = ", round(var_loop_aov_pvalue,2)),
                 col = "grey")
     }
-    
   }
   cat("\n\n")
   par(mfrow = c(1,1))
 }
-func_es_para(tree_ind_es, es_annual, "land_use")
-target_land_cover <- table(tree_ind_es$land_cover) %>% 
-  as.data.frame() %>% 
-  group_by(Var1) %>% 
-  summarise(num = sum(Freq > 3)) %>% 
-  ungroup() %>% 
-  subset(num == 1) %>% 
-  .$Var1 %>% 
-  as.character()
-func_es_para(subset(tree_ind_es, land_cover %in% target_land_cover), 
-             es_annual, "land_cover")
-func_es_para(tree_plot_es, es_annual, "land_use")
-
-# non-parameter method - Kruskal test
-func_es_nonpara <- function(var_plot_es, name_depend_var, name_independ_var) {
+# function for non-parameter method - Kruskal test
+func_es_nonpara <- function(var_es, name_depend_var, name_independ_var) {
+  if (length(unique(var_es$species_code)) == 1) {
+    var_species_name <- var_es$species_code[1]
+    print(var_species_name)
+  } else {
+    var_species_name <- ""}
   par(mfrow = c(floor(sqrt(length(name_depend_var))),
                 ceiling(sqrt(length(name_depend_var)))))
   for (var_loop_colname in name_depend_var) {
-    var_loop_kruskal <- kruskal.test(var_plot_es[, var_loop_colname] ~ 
-                                       var_plot_es[, name_independ_var])
+    var_loop_kruskal <- kruskal.test(var_es[, var_loop_colname] ~ 
+                                       var_es[, name_independ_var])
     cat(var_loop_colname, ": ", var_loop_kruskal$p.value, "\n")
     if (var_loop_kruskal$p.value < 0.05) {
-      var_loop_dunn <- dunn.test(var_plot_es[, var_loop_colname], 
-                                 var_plot_es[, name_independ_var])
+      capture.output(var_loop_dunn <- dunn.test(var_es[, var_loop_colname], 
+                                                var_es[, name_independ_var], table = FALSE))
       print(var_loop_dunn$comparisons[var_loop_dunn$P.adjusted < 0.05])
+      boxplot(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
+              ylab = var_loop_colname, xlab = "", 
+              main = var_species_name, 
+              sub = paste0("p-value = ", round(var_loop_kruskal$p.value, 2)))
+      cat("\n")
+    } else {
+      boxplot(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
+              ylab = var_loop_colname, xlab = "", 
+              main = var_species_name, 
+              sub = paste0("p-value = ", round(var_loop_kruskal$p.value, 2)), 
+              border = "grey")
+      cat("\n")
     }
-    cat("\n")
-    boxplot(var_plot_es[, var_loop_colname] ~ var_plot_es[, name_independ_var], 
-            ylab = var_loop_colname, 
-            main = paste0("p-value = ", round(var_loop_kruskal$p.value, 2)))
   }
 }
-func_es_nonpara(tree_ind_es, es_annual, "land_use")
-func_es_nonpara(tree_ind_es, es_annual, "land_cover")
-func_es_nonpara(tree_plot_es, es_annual, "land_use")
-
-
-## individual ES ~ land use * land cover
-# ANOVA with interaction effect
-func_es_interpara <- 
-  function(var_es, name_depend_var, name_independ_var_1, name_independ_var_2) {
-  par(mfrow = c(2,3))
+# function of ANOVA with interaction effect
+func_es_inter <- function(var_es, name_depend_var, 
+                          name_independ_var_1, name_independ_var_2) {
+  par(mfrow = c(floor(sqrt(length(name_depend_var))),
+                ceiling(sqrt(length(name_depend_var)))))
   for (var_loop_colname in name_depend_var) {
     var_loop_fit <- aov(var_es[, var_loop_colname] ~ 
                           var_es[, name_independ_var_1]*var_es[, name_independ_var_2])
@@ -277,10 +273,46 @@ func_es_interpara <-
                      var_es[, var_loop_colname], 
                      ylab = var_loop_colname, 
                      xlab = "", 
-                     col = c("black", "red", "violet", "orange", "green", "blue", "lightblue"))
-  }
+                     col = c("black", "red", "violet", "orange", 
+                             "green", "blue", "lightblue"))
+    }
   par(mfrow = c(1,1))
 }
+
+# parameter method analysis
+# individual ES ~ land use
+func_es_para(tree_ind_es, es_annual, "land_use")
+# individual ES ~ land cover
+target_land_cover <- table(tree_ind_es$land_cover) %>% 
+  as.data.frame() %>% 
+  group_by(Var1) %>% 
+  summarise(num = sum(Freq > 3)) %>% 
+  ungroup() %>% 
+  subset(num == 1) %>% 
+  .$Var1 %>% 
+  as.character()
+func_es_para(subset(tree_ind_es, land_cover %in% target_land_cover), 
+             es_annual, "land_cover")
+# plot ES ~ land use
+func_es_para(tree_plot_es, es_annual, "land_use")
+
+# non-parameter method analysis
+# individual ES ~ land use
+func_es_nonpara(tree_ind_es, es_annual, "land_use")
+# individual ES ~ land cover
+target_land_cover <- table(tree_ind_es$land_cover) %>% 
+  as.data.frame() %>% 
+  group_by(Var1) %>% 
+  summarise(num = sum(Freq > 3)) %>% 
+  ungroup() %>% 
+  subset(num == 1) %>% 
+  .$Var1 %>% 
+  as.character()
+func_es_nonpara(tree_ind_es, es_annual, "land_cover")
+# plot ES ~ land use
+func_es_nonpara(tree_plot_es, es_annual, "land_use")
+
+# individual ES ~ land use * land cover
 # target land cover: wide-spread over land use types and with trees >= 3
 func_target_var <- function(var_es, name_target_var, name_inter_var) {
   table(var_es[, name_target_var], var_es[, name_inter_var]) %>% 
@@ -298,17 +330,20 @@ func_es_interpara(subset(tree_ind_es, land_cover %in% target_land_cover),
 
 
 ## species-specific analysis
-# individual ES ~ land use
+# individual ES ~ land use 
 target_species <- func_target_var(tree_ind_es, "species_code", "land_use")
 tar_tree_ind_es <- subset(tree_ind_es, species_code %in% target_species)
 lapply(split(tar_tree_ind_es, tar_tree_ind_es$species_code), 
        func_es_para, name_depend_var = es_annual, name_independ_var = "land_use")
+lapply(split(tar_tree_ind_es, tar_tree_ind_es$species_code), 
+       func_es_nonpara, name_depend_var = es_annual, name_independ_var = "land_use")
 
-# individual ES ~ land cover
+# individual ES ~ land cover 
 target_species <- func_target_var(tree_ind_es, "species_code", "land_cover")
 tar_tree_ind_es <- subset(tree_ind_es, species_code %in% target_species)
 lapply(split(tar_tree_ind_es, tar_tree_ind_es$species_code), 
        func_es_para, name_depend_var = es_annual, name_independ_var = "land_cover")
-
+lapply(split(tar_tree_ind_es, tar_tree_ind_es$species_code), 
+       func_es_nonpara, name_depend_var = es_annual, name_independ_var = "land_cover")
 
 
