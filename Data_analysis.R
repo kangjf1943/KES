@@ -188,7 +188,7 @@ ggplot(tree_plot_es) + geom_line(aes(plot_id, carbon_seq)) +
 
 
 ## non-species-specific analysis 
-## ind-based and plot-based ES across land use or land use cover
+## individual ES and plot ES across land use or land use cover
 # parameter method - ANOVA
 func_es_para <- function(var_es, name_depend_var, name_independ_var) {
   if (length(unique(var_es$species_code)) == 1) {
@@ -226,7 +226,16 @@ func_es_para <- function(var_es, name_depend_var, name_independ_var) {
   par(mfrow = c(1,1))
 }
 func_es_para(tree_ind_es, es_annual, "land_use")
-func_es_para(tree_ind_es, es_annual, "land_cover")
+target_land_cover <- table(tree_ind_es$land_cover) %>% 
+  as.data.frame() %>% 
+  group_by(Var1) %>% 
+  summarise(num = sum(Freq > 3)) %>% 
+  ungroup() %>% 
+  subset(num == 1) %>% 
+  .$Var1 %>% 
+  as.character()
+func_es_para(subset(tree_ind_es, land_cover %in% target_land_cover), 
+             es_annual, "land_cover")
 func_es_para(tree_plot_es, es_annual, "land_use")
 
 # non-parameter method - Kruskal test
@@ -252,17 +261,8 @@ func_es_nonpara(tree_ind_es, es_annual, "land_use")
 func_es_nonpara(tree_ind_es, es_annual, "land_cover")
 func_es_nonpara(tree_plot_es, es_annual, "land_use")
 
-## ind-based and plot-based ES ~ land use * land cover
-# target land cover: wide-spread over land use types and with trees >= 3
-target_land_cover <- table(tree_ind_es$land_use, tree_ind_es$land_cover) %>% 
-  as.data.frame() %>% 
-  group_by(Var2) %>% 
-  summarise(num = sum(Freq > 3)) %>% 
-  ungroup() %>% 
-  subset(num >= 3) %>% 
-  .$Var2 %>% 
-  as.character()
 
+## individual ES ~ land use * land cover
 # ANOVA with interaction effect
 func_es_interpara <- 
   function(var_es, name_depend_var, name_independ_var_1, name_independ_var_2) {
@@ -281,20 +281,25 @@ func_es_interpara <-
   }
   par(mfrow = c(1,1))
 }
+# target land cover: wide-spread over land use types and with trees >= 3
+func_target_var <- function(var_es, name_target_var, name_inter_var = NULL) {
+  table(var_es[, name_target_var], var_es[, name_inter_var]) %>% 
+    as.data.frame() %>% 
+    group_by(Var1) %>% 
+    summarise(num = sum(Freq > 3)) %>% 
+    ungroup() %>% 
+    subset(num >= 3) %>% 
+    .$Var1 %>% 
+    as.character()
+}
+target_land_cover <- func_target_var(tree_ind_es, "land_cover", "land_use")
 func_es_interpara(subset(tree_ind_es, land_cover %in% target_land_cover), 
                   es_annual, "land_use", "land_cover")
 
 
 ## species-specific analysis
 # individual ES ~ land use
-target_species <- table(tree_ind_es$species_code, tree_ind_es$land_use) %>% 
-  as.data.frame() %>% 
-  group_by(Var1) %>% 
-  summarise(num = sum(Freq > 3)) %>% 
-  ungroup() %>% 
-  subset(num >= 3) %>% 
-  .$Var1 %>% 
-  as.character()
+target_species <- func_target_var(tree_ind_es, "species_code", "land_use")
 tar_tree_ind_es <- subset(tree_ind_es, species_code %in% target_species)
 lapply(split(tar_tree_ind_es, tar_tree_ind_es$species_code), 
        func_es_para, name_depend_var = es_annual, name_independ_var = "land_use")
