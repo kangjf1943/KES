@@ -262,20 +262,26 @@ func_es_nonpara <- function(var_es, name_depend_var, name_independ_var) {
   }
 }
 # function of ANOVA with interaction effect
-func_es_inter <- function(var_es, name_depend_var, 
-                          name_independ_var_1, name_independ_var_2) {
-  par(mfrow = c(floor(sqrt(length(name_depend_var))),
-                ceiling(sqrt(length(name_depend_var)))))
-  for (var_loop_colname in name_depend_var) {
-    var_loop_fit <- aov(var_es[, var_loop_colname] ~ 
-                          var_es[, name_independ_var_1]*var_es[, name_independ_var_2])
-    print(var_loop_colname)
-    var_loop_aovinter_pvalue <- summary(var_loop_fit) %>% print()
-    cat("\n")
-    interaction.plot(var_es[, name_independ_var_1], var_es[, name_independ_var_2], 
-                     var_es[, var_loop_colname], 
-                     ylab = var_loop_colname, 
+func_es_inter <- function(var_es_long, name_depend, 
+                            name_independ_var_1, name_independ_var_2) {
+  par(mfrow = c(floor(sqrt(length(name_depend))),
+                ceiling(sqrt(length(name_depend)))))
+  for (name_loop_depend in name_depend) {
+    cri_subset <- var_es_long$es == name_loop_depend
+    var_loop_depend <- var_es_long$es_value[cri_subset]
+    var_loop_independ_1 <- var_es_long[, name_independ_var_1][cri_subset]
+    var_loop_independ_2 <- var_es_long[, name_independ_var_2][cri_subset]
+    var_loop_fit <- aov(var_loop_depend ~ 
+                          var_loop_independ_1*var_loop_independ_2)
+    cat(name_loop_depend, "\n")
+    var_loop_pvalue <- summary(var_loop_fit) %>% print()
+    cat("\n\n")
+    interaction.plot(var_loop_independ_1, 
+                     var_loop_independ_2,
+                     var_loop_depend,
                      xlab = "", 
+                     ylab = name_loop_depend,
+                     type = "b", 
                      col = c("black", "red", "violet", "orange", 
                              "green", "blue", "lightblue"))
   }
@@ -313,13 +319,22 @@ func_target_var <- function(var_es, name_target_var, name_inter_var) {
     group_by(Var1) %>% 
     summarise(num = sum(Freq > 3)) %>% 
     ungroup() %>% 
-    subset(num >= 3) %>% 
+    subset(num >= 4) %>% 
     .$Var1 %>% 
     as.character()
 }
 tar_land_cover_dbl <- func_target_var(tree_ind_es, "land_cover", "land_use")
-func_es_inter(subset(tree_ind_es, land_cover %in% tar_land_cover_dbl), 
-                  es_annual, "land_use", "land_cover")
+table_land <- 
+  table(tree_ind_es$land_cover, tree_ind_es$land_use) %>% 
+  as.data.frame() %>% 
+  rename(land_cover = Var1, land_use = Var2, freq = Freq) 
+subset(tree_ind_es, land_cover %in% tar_land_cover_dbl) %>% 
+  pivot_longer(cols = es_annual, names_to = "es", values_to = "es_value") %>% 
+  left_join(table_land, by = c("land_use", "land_cover")) %>% 
+  select(res_tree_id, es, es_value, land_use, land_cover, freq) %>% 
+  subset(freq >= 3) %>% 
+  as.data.frame() %>% 
+  func_es_inter(es_annual, "land_use", "land_cover")
 
 
 ## species-specific analysis
