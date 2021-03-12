@@ -34,7 +34,7 @@ info_species_code <- read.csv("In_itree_species_list.csv") %>%
          genus = Genus, 
          species_name = Species.Name, 
          common_name = Common.Name) %>%
-  select(species_code, species, common_name)
+  select(species_code, species, common_name) 
 info_species_code$species[info_species_code$species == " "] <- NA
 
 # In_TreesWithID.csv is from Dr. Hirabayashi - i-Tree input data
@@ -167,7 +167,7 @@ tree_dbh_str <- tree_ind_es %>%
   left_join(tree_ind_landuse, by = "land_use")
 tree_dbh_str <- cbind(tree_dbh_str$land_use, 
   round(tree_dbh_str[, grep("n\\(", colnames(tree_dbh_str))]/tree_dbh_str$num_ind, 2))
-
+tree_dbh_str
 
 ## compare sum of each ES value
 tree_plot_es_long <- pivot_longer(
@@ -262,25 +262,23 @@ func_es_nonpara <- function(var_es, name_depend_var, name_independ_var) {
   }
 }
 # function of ANOVA with interaction effect
-func_es_inter <- function(var_es_long, name_depend, 
-                            name_independ_var_1, name_independ_var_2) {
-  par(mfrow = c(floor(sqrt(length(name_depend))),
-                ceiling(sqrt(length(name_depend)))))
-  for (name_loop_depend in name_depend) {
-    cri_subset <- var_es_long$es == name_loop_depend
-    var_loop_depend <- var_es_long$es_value[cri_subset]
-    var_loop_independ_1 <- var_es_long[, name_independ_var_1][cri_subset]
-    var_loop_independ_2 <- var_es_long[, name_independ_var_2][cri_subset]
-    var_loop_fit <- aov(var_loop_depend ~ 
-                          var_loop_independ_1*var_loop_independ_2)
-    cat(name_loop_depend, "\n")
+func_es_inter <- function(var_es, name_dep, 
+                          name_indep1, name_indep2) {
+  par(mfrow = c(floor(sqrt(length(name_dep))),
+                ceiling(sqrt(length(name_dep)))))
+  for (name_loop_dep in name_dep) {
+    var_loop_dep <- var_es[, name_loop_dep]
+    var_loop_indep1 <- var_es[, name_indep1]
+    var_loop_indep2 <- var_es[, name_indep2]
+    var_loop_fit <- aov(var_loop_dep ~ 
+                          var_loop_indep1*var_loop_indep2)
+    cat(name_loop_dep, "\n")
     var_loop_pvalue <- summary(var_loop_fit) %>% print()
     cat("\n\n")
-    interaction.plot(var_loop_independ_1, 
-                     var_loop_independ_2,
-                     var_loop_depend,
-                     xlab = "", 
-                     ylab = name_loop_depend,
+    interaction.plot(var_loop_indep1, 
+                     var_loop_indep2,
+                     var_loop_dep,
+                     xlab = "", ylab = name_loop_dep,
                      type = "b", 
                      col = c("black", "red", "violet", "orange", 
                              "green", "blue", "lightblue"))
@@ -310,142 +308,41 @@ func_es_para(subset(tree_ind_es, land_cover %in% tar_land_cover_sgl),
 func_es_nonpara(subset(tree_ind_es, land_cover %in% tar_land_cover_sgl), 
                 es_annual, "land_cover")
 
-
 # individual ES ~ land use * land cover
 # target land cover: wide-spread over land use types and with trees >= 3
-func_target_var <- function(var_es, name_target_var, name_inter_var) {
-  table(var_es[, name_target_var], var_es[, name_inter_var]) %>% 
+func_var_sub <- function(var_es, name_gp, name_subgp, num_sample, num_subgp) {
+  # each pair with sample size larger than or equal to 2
+  var_gp_subgp_ct <- table(var_es[,name_gp], var_es[,name_subgp]) %>% 
     as.data.frame() %>% 
-    group_by(Var1) %>% 
-    summarise(num = sum(Freq > 3)) %>% 
-    ungroup() %>% 
-    subset(num >= 4) %>% 
-    .$Var1 %>% 
-    as.character()
+    subset(Freq >= num_sample)
+  # each group with larger than or equal to 3 subgroups
+  var_gp_ct <- var_gp_subgp_ct %>% group_by(Var1) %>% summarise(n = n()) %>% 
+    subset(n >= num_subgp)
+  # knock out pairs of group-subgroup with not enough sample size  
+  var_gp_subgp_tar <- subset(var_gp_subgp_ct, Var1 %in% var_gp_ct$Var1)
+  # get required subset from original var_es data frame
+  subset(var_es, paste0(var_es[, name_gp], var_es[, name_subgp]) %in% 
+           paste0(var_gp_subgp_tar$Var1, var_gp_subgp_tar$Var2))
 }
-tar_land_cover_dbl <- func_target_var(tree_ind_es, "land_cover", "land_use")
-table_land <- 
-  table(tree_ind_es$land_cover, tree_ind_es$land_use) %>% 
-  as.data.frame() %>% 
-  rename(land_cover = Var1, land_use = Var2, freq = Freq) 
-subset(tree_ind_es, land_cover %in% tar_land_cover_dbl) %>% 
-  pivot_longer(cols = es_annual, names_to = "es", values_to = "es_value") %>% 
-  left_join(table_land, by = c("land_use", "land_cover")) %>% 
-  select(res_tree_id, es, es_value, land_use, land_cover, freq) %>% 
-  subset(freq >= 3) %>% 
-  as.data.frame() %>% 
+
+func_var_sub(tree_ind_es, "land_cover", "land_use", 3, 3) %>% 
   func_es_inter(es_annual, "land_use", "land_cover")
 
-
 ## species-specific analysis
-# function for parameter method of long data 
-func_es_long_para <- function(var_es_long, name_depend, name_independ) {
-  if (length(unique(var_es_long$species)) == 1) {
-    var_species_name <- var_es_long$species[1]
-    print(var_species_name)
-  } else {
-    var_species_name <- ""}
-  par(mfrow = c(floor(sqrt(length(name_depend))),
-                ceiling(sqrt(length(name_depend)))))
-  for (name_loop_depend in name_depend) {
-    cri_subset <- var_es_long$es == name_loop_depend
-    var_loop_depend <- var_es_long$es_value[cri_subset]
-    var_loop_independ <- var_es_long[, name_independ][cri_subset]
-    var_loop_fit <- aov(var_loop_depend ~ var_loop_independ)
-    var_loop_aov_pvalue <- summary(var_loop_fit)[[1]]$`Pr(>F)`[1]
-    print(name_loop_depend)
-    cat("anova p-value:", var_loop_aov_pvalue, "\n")
-    if (var_loop_aov_pvalue < 0.05) {
-      var_loop_tukey <- TukeyHSD(var_loop_fit)
-      cat("Tukey result: \n")
-      print(subset(as.data.frame(var_loop_tukey[[1]]), `p adj` < 0.05))
-      cat("\n")
-      plotmeans(var_loop_depend ~ var_loop_independ, 
-                ylab = name_loop_depend, 
-                main = var_species_name, 
-                xlab = paste0("anova p-value = ", round(var_loop_aov_pvalue,2)))
-    } else {
-      plotmeans(var_loop_depend ~ var_loop_independ, 
-                ylab = name_loop_depend, 
-                main = var_species_name, 
-                xlab = paste0("anova p-value = ", round(var_loop_aov_pvalue,2)),
-                col = "grey")
-    }
-  }
-  cat("\n\n")
-  par(mfrow = c(1,1))
-}
-
-# function for non-parameter method of long data 
-func_es_long_nonpara <- function(var_es_long, name_depend, name_independ) {
-  if (length(unique(var_es_long$species)) == 1) {
-    var_species_name <- var_es_long$species[1]
-    print(var_species_name)
-  } else {
-    var_species_name <- ""}
-  par(mfrow = c(floor(sqrt(length(name_depend))),
-                ceiling(sqrt(length(name_depend)))))
-  for (name_loop_depend in name_depend) {
-    cri_subset <- var_es_long$es == name_loop_depend
-    var_loop_depend <- var_es_long$es_value[cri_subset]
-    var_loop_independ <- var_es_long[, name_independ][cri_subset]
-    var_loop_fit <- kruskal.test(var_loop_depend ~ var_loop_independ)
-    var_loop_pvalue <- var_loop_fit$p.value
-    print(name_loop_depend)
-    cat("anova p-value:", var_loop_pvalue, "\n")
-    if (var_loop_pvalue < 0.05) {
-      capture.output(var_loop_posthoc <- 
-                       dunn.test(var_loop_depend, var_loop_independ))
-      cat("Post-hoc result: \n")
-      print(var_loop_posthoc$comparisons
-            [var_loop_posthoc$P.adjusted < 0.05])
-      cat("\n")
-      boxplot(var_loop_depend ~ var_loop_independ, 
-              ylab = name_loop_depend, 
-              main = var_species_name, 
-              xlab = paste0("p-value = ", round(var_loop_pvalue,2)))
-    } else {
-      boxplot(var_loop_depend ~ var_loop_independ, 
-              ylab = name_loop_depend, 
-              main = var_species_name, 
-              xlab = paste0("p-value = ", round(var_loop_pvalue,2)),
-              border = "grey")
-    }
-  }
-  cat("\n\n")
-  par(mfrow = c(1,1))
-}
-
-# function for long data construction
-func_es_long_cons <- function(var_es, name_independ) {
-  var_table_species_land <- 
-    table(var_es$species, var_es[,name_independ]) %>% 
-    as.data.frame() 
-  names(var_table_species_land) <- c("species", name_independ, "freq")
-  var_tar_species_land <- func_target_var(var_es, "species", name_independ)
-  var_tar_long <- subset(var_es, species %in% var_tar_species_land) %>% 
-    pivot_longer(cols = es_annual, names_to = "es", values_to = "es_value") %>% 
-    left_join(var_table_species_land, by = c("species", name_independ)) %>% 
-    select(res_tree_id, species, name_independ, es, es_value, freq) %>% 
-    subset(freq >= 3) %>% 
-    as.data.frame()
-  var_tar_long
-}
-
 # individual ES ~ land use 
-tar_tree_ind_es_landuse <- func_es_long_cons(tree_ind_es, "land_use")
-table(tar_tree_ind_es_landuse$species, tar_tree_ind_es_landuse$land_use)
-lapply(split(tar_tree_ind_es_landuse, tar_tree_ind_es$species), 
-       func_es_long_para, name_depend = es_annual, name_independ = "land_use")
-lapply(split(tar_tree_ind_es, tar_tree_ind_es_landuse$species), 
-       func_es_long_nonpara, name_depend = es_annual, name_independ = "land_use")
+func_var_sub(tree_ind_es, "species", "land_use", 3, 4) %>% 
+  split(.$species) %>% 
+  lapply(func_es_para, es_annual, "land_use")
+func_var_sub(tree_ind_es, "species", "land_use", 3, 4) %>% 
+  split(.$species) %>% 
+  lapply(func_es_nonpara, es_annual, "land_use")
 
 # individual ES ~ land cover 
-tar_tree_ind_es_landcover <- func_es_long_cons(tree_ind_es, "land_cover")
-table(tar_tree_ind_es_landcover$species, tar_tree_ind_es_landcover$land_cover)
-lapply(split(tar_tree_ind_es_landcover, tar_tree_ind_es_landcover$species), 
-       func_es_long_para, name_depend = es_annual, name_independ = "land_cover")
-lapply(split(tar_tree_ind_es_landcover, tar_tree_ind_es_landcover$species), 
-       func_es_long_nonpara, name_depend = es_annual, name_independ = "land_cover")
+func_var_sub(tree_ind_es, "species", "land_cover", 3, 4) %>% 
+  split(.$species) %>% 
+  lapply(func_es_para, es_annual, "land_cover")
+func_var_sub(tree_ind_es, "species", "land_cover", 3, 4) %>% 
+  split(.$species) %>% 
+  lapply(func_es_nonpara, es_annual, "land_cover")
 
 
