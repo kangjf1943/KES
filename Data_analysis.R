@@ -34,7 +34,10 @@ info_species_code <- read.csv("In_itree_species_list.csv") %>%
          genus = Genus, 
          species_name = Species.Name, 
          common_name = Common.Name) %>%
-  select(species_code, species, common_name) 
+  select(species_code, species, common_name) %>% 
+  subset(!duplicated(species_code)) %>% 
+  subset(!duplicated(species)) %>% 
+  subset(!duplicated(common_name))
 info_species_code$species[info_species_code$species == " "] <- NA
 
 # In_TreesWithID.csv is from Dr. Hirabayashi - i-Tree input data
