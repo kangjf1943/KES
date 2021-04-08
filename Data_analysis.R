@@ -66,7 +66,7 @@ itree_input <- read.csv("In_TreesWithID.csv") %>%
 
 # individual ES data from Access database
 my_channel <- odbcDriverConnect("Driver={Microsoft Access Driver (*.mdb, *.accdb)};
-        DBQ=C:/Users/kangj/Documents/OneDrive/KES/Tree/IndividualTree.mdb")
+        DBQ=C:/Users/kangj/Documents/OneDrive/KES/ODS/Tree/IndividualTree.mdb")
 tree_ind_es <- sqlQuery(my_channel, "select * from [Trees]") %>% 
   select(TreeID, `DBH (CM)`, `LEAF AREA INDEX`, 
          `CARBON STORAGE (KG)`, `GROSS CARBON SEQ (KG/YR)`, `BIOMASS ADJUSTMENT`, 
@@ -190,6 +190,12 @@ plot_es_annual <- ggplot(subset(tree_plot_es_long,
   geom_bar(aes(land_use, es_annual_value, fill = es), 
            stat = "identity", position = "stack")
 plot_es_annual
+plot_es_annual_prop <- ggplot(subset(tree_plot_es_long, 
+                                es %in% c("es_annual_value", "total_value",
+                                          "carbon_storage_value") == FALSE)) +
+  geom_bar(aes(land_use, es_annual_value, fill = es), 
+           stat = "identity", position = "fill")
+plot_es_annual_prop
 ggplot(tree_plot_es) + geom_line(aes(plot_id, carbon_seq)) +
   geom_line(aes(plot_id, carbon_storage), color = "red")
 
