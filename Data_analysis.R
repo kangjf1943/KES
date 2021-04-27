@@ -124,6 +124,7 @@ tree_ind_es$dbh_class[tree_ind_es$dbh <= 15] <- "(10,15]"
 tree_ind_es$dbh_class[tree_ind_es$dbh <= 10] <- "(05,10]"
 tree_ind_es$dbh_class[tree_ind_es$dbh <= 5] <- "(00,05]"
 close(my_channel)
+rm(my_channel)
 
 # ES of each plot
 tree_plot_es <- tree_ind_es %>% 
@@ -146,8 +147,7 @@ tree_plot_es <- tree_ind_es %>%
 
 ## analysis begins
 ## general description
-
-## structure across land use types
+# structure across land use types
 plot_dbh <- ggplot(tree_ind_es) + geom_bar(aes(land_use, fill = dbh_class), 
                                position = "fill")
 plot_dbh
@@ -172,7 +172,7 @@ tree_dbh_str <- cbind(tree_dbh_str$land_use,
   round(tree_dbh_str[, grep("n\\(", colnames(tree_dbh_str))]/tree_dbh_str$num_ind, 2))
 tree_dbh_str
 
-## compare sum of each ES value
+# compare sum of each ES value
 tree_plot_es_long <- pivot_longer(
   tree_plot_es, cols = c(grep("value", colnames(tree_plot_es), value = TRUE)), 
   names_to = "es", values_to = "es_annual_value")
@@ -275,6 +275,8 @@ func_es_inter <- function(var_es, name_dep,
                           name_indep1, name_indep2) {
   par(mfrow = c(floor(sqrt(length(name_dep))),
                 ceiling(sqrt(length(name_dep)))))
+  var_pvalue_ls <- vector("list", 6)
+  var_pvalue_ls_i <- 0
   for (name_loop_dep in name_dep) {
     var_loop_dep <- var_es[, name_loop_dep]
     var_loop_indep1 <- var_es[, name_indep1]
@@ -282,17 +284,30 @@ func_es_inter <- function(var_es, name_dep,
     var_loop_fit <- aov(var_loop_dep ~ 
                           var_loop_indep1*var_loop_indep2)
     cat(name_loop_dep, "\n")
-    var_loop_pvalue <- summary(var_loop_fit) %>% print()
+    var_loop_pvalue <- summary(var_loop_fit)[[1]]
+    print(var_loop_pvalue)
+    var_pvalue_ls_i <- var_pvalue_ls_i + 1
+    var_pvalue_ls[[var_pvalue_ls_i]] <- var_loop_pvalue
     cat("\n\n")
     interaction.plot(var_loop_indep1, 
                      var_loop_indep2,
                      var_loop_dep,
-                     xlab = "", ylab = name_loop_dep,
+                     xlab = "", 
+                     ylab = name_loop_dep,
                      type = "b", 
                      col = c("black", "red", "violet", "orange", 
                              "green", "blue", "lightblue"))
   }
   par(mfrow = c(1,1))
+  writexl::write_xlsx(var_pvalue_ls, "Out_func_es_inter.xlsx")
+}
+
+# test the assumptions for statistical analysis
+for (name_roop_dep in es_annual) {
+  loop_var <- shapiro.test(tree_plot_es[, name_roop_dep])
+  cat(name_roop_dep, loop_var$p.value > 0.05, "\n")
+  loop_var <- shapiro.test(tree_ind_es[, name_roop_dep])
+  cat(name_roop_dep, loop_var$p.value > 0.05, "\n")
 }
 
 # plot ES ~ land use
