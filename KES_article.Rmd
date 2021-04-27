@@ -1,0 +1,302 @@
+---
+title: "The impact of land use and land cover on urban forest structure and ecosystem service in Kyoto city"
+author: "Jiefeng Kang, Satoshi Hirabayashi, Shozo Shibata*"
+output:
+  bookdown::word_document2: default
+bibliography: In_ref.bib
+csl: In_forests.csl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, results="hide", error=TRUE,
+                      message = FALSE)
+source("Data_analysis.R")
+```
+**Key words: **
+urban; ecosystem services; land use; land cover 
+
+# Introduction
+<!-- ES in urban -->
+The 55.71% of the world’s urban population in 2019 [@the_world_bank_data_urban_nodate] is expected to increase to 68% by 2050 [@population_division_united_nations_world_2019]. 
+Vegetation in a city provides ecosystem services like carbon storage, noisy reduction, air quality improvement, energy conservation, and recreation [@bolund_ecosystem_1999; @gomez-baggethun_urban_2013]. 
+The relation between demand and supply of ecosystem services varies with scale. Locally generated ecosystem services are more closely related to the living quality of the resident and some of them can be irreplaceable by other distant sources (for example, mitigation of heat island effect) [@gomez-baggethun_urban_2013]<!-- 作者观点，列举了ES供需的不同尺度分类 -->. 
+And considering the numerous population size in cities, the social and economic value of ecosystem services within cities can be surprisingly high [@gomez-baggethun_classifying_2013]<!-- 作者论点而已 -->. 
+On the other hand, a recent global assessment highlighted how massive urbanization is negatively impacting biodiversity and ecosystems around the world <!-- [#ori [@elmqvist_urbanization_2013] from [@yi_impacts_2017]]. -->.
+The improvement of urban ecosystem services could potentially benefit city residents and mitigate global change. 
+
+<!-- ES research and practice -->
+<!-- A lack of urban ecosystem services in Japan and local model vs. general model in i-tree -->
+Yet compared to other ecosystem services, the research for urban ecosystem services is relatively modest [@gomez-baggethun_urban_2013]<!-- 作者观点，如果有统计数据更好 -->. 
+<!-- #ref:UES实践并不多而且多在欧美？And urban ecosystem services are rarely applied in urban design and planning practice due to a lack of sufficient basic evaluation and research -->
+Most of the urban ecosystem services studies, as well as the implementation of the research findings into land use policy were gathered in North America, Europe, and China [@haase_quantitative_2014; @dobbs_urban_2019]<!-- haase review统计了UES研究的地理分布 -->.
+<!-- 举例 -->
+For example, Kremer et al. estimated ecosystem services in New York city with a fine resolution method considering land use, soil distribution, and population distribution, and projected future ecosystem services change with scenario analysis [@kremer_value_2016]. 
+Larondelle and Lauf mapped ecosystem services demand and supply at the scale of block in Berlin [@larondelle_balancing_2016].
+<!-- Though the reason is considered as the complexity of ES concept, etc., while recently, a review … -->
+While urban ecosystem services research in Japan has been less addressed. 
+A pilot study of Hirabayashi et al. [@hirabayashi_2016] evaluated the ecosystem services of street trees in Kawasaki City of Japan using i-Tree. A similar appraoch was applied to estimate microclimate regulation, soil erosion regulation, and carbon storage and sequestration of forest patches in Nagoya City [@hirabayashi_2018], the energy conservation and health benefit of air pollution removal in Kyoto [@hirabayashi_2019; @tan_estimation_2021].  
+
+<!-- gaps of method -->
+Ecosystem services are estimated with different method, including indicators and valuation.
+<!-- indicator method -->
+With the former, an indicators indicate the state and change of the object of interest. Some of the commonly used indicators are crop yield for food production, carbon storage and carbon sequestration for climate change mitigation, and runoff reduction for hydrological regulation. 
+<!-- valuation -->
+Regarding the latter, two methods were applied to estimate ES value. 
+<!-- first hand -->
+One is traditional economic method using firsthand data, includes stated preference method and revealed preference method. 
+Though the empirical, field-based research can provide more accurate results [@zhao_assessing_2018], it is time consuming. 
+<!-- benefit transfer -->
+Therefore, the other method, value transfer (or benefit transfer) is widely used in ecosystem evaluation (Kremer et al., 2016), for which the monetary value estimation of one location (reference ecosystem) is transferred to another (the target location) [@costanza_twenty_2017]. 
+A usual practice is to estimate ecosystem services of a region or a city by the product of the area of a sequence of land use and unite ecosystem services in monetary value per area<!-- #need:相关的例子 -->. 
+In studies using this method, the unit ecosystem services value of urban ecosystem of Costanza et al. [@costanza_changes_2014] has been widely applied (e.g., in the estimation of San Antonio River Basin of Texas [@yi_impacts_2017] and Nigeria [@arowolo_assessing_2018]). 
+Even in within-urban ecosystem services research, for instance, the estimation of ecosystem services of Guangzhou-Foshan Metropolitan Area [@bryan_land-use_2018], the unit ecosystem services value  derived from Xie [@__2003-3, @__2008-2] is also based on Costanza's article [@costanza_changes_2014]. 
+In these studies, urban ecosystem are categorized as ‘urban land use’ or ‘built-up area’, and a single constant ecosystem services unit value per area is applied in the category. 
+However, the land use/cover based proxy method may have limited applicability in ecosystem services estimation of cities due to high heterogeneity, and rapid change of traits in cities, for example, spatiotemporal land use and management intensity variation, and trees may be removed or planted [@haase_quantitative_2014; @kremer_key_2016]<!-- haase提到原因和农田增收的例子，kremer基于会议专家观点 -->.
+To get a more specific unit ecosystem services value for urban system, within-city research and inter-city comparison research is required. And research linking within-city heterogeneity and ecosystem services would improve the understanding of urban ecosystem services. 
+
+<!-- ES provider: the whole city -->
+Among the varieties of services providers in urban ecosystem (including forest patches, waterways and lakes, park, brownfield, urban agriculture [@haase_quantitative_2014]), plants is one of the foremost. 
+However, the ecosystem services of plants in cities might have been underestimated since a mismatch of remote sensing technology and the distributed green spaces<!-- #need: 点在绿地研究？ --> that the plants in private garden was usually excluded despite its importance has been proved [@camps-calvet_ecosystem_2016]. 
+Besides, though reused brownfield and vacant are gaining importance in providing urban ecosystem services [@kim_assessing_2015; @haase_shrinking_2013], many urban ecosystem services research just focused on remnant forest or street trees (e.g., [@tang_carbon_2016; @szkop_evaluation_2016<!-- 调查一个大花园 -->]). 
+
+<!-- i-tree -->
+To estimate the ecosystem services of distributed small-scale green spaces, an individual-based method arises. 
+i-Tree, a tool developed by USDA, allows users to evaluate several ecosystem services (carbon storage and sequestration, pollutants removal, runoff reduction, etc.) with field investigation data of tree species, size, and condition. 
+i-Tree method has been applied in more than one hundred countries<!-- need:ref -->. 
+Though users are encouraged to input land use data in i-Tree, partly guided by the automatically generated report of i-Tree model, most i-Tree research just demonstrate the results of inferred total ES of whole research area or across land use (e.g., see @nowak_urban_2016) or by species [@kiss_role_2015; @ning_modeling_2016]; only a few research analyzed the relationship between land use and ecosystem services [@baro_contribution_2014<!-- 巴塞罗那研究，对比了各种土地全市碳吸收和VOC释放总量及单位面积量 -->; @kim_assessing_2015 <!-- 弗吉尼亚空地 -->] without among-group comparison statistical analysis applied. 
+
+<!-- 本文做什么 -->
+The main objective of this article is to link the land use and ecosystem services within city. We estimated the indicators and values of three ecosystem services of across a sequence of land use types in Kyoto city of Japan. The ecosystem services estimated include carbon storage and sequestration, air pollution removal, and runoff avoidance. A pre-stratified sampling method was applied for vegetation data collection, then i-Tree Eco tool was used to calculate the vegetation structure and ecosystem services. The results were discussed with urban land use management context. 
+
+# Method
+## Study area
+Kyoto City (35°19′16″N-34°52′30″N, 135°33′33″E-135°52′43″E), the capital of Kyoto Prefecture, is located in Kyoto Basin of Kansai region, Honshu island, Japan, with an area of 827.9 square kilometers. 
+The city is dominated by a humid subtropical climate with hot, humid summers, and cold, dry winters. 
+It is one of Cities designated by government ordinance of Japan<!-- needref --> with a population of 1.47 million (726,000 households) in 2019. The area of the built-up area of the city is 144 square kilometers. The commercial area of the city is mainly in the center, and industrial area in west and south. 
+
+```{r SampleStratify, results="markup"}
+library(tidyr)
+mdvar_landcover <- info_abb_land_cover[,"land_cover"]
+mdvar_tab_sample_stra <- read.csv("In_plot_land_use.csv") %>% 
+  subset(Level == "class") %>% 
+  select(Landuse_class, Area_ha, Area_prop, Qua_tree)
+knitr::kable(mdvar_tab_sample_stra, digits = 2, 
+             caption = "Sample plots by stritify Sampling method in the research")
+```
+
+## Tree data collection 
+<!-- sampling -->According to the urban planning system in Japan, urban land use is categorized into 12 classes, with a regulation on the architectural form and use of the buildings constructed. We aggregated them into 6 classes: *Com* (commercial area), *Com-neighbor* (neighborhood commercial area), *R-low* (exclusively low-rise residential area), R-high (mid/high-rise oriented residential area), R-resi (other residential area), and *Ind* (industrial area), as shown in Table \@ref(tab:SampleStratify). The field investigation was conducted between May and August in 2019. For urban plant diversity investigation, 200 quadrat sample plots (20m × 20m) were established, including the alternative ones, by stratified sampling method based on the area of the land use areas (Nowak et al., 2008). The number of the plots investigated (n = 175) of each land-use type is shown in Table \@ref(tab:SampleStratify). 
+
+<!-- Data collection -->Following i-Tree eco filed guide (“i-Tree Manuals, Guides & Workbooks | i-Tree,” n.d.), the information on plot and vegetation was collected. Plot information includes on-site land cover, plantable area, and site photos. Tree information includes species, height, diameter at breast height (DBH), canopy missing percentage, crown size, crown health condition, crown light exposure. And shrub information includes species, height, area, and crown missing. Finally, a total of 1400 trees (141 species) and 1194 square meters of shrubs (192 species) were recorded in the 175 plots. 
+
+## Calculation of ecosystem services
+i-Tree model developed by USDA Forest Services is widely used to help managers and researchers quantify urban forest structure, ecosystem function, and ecosystem services based on the field vegetation investigation data. During the estimation, trees and shrubs are regarded as the providers of the ecosystem services. The ecosystem services calculated in this research include carbon sequestration and storage, pollution removal and related human health impact, and hydrology effect. 
+i-Tree tool work flow: after investigated data is inputed into i-Tree Eco application, structure statement (e.g., LAI, biomass) and ES are calculated based on a sequence of function and parameter. 
+
+## Structure dimension
+Leaf area is estimated based on species, total height, crown base height, crow width and percent crown missing. Leaf biomass is based on leaf area. 
+
+## Carbon storage and carbon sequestration 
+Carbon storage is estimated based on dry biomass and carbon content. Dry biomass is calculated using DBH, total height, and adjustment factors by field land use and species. For evergreen and palm species, leaf biomass is added. And carbon sequestration is estimated based on growth rate, which is also calculated with the parameters mentioned above and growth adjustment factor of crown health and crown light exposure. 
+i-Tree Eco’s default value for carbon is 51.2US dollar per ton carbon, while the social cost for carbon in Japan is 10,600 Yen (about 96 dollar) <!-- from Japanese government, see page 22 in the attached from Hirabayashi -->per ton from Japanese government. Here we use the local cost. 
+
+## Air pollution removal and health benefit 
+Air pollution removal is estimated using percent tree cover and LAI (leaf area index). The pollutants estimated include carbon monoxide (CO), nitrogen dioxide ($NO_2$), ozone ($O_3$), particulate matter less than 2.5 µm (PM2.5),
+and sulfur dioxide ($SO_2$). In the locations that supported more sufficiently in i-Tree, the inputed data are merged with local pre-processed weather and air pollution concentration data for the calculation of pollutants removal. While Kyoto is not in the list for now. So we imported the weather data from local monitor stations manually. 
+The valuation of air pollutants removal is estimated based on the cost reduction of avoided adverse health incidences caused by exposure to $NO_2$, $O_3$, $SO_2$ and $PM2.5$ with BenMAP method developed by the US Environmental Protection Agency, connecting medical records and air quality measurements across the US. 
+
+## Avoided runoff
+Runoff reduction in i-Tree Eco is estimated based on the difference between the runoff with current tree cover and that without trees[@hirabayashi_i-Tree_2012]. In the simulation, rainfall interception of trees and runoff are calculated mainly by precipitation, LAI, and infiltration with a time step of hour. The storm water control facilities cost in the US is 2.36 US dollars per $m^3$ while that in Japan is 719 yen per $m3$. The latter was applied in our research for the valuation of runoff reduction. 
+
+## Data analysis
+The distribution of DBH across land use classes were illustrated for a outline of the the age structure of the trees in the city. 
+Then ecosystem services across different land classification were compared at both plot and individual-tree levels. 
+Before the comparison, we firstly tested the normality of the plot and individual ecosystem services by Shapiro-Wilk test. And the results turn out that the distributions of all the dependent variables are not normal distribution (p-value < 0.05). 
+Since the general thought, that non-parameter statistical analysis should be applied when the assumption of normal-distribution or homogeneity of variance of data is not met, remains controversial, both parameter and non-parameter methods (in this case, ANOVA and Kruskal-Wallis test) were applied to compare the plot and individual ecosystem services across land classification. For ANOVA, the effects of land use class and onsite land use were tested both separatly and interactively. 
+Finally, a species-specific analysis was used to compare the difference of individual-tree ecosystem services across land classification by species. 
+
+All the analysis was conducted in R (version 4.0.3), and the statistical significance level was considered as $\alpha$=0.05. The $aov$ function was applied for ANOVA test and the $kruskal.test$ function for Kruskal-Wallis test. $TukeyHSD$ function was used for the post hoc comparison of ANOVA, and $dunn.test$ function for the post hoc comparison of Kruskal-Wallis test. 
+
+# Results
+## DBH strcuture
+Younger trees with DBH < 10 cm account for a large proportion across land use (about `r range(tree_dbh_str$"n(00,05]"+ tree_dbh_str$"n(05,10]")[1]` to `r range(tree_dbh_str$"n(00,05]"+ tree_dbh_str$"n(05,10]")[2]`).
+Ind area has more older trees with DBH > 15 cm than others (Figure \@ref(fig:Dbh)). And though have high proportion of younger trees, Com and Com-neigh area are characterized with less younger trees with DBH <= 5 cm. 
+
+```{r Dbh, fig.cap="DBH structure"}
+plot_dbh
+```
+
+## Tree value 
+The comparison of the values - structure value, fixed ES value, and annual ES value, mean and standard deviations by plots (Figure \@ref(fig:Valuation)). 
+And focusing on the comparison of annual ecosystem services across land use (Figure \@ref(fig:AnualEcosystemServices)), $PM_2.5$ removal value account for about half of the total value across all land use types, followed by $O_3$ removal, carbon sequestration, and avoided runoff value. While $NO_2$ removal and $SO_2$ removal values only account for a small fraction of the total annual ecosystem services value. 
+
+```{r Valuation, results="markup"}
+subset(tree_plot_es_long, 
+       es %in% c("es_annual_value", "total_value", "carbon_storage_value")) %>% 
+  group_by(es) %>% 
+  summarise(sum = sum(es_annual_value), 
+            mean = mean(es_annual_value), 
+            sd = sd(es_annual_value)) %>% 
+  knitr::kable(caption = "Valuation of ecosystem services", digits = 2)
+```
+
+```{r AnualEcosystemServices}
+plot_es_annual
+```
+
+But it should be noted that, though ecosystem services valuation can be applied to compare the value across different services, the value varies with valuation method. Thus researchers should pay attention to indicators of ecosystem services as well, rather than focusing on valuation only. 
+
+## Plot annual ecosystem services across land classification 
+Both AOVA and Kruskal-Wallis test show no significant difference for plot ecosystem services across land use classes (see [Appendix](#appendix)). 
+
+## Individual annual ecosystem services across land classification 
+Different from plot ecosystem services comparison mentioned above, significant differences were detected for all the ecosystem services of individual trees across both land use classes (Figure \@ref(fig:ParaIndLanduse) and Figure \@ref(fig:NonparaIndLanduse)) and onsite land use classes (Figure \@ref(fig:ParaIndLandcover) and Figure \@ref(fig:NonparaIndLandcover)).
+<!-- post hoc result? -->
+The ANOVA considering interaction effect reveals a significant interaction effect of land use classes and onsite land use classes for individual ecosystem services (Table \@ref(tab:InteractionEffect)). 
+
+```{r ParaIndLanduse, fig.cap="ANOVA results of comparison of individual ecosystem services across land use classes"}
+func_es_para(tree_ind_es, es_annual, "land_use")
+```
+
+```{r NonparaIndLanduse, fig.cap="Kruskal-Wallis test results of comparison of individual ecosystem services across land use classes"}
+func_es_nonpara(tree_ind_es, es_annual, "land_use")
+```
+
+```{r ParaIndLandcover, fig.cap="ANOVA results of comparison of individual ecosystem services across onsite land use classes"}
+func_es_para(tree_ind_es, es_annual, "land_cover")
+```
+
+```{r NonparaIndLandcover, fig.cap="Kruskal-Wallis test results of comparison of individual ecosystem services across onsite land use classes"}
+func_es_nonpara(tree_ind_es, es_annual, "land_cover")
+```
+
+``` {r InteractionEffect, results="markup"}
+library(readxl)
+func_df_all <- function(name_file) {
+  sheet_ls <- vector("list", length(excel_sheets(name_file)))
+  for (i in c(1: length(excel_sheets(name_file)))) {
+    sheet_ls[[i]] <- read_excel(name_file, sheet = excel_sheets(name_file)[i], 
+                                range = "A1:E4")
+  }
+  sheet_df <- rbind(sheet_ls[[1]], sheet_ls[[2]], sheet_ls[[3]], 
+                    sheet_ls[[4]], sheet_ls[[5]], sheet_ls[[6]])
+  sheet_df <- cbind(
+    rep(c("Land use class", "Onsite land use class", "Interaction"), 6), sheet_df)
+  names(sheet_df)[1] <- "Comparison"
+  sheet_df
+}
+func_df_all("Out_func_es_inter.xlsx") %>% 
+  knitr::kable(digits = 2, caption = "ANOVA with interaction effects of land use classes and onsite land use classes on ecosystem services")
+```
+
+## Species-specific analysis (under writing)
+The analysis is to compare a sequence of ecosystem services across land use types within same species. The objective is to test if ecosystem services of certain species varies with land classification. 
+Only the "popular" species widespread in Kyoto city are tested considering the sample size and contribution to ecosystem services of the city. 
+The target species are required to be the ones widespread across a sequence of land use classes or onsite land use classes, and with at least 3 individuals for each land classification for robust of statistical analysis. 
+
+```{r}
+mdvar_species_landuse <- func_var_sub(tree_ind_es, "species", "land_use", 3, 4) %>% 
+  .$species %>% unique()
+```
+
+The target species for species-specific comparison of individual ecosystem services across land use classes are `r knitr::combine_words(mdvar_species_landuse)`. 
+The results of show that the pattern of individual ecosystem services across land use classes could be different within a same species. For example, *Acer palmatum* shows significant difference across land use in pollutants removal  and avoided runoff while not for carbon sequestration. 
+And different species show different patterns across land use types. For example,The ecosystem services of *Ligustrum lucidum* are higher in Ind land use than in the other, while ecosystem services of *Acer palmatum* is higher in R-other land use. 
+Post-hoc comparison was also applied, the differences are mainly resulted from the differences between residential areas and Ind area. 
+
+```{r}
+mdvar_species_landcover <- func_var_sub(tree_ind_es, "species", "land_cover", 3, 4) %>% 
+  .$species %>% unique()
+```
+
+And The target species for species-specific comparison of individual ecosystem services across onsite land use classes are `r knitr::combine_words(mdvar_species_landcover)`. 
+<!-- The results show that -->
+
+# Disscussion (under writing)
+## Comparison of ES in different land use and potential mechanisms
+
+## Land classification and ES at different scale
+Based on the results, a question rises: why individual-level ESs differs with land use, while plot-level ESs makes no difference in different land use? And is the impacts of land cover influenced by land use? 
+
+The first question could be attributed to many factors. One is that though individual ESs differs across land use types, the plot-level ESs is the sum of individual ESs, thus affected by number of individual plants. For example, though individual trees in R-other have higher ESs than R-low and R-high, while the plots of R-other has less trees than the other two. Another reason is the species also matters - species could compensate with each other in different ESs, which leads to an "average" of ESs across plots. 
+
+For the second question, I analyzed interaction effect of land use and land cover with two-factor ANOVA. The results show that they do have significant interaction effect for ESs at individual level. 
+
+Here from this graph, we got the conclusions that: the individual ESs of same land cover differs across land use types. For example, the trees in Institution land cover has lower ESs in Ind land use and R-high than that in R-other. Park also shows a similar pattern. 
+
+Besides, the analysis partially explain the difference of ESs across land use: because different land use has different land cover composition. As we can see from the graph of individual ESs across land cover types, that park is usually characterized with higher ESs and R-other is rich of parks. 
+
+## ES calculation in cities 
+- urban heterogeneity 
+- ES in different cities 
+
+# References {-}
+
+<div id="refs"></div>
+
+# Appendix {#appendix} {-}
+# Abbreviation and Terminology {-}
+
+Tree value - The total value of a tree is composed of structure value, fixed ES value (in this case, carbon storage value, which is the consequence of carbon sequestration), and annual “added ES values”. The latter, annual added ES values include 3 classes, ordered by the impact of scale: global scale – carbon sequestration value; regional scale – air pollutants removal values, including NO2 removal value, O3 removal value, PM 2.5 removal value, SO removal value (and CO removal value, though it is not accounted in valuation process); local scale – avoided runoff value. 
+
+ES - ecosystem service, including fixed ES and annual ES. 
+
+land use - larger scale land classification, the definition is based on urban land use classification system of Japanese urban planning, including:
+
+- Com for commercial area
+
+- Come-neigh for neighborhood commercial area
+
+- Ind for industrial area
+
+- R-high for high rise residential area
+
+- R-low for low rise residential area
+
+- R-other for other residential area
+
+land cover - smaller scale land classification, based on field work and Google image, including `r mdvar_landcover`.
+
+## Plot ecosystem services across different land use classes {-}
+The results of ANOVA: 
+
+```{r}
+func_es_para(tree_plot_es, es_annual, "land_use")
+```
+
+And the results of Kruskal-Wallis test: 
+
+```{r}
+func_es_nonpara(tree_plot_es, es_annual, "land_use")
+```
+
+## Species-specific comparison of individual ES across land use {-}
+Show both parameter and non-parameter analysis results. Species names are attached in titles. The figures of comparison with significant difference are in black, and the other in light grey.
+
+Parameter method - ANOVA results: 
+
+```{r species-specific para}
+func_var_sub(tree_ind_es, "species", "land_use", 3, 4) %>% 
+  split(.$species) %>% 
+  lapply(func_es_para, es_annual, "land_use")
+```
+
+And non-parameter method results: 
+
+```{r species-specific non-para}
+func_var_sub(tree_ind_es, "species", "land_use", 3, 4) %>% 
+  split(.$species) %>% 
+  lapply(func_es_nonpara, es_annual, "land_use")
+```
+
+```{r species_specific para land cover}
+func_var_sub(tree_ind_es, "species", "land_cover", 3, 4) %>% 
+  split(.$species) %>% 
+  lapply(func_es_para, es_annual, "land_cover")
+```
+
+```{r species-specific non-para land cover}
+func_var_sub(tree_ind_es, "species", "land_cover", 3, 4) %>% 
+  split(.$species) %>% 
+  lapply(func_es_nonpara, es_annual, "land_cover")
+```
