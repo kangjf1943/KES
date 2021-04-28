@@ -212,23 +212,61 @@ mdvar_species_landcover <- func_var_sub(tree_ind_es, "species", "land_cover", 3,
 And The target species for species-specific comparison of individual ecosystem services across onsite land use classes are `r knitr::combine_words(mdvar_species_landcover)`. 
 <!-- The results show that -->
 
-# Disscussion (under writing)
+# Disscussion
 ## Comparison of ES in different land use and potential mechanisms
+To compare our results with other studies, the mean value of carbon storage and carbon sequestration (ton carbon) per ha was calculated (Table \@ref(tab:MeanCarbonSeq). 
+Both carbon storage (11.51-17.41 ton carbon per ha) and annual carbon sequestration (1.35-1.60 ton carbon per ha) of residential area in this study  are lower than that in Roanoke, Virginia (37.00 ton carbon per ha and 2.78 ton carbon per ha) [@kim_assessing_2015], while the annual carbon sequestration value is higher than that of a study for Barcelona, Spain (0.35 and 1.33 ton carbon per ha for high-density and low-density residential area) [@baro_contribution_2014]. 
+Whereas, the carbon storage and annual carbon sequestration of industrial area of our study (9.95 and 1.19 ton carbon per ha) is higher than that of Roanoke, Virginia (7.31 and 0.57 ton carbon per ha); 
+those values of commercial areas in Kyoto (6.99-12.45 and 0.81-1.21 ton carbon per ha) is similar to those in the latter (10.59 and 0.83 ton carbon per ha) [@kim_assessing_2015]. 
 
-## Land classification and ES at different scale
-Based on the results, a question rises: why individual-level ESs differs with land use, while plot-level ESs makes no difference in different land use? And is the impacts of land cover influenced by land use? 
+```{r MeanCarbonSeq}
+# mean per ha carbon sequestration (t carbon) by land use
+mdvar_carbon_seq_per_ha <- tree_plot_es %>% group_by(land_use) %>% 
+  summarise("carbon storage" = mean(carbon_storage)*10000/400/1000, 
+            "carbon sequestration" = mean(carbon_seq)*10000/400/1000)
+knitr::kable(mdvar_carbon_seq_per_ha, digits = 2, 
+             caption = "Mean value of carbon storage and carbon sequestion by land use classes of this study")
+```
 
-The first question could be attributed to many factors. One is that though individual ESs differs across land use types, the plot-level ESs is the sum of individual ESs, thus affected by number of individual plants. For example, though individual trees in R-other have higher ESs than R-low and R-high, while the plots of R-other has less trees than the other two. Another reason is the species also matters - species could compensate with each other in different ESs, which leads to an "average" of ESs across plots. 
+Among the 6 land use classes in this research, Com-neigh and residential area have higher carbon storage than Ind and Com; 
+residential areas have the highest mean per ha carbon sequestration, followed by Com-neigh (`r round(mdvar_carbon_seq_per_ha$es[which(mdvar_carbon_seq_per_ha$land_use == "Com-neigh")], digits = 2)` ton carbon per ha), Ind (`r round(mdvar_carbon_seq_per_ha$es[which(mdvar_carbon_seq_per_ha$land_use == "Ind")], digits = 2)` ton carbon per ha), and Com (`r round(mdvar_carbon_seq_per_ha$es[which(mdvar_carbon_seq_per_ha$land_use == "Com")], digits = 2)` ton carbon per ha). 
+A similar trend was found in Roanoke, Virginia that per ha carbon storage and annual carbon sequestration in residential area is higher than that in commercial and industrial area [@kim_assessing_2015]. 
 
-For the second question, I analyzed interaction effect of land use and land cover with two-factor ANOVA. The results show that they do have significant interaction effect for ESs at individual level. 
+## Scale
+No significant difference was detected among plot ecosystem services of land use classes, while significant differences were found among individual ecosystem services of different land use classes and onsite land use classes in this study. 
+The results indicate that ecosystem services of individual trees are averaged at plot scale. 
+For instance, though individuals in R-other generally have higher $NO_2$ removal capacity than those in R-low and R-high, the total biomass and LAI of the individuals in R-other is lower than those in R-low and R-high, thus the $NO_2$ removal service in R-other is "averaged" at plot level. 
 
-Here from this graph, we got the conclusions that: the individual ESs of same land cover differs across land use types. For example, the trees in Institution land cover has lower ESs in Ind land use and R-high than that in R-other. Park also shows a similar pattern. 
+```{r}
+par(mfrow = c(2,2))
+plotmeans(no2_removal ~ land_use, tree_ind_es)
+plotmeans(no2_removal ~ land_use, tree_plot_es)
+plotmeans(biomass ~ land_use, tree_plot_es)
+plotmeans(lai ~ land_use, tree_plot_es)
+```
 
-Besides, the analysis partially explain the difference of ESs across land use: because different land use has different land cover composition. As we can see from the graph of individual ESs across land cover types, that park is usually characterized with higher ESs and R-other is rich of parks. 
+Besides, by comparing the post hoc comparison results for land use classes and onsite land use classes, it is revealed that between-group differences were more frequently found in the comparison for onsite land use classes. 
+The results indicate a finer-scale research unite may potentially differ the ecosystem services pattern better. 
+It is implicitly assumed that ecological processes scale consistently across different extents and granularity. 
+While the assumption usually fails because of the complexity of ecological systems though it brings convenience for researchers. 
+One of the reason is that the scale fo different factor works varies. 
+In this study, factors such as plantable area and total number of individuals are not taken into consideration when the comparison are made at individual level. 
+<!-- 参考昆虫-尺度文献写法 -->
 
 ## ES calculation in cities 
 - urban heterogeneity 
 - ES in different cities 
+
+```{r}
+# es from song_assessing_2020
+data.frame("green_space" = c("Public Park", 
+                             "Protective Green Space",
+                             "Square Green Space", 
+                             "Attached Green Space", 
+                             "Study Area"), 
+           "per_ha_carbon_seq" = c(4701, 3995.3, 3281, 2937.4, 3472.4)) %>% 
+  mutate(per_ha_carbon_seq = per_ha_carbon_seq/1000)
+```
 
 # References {-}
 
