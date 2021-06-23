@@ -11,8 +11,7 @@ es_annual <- c("carbon_seq",
                "no2_removal", "o3_removal", "pm25_removal", "so2_removal",
                "avo_runoff")
 es_annual_value <- c("carbon_seq_value", 
-                     "no2_value", "o3_value", "pm25_value", "so2_value", 
-                     "avo_runoff_value")
+                     es_annual)
 
 ## data import 
 # In_land_use.csv is copied from KUP_Plots_info.xlsx, including the plot land use class information 
@@ -66,7 +65,7 @@ itree_input <- read.csv("In_TreesWithID.csv") %>%
 
 # individual ES data from Access database
 my_channel <- odbcDriverConnect("Driver={Microsoft Access Driver (*.mdb, *.accdb)};
-        DBQ=C:/Users/kangj/Documents/OneDrive/KES/ODS/Tree/IndividualTree.mdb")
+        DBQ=C:/Users/kangj/Documents/R/KES/ODS/i_Tree_results/IndividualTree.mdb")
 tree_ind_es <- sqlQuery(my_channel, "select * from [Trees]") %>% 
   select(TreeID, `DBH (CM)`, `LEAF AREA INDEX`, 
          `CARBON STORAGE (KG)`, `GROSS CARBON SEQ (KG/YR)`, `BIOMASS ADJUSTMENT`, 
