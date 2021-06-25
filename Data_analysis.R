@@ -118,18 +118,20 @@ ind_data <- sqlQuery(my_channel, "select * from [Trees]") %>%
          avo_runoff_value, 
          es_annual_value, 
          total_value) %>% 
-  as.data.frame()
-ind_data$dbh_class <- "(50,  )"
-ind_data$dbh_class[ind_data$dbh <= 50] <- "(45,50]"
-ind_data$dbh_class[ind_data$dbh <= 45] <- "(40,45]"
-ind_data$dbh_class[ind_data$dbh <= 40] <- "(35,40]"
-ind_data$dbh_class[ind_data$dbh <= 35] <- "(30,35]"
-ind_data$dbh_class[ind_data$dbh <= 30] <- "(25,30]"
-ind_data$dbh_class[ind_data$dbh <= 25] <- "(20,25]"
-ind_data$dbh_class[ind_data$dbh <= 20] <- "(15,20]"
-ind_data$dbh_class[ind_data$dbh <= 15] <- "(10,15]"
-ind_data$dbh_class[ind_data$dbh <= 10] <- "(05,10]"
-ind_data$dbh_class[ind_data$dbh <= 5] <- "(00,05]"
+  as.data.frame() %>% 
+  mutate(dbh_class = case_when(
+    dbh <= 5 ~ "(00,05]", 
+    dbh <= 10 ~ "(05,10]", 
+    dbh <= 15 ~ "(10,15]", 
+    dbh <= 20 ~ "(15,20]", 
+    dbh <= 25 ~ "(20,25]", 
+    dbh <= 30 ~ "(25,30]", 
+    dbh <= 35 ~ "(30,35]", 
+    dbh <= 40 ~ "(35,40]", 
+    dbh <= 45 ~ "(40,45]", 
+    dbh <= 50 ~ "(45,50]", 
+    dbh > 50 ~ "(50,  )"
+  ))
 close(my_channel)
 rm(my_channel)
 
@@ -161,6 +163,24 @@ qua_esspertree <-
 names(qua_esspertree) <- c("qua_id", paste(es_annual, "pertree", sep = "_"))
 # 合并数据
 qua_data <- merge(qua_data, qua_esspertree, by = "qua_id")
+
+# Qudrat data summary ----
+# mean of ESs
+
+qua_data_summary <- qua_data %>% 
+  select(land_use, carbon_storage, carbon_seq, 
+         no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
+         avo_runoff, ) %>% 
+  group_by(land_use) %>% 
+  summarise(across(!starts_with("land_use"), mean))
+
+
+
+group_by(land_use) %>% 
+  summarise(mean_no2removal = mean(no2_removal), 
+            sd = sd(no2_removal), 
+            n = n(), 
+            se = sd(no2_removal)/sqrt(n()))
 
 
 ## analysis begins
