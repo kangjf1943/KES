@@ -5,26 +5,32 @@ library(dplyr)
 library(RODBC)
 library(tidyr)
 library(dunn.test)
+library(openxlsx)
 
-## default settings
+# Settings ----
 es_annual <- c("carbon_seq", 
                "no2_removal", "o3_removal", "pm25_removal", "so2_removal",
                "avo_runoff")
 es_annual_value <- c("carbon_seq_value", 
                      es_annual)
 
-## data import 
+# Data imp ----
 # In_land_use.csv is copied from KUP_Plots_info.xlsx, including the plot land use class information 
 info_abb_land_cover <- read.csv("In_abb_land_cover.csv")
 names(info_abb_land_cover) <- c("land_cover_abb", "description", "land_cover")
 info_abb_land_cover <- info_abb_land_cover %>% 
   select(land_cover_abb, land_cover)
 info_plot <- read.csv("In_land_use.csv") %>% 
-  select(KES_plot_id, Landuse_class) %>% 
-  rename(plot_id = KES_plot_id, 
+  select(KES_qua_id, Landuse_class) %>% 
+  rename(qua_id = KES_qua_id, 
          land_use = Landuse_class) %>% 
-  subset(plot_id != "#N/A") %>% 
-  mutate(plot_id = as.numeric(plot_id))
+  subset(qua_id != "#N/A") %>% 
+  mutate(qua_id = as.numeric(qua_id))
+
+# read the tree cover of each quadrat
+info_treecover <- read.xlsx(xlsxFile = "In_GIS_Kyoto_Biodiversity_Tree_buff.xlsx")
+info_treecover <- info_treecover[c("Qua_ID", "Shape_Area")]
+names(info_treecover) <- c("qua_id", "treecover")
 
 # In_itree_species_list.csv is downloaded from web, parsed by R
 info_species_code <- read.csv("In_itree_species_list.csv") %>% 
@@ -39,13 +45,13 @@ info_species_code <- read.csv("In_itree_species_list.csv") %>%
   subset(!duplicated(common_name))
 info_species_code$species[info_species_code$species == " "] <- NA
 
-# In_TreesWithID.csv is from Dr. Hirabayashi - i-Tree input data
+# In_TreesWithID.csv is from Dr. Hirabayashi: i-Tree input data
 itree_input <- read.csv("In_TreesWithID.csv") %>% 
   select(ID, PlotId, TreeId, FieldLandUse, TreeStatus, 
          Species, TreeHeightTotal, CrownWidth1, CrownWidth2, CrownLightExposure,
          PercentCrownMissing, PercentImperviousBelow, PercentShrubBelow) %>% 
   rename(res_tree_id = ID, 
-         plot_id = PlotId, 
+         qua_id = PlotId, 
          in_tree_id = TreeId, 
          land_cover_abb = FieldLandUse, 
          spo_pla = TreeStatus, 
@@ -58,8 +64,9 @@ itree_input <- read.csv("In_TreesWithID.csv") %>%
          per_impervious_below = PercentImperviousBelow, 
          per_shrub_below = PercentShrubBelow
          ) %>% 
-  mutate(plot_id = as.numeric(plot_id)) %>% 
-  left_join(info_plot, by = "plot_id") %>% 
+  mutate(qua_id = as.numeric(qua_id)) %>% 
+  left_join(info_plot, by = "qua_id") %>% 
+  left_join(info_treecover, by = "qua_id") %>% 
   left_join(info_abb_land_cover, by = "land_cover_abb") %>% 
   left_join(info_species_code, by = "species_code")
 
@@ -97,7 +104,7 @@ tree_ind_es <- sqlQuery(my_channel, "select * from [Trees]") %>%
                         no2_value, o3_value, pm25_value, so2_value,  
                         avo_runoff_value)) %>% 
   ungroup() %>% 
-  select(res_tree_id, plot_id, in_tree_id, species_code, species, common_name, 
+  select(res_tree_id, qua_id, in_tree_id, species_code, species, common_name, 
          spo_pla, dbh, height, crown_width_ew, crown_width_ns, per_crow_mis, 
          light_expo, per_shrub_below, per_impervious_below, 
          land_use, land_cover, 
@@ -127,7 +134,7 @@ rm(my_channel)
 
 # ES of each plot
 tree_plot_es <- tree_ind_es %>% 
-  select(plot_id, lai, biomass, 
+  select(qua_id, lai, biomass, 
          carbon_storage, carbon_seq, 
          no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
          avo_runoff, 
@@ -136,12 +143,12 @@ tree_plot_es <- tree_ind_es %>%
          avo_runoff_value, 
          es_annual_value, 
          total_value) %>% 
-  group_by(plot_id) %>% 
-  summarise(across(!starts_with("plot_id"), sum)) %>% 
+  group_by(qua_id) %>% 
+  summarise(across(!starts_with("qua_id"), sum)) %>% 
   ungroup() %>% 
   as.data.frame() %>%
-  mutate(plot_id = as.numeric(plot_id)) %>% 
-  left_join(info_plot, by = "plot_id")
+  mutate(qua_id = as.numeric(qua_id)) %>% 
+  left_join(info_plot, by = "qua_id")
 
 
 ## analysis begins
@@ -195,8 +202,8 @@ plot_es_annual_prop <- ggplot(subset(tree_plot_es_long,
   geom_bar(aes(land_use, es_annual_value, fill = es), 
            stat = "identity", position = "fill")
 plot_es_annual_prop
-ggplot(tree_plot_es) + geom_line(aes(plot_id, carbon_seq)) +
-  geom_line(aes(plot_id, carbon_storage), color = "red")
+ggplot(tree_plot_es) + geom_line(aes(qua_id, carbon_seq)) +
+  geom_line(aes(qua_id, carbon_storage), color = "red")
 
 
 ## non-species-specific analysis 
@@ -351,6 +358,7 @@ func_var_sub <- function(var_es, name_gp, name_subgp, num_sample, num_subgp) {
 func_var_sub(tree_ind_es, "land_cover", "land_use", 3, 3) %>% 
   func_es_inter(es_annual, "land_use", "land_cover")
 
+# Sp-spec anlys ----
 ## species-specific analysis
 # individual ES ~ land use 
 func_var_sub(tree_ind_es, "species", "land_use", 3, 4) %>% 
