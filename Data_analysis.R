@@ -29,8 +29,10 @@ info_plot <- read.csv("In_land_use.csv") %>%
 
 # read the tree cover of each quadrat
 info_treecover <- read.xlsx(xlsxFile = "In_GIS_Kyoto_Biodiversity_Tree_buff.xlsx")
-info_treecover <- info_treecover[c("Qua_ID", "Shape_Area")]
+info_treecover <- info_treecover[c("KES_qua_id", "Shape_Area")]
 names(info_treecover) <- c("qua_id", "treecover")
+# 问题：因为将样地边界内外的植物冠层都计算在内，所以有个样地树冠覆盖面积超过了400m2
+info_treecover$treecover[info_treecover$treecover > 400] <- 400
 
 # In_itree_species_list.csv is downloaded from web, parsed by R
 info_species_code <- read.csv("In_itree_species_list.csv") %>% 
@@ -66,14 +68,13 @@ itree_input <- read.csv("In_TreesWithID.csv") %>%
          ) %>% 
   mutate(qua_id = as.numeric(qua_id)) %>% 
   left_join(info_plot, by = "qua_id") %>% 
-  left_join(info_treecover, by = "qua_id") %>% 
   left_join(info_abb_land_cover, by = "land_cover_abb") %>% 
   left_join(info_species_code, by = "species_code")
 
 # individual ES data from Access database
 my_channel <- odbcDriverConnect("Driver={Microsoft Access Driver (*.mdb, *.accdb)};
         DBQ=C:/Users/kangj/Documents/R/KES/ODS/i_Tree_results/IndividualTree.mdb")
-tree_ind_es <- sqlQuery(my_channel, "select * from [Trees]") %>% 
+ind_data <- sqlQuery(my_channel, "select * from [Trees]") %>% 
   select(TreeID, `DBH (CM)`, `LEAF AREA INDEX`, 
          `CARBON STORAGE (KG)`, `GROSS CARBON SEQ (KG/YR)`, `BIOMASS ADJUSTMENT`, 
          grep("\\(g\\)", colnames(.)), grep("\\$", colnames(.)), 
@@ -118,22 +119,22 @@ tree_ind_es <- sqlQuery(my_channel, "select * from [Trees]") %>%
          es_annual_value, 
          total_value) %>% 
   as.data.frame()
-tree_ind_es$dbh_class <- "(50,  )"
-tree_ind_es$dbh_class[tree_ind_es$dbh <= 50] <- "(45,50]"
-tree_ind_es$dbh_class[tree_ind_es$dbh <= 45] <- "(40,45]"
-tree_ind_es$dbh_class[tree_ind_es$dbh <= 40] <- "(35,40]"
-tree_ind_es$dbh_class[tree_ind_es$dbh <= 35] <- "(30,35]"
-tree_ind_es$dbh_class[tree_ind_es$dbh <= 30] <- "(25,30]"
-tree_ind_es$dbh_class[tree_ind_es$dbh <= 25] <- "(20,25]"
-tree_ind_es$dbh_class[tree_ind_es$dbh <= 20] <- "(15,20]"
-tree_ind_es$dbh_class[tree_ind_es$dbh <= 15] <- "(10,15]"
-tree_ind_es$dbh_class[tree_ind_es$dbh <= 10] <- "(05,10]"
-tree_ind_es$dbh_class[tree_ind_es$dbh <= 5] <- "(00,05]"
+ind_data$dbh_class <- "(50,  )"
+ind_data$dbh_class[ind_data$dbh <= 50] <- "(45,50]"
+ind_data$dbh_class[ind_data$dbh <= 45] <- "(40,45]"
+ind_data$dbh_class[ind_data$dbh <= 40] <- "(35,40]"
+ind_data$dbh_class[ind_data$dbh <= 35] <- "(30,35]"
+ind_data$dbh_class[ind_data$dbh <= 30] <- "(25,30]"
+ind_data$dbh_class[ind_data$dbh <= 25] <- "(20,25]"
+ind_data$dbh_class[ind_data$dbh <= 20] <- "(15,20]"
+ind_data$dbh_class[ind_data$dbh <= 15] <- "(10,15]"
+ind_data$dbh_class[ind_data$dbh <= 10] <- "(05,10]"
+ind_data$dbh_class[ind_data$dbh <= 5] <- "(00,05]"
 close(my_channel)
 rm(my_channel)
 
 # ES of each plot
-tree_plot_es <- tree_ind_es %>% 
+qua_data <- ind_data %>% 
   select(qua_id, lai, biomass, 
          carbon_storage, carbon_seq, 
          no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
@@ -148,18 +149,19 @@ tree_plot_es <- tree_ind_es %>%
   ungroup() %>% 
   as.data.frame() %>%
   mutate(qua_id = as.numeric(qua_id)) %>% 
-  left_join(info_plot, by = "qua_id")
+  left_join(info_plot, by = "qua_id") %>% 
+  left_join(info_treecover, by = "qua_id")
 
 
 ## analysis begins
 ## general description
 # structure across land use types
-plot_dbh <- ggplot(tree_ind_es) + geom_bar(aes(land_use, fill = dbh_class), 
+plot_dbh <- ggplot(ind_data) + geom_bar(aes(land_use, fill = dbh_class), 
                                position = "fill")
 plot_dbh
-tree_ind_landuse <- tree_ind_es %>% group_by(land_use) %>% 
+tree_ind_landuse <- ind_data %>% group_by(land_use) %>% 
   summarise(num_ind = n())
-tree_dbh_str <- tree_ind_es %>% 
+tree_dbh_str <- ind_data %>% 
   group_by(land_use) %>% 
   summarise("n(00,05]" = sum(dbh_class == "(00,05]"), 
             "n(05,10]" = sum(dbh_class == "(05,10]"), 
@@ -179,30 +181,30 @@ tree_dbh_str <- cbind(tree_dbh_str$land_use,
 tree_dbh_str
 
 # compare sum of each ES value
-tree_plot_es_long <- pivot_longer(
-  tree_plot_es, cols = c(grep("value", colnames(tree_plot_es), value = TRUE)), 
+qua_data_long <- pivot_longer(
+  qua_data, cols = c(grep("value", colnames(qua_data), value = TRUE)), 
   names_to = "es", values_to = "es_annual_value")
 
-subset(tree_plot_es_long, 
+subset(qua_data_long, 
        es %in% c("es_annual_value", "total_value", "carbon_storage_value")) %>% 
   group_by(es) %>% 
   summarise(sum = sum(es_annual_value), 
             mean = mean(es_annual_value), 
             sd = sd(es_annual_value))
 
-plot_es_annual <- ggplot(subset(tree_plot_es_long, 
+plot_es_annual <- ggplot(subset(qua_data_long, 
                                 es %in% c("es_annual_value", "total_value",
                                           "carbon_storage_value") == FALSE)) +
   geom_bar(aes(land_use, es_annual_value, fill = es), 
            stat = "identity", position = "stack")
 plot_es_annual
-plot_es_annual_prop <- ggplot(subset(tree_plot_es_long, 
+plot_es_annual_prop <- ggplot(subset(qua_data_long, 
                                 es %in% c("es_annual_value", "total_value",
                                           "carbon_storage_value") == FALSE)) +
   geom_bar(aes(land_use, es_annual_value, fill = es), 
            stat = "identity", position = "fill")
 plot_es_annual_prop
-ggplot(tree_plot_es) + geom_line(aes(qua_id, carbon_seq)) +
+ggplot(qua_data) + geom_line(aes(qua_id, carbon_seq)) +
   geom_line(aes(qua_id, carbon_storage), color = "red")
 
 
@@ -310,22 +312,22 @@ func_es_inter <- function(var_es, name_dep,
 
 # test the assumptions for statistical analysis
 for (name_roop_dep in es_annual) {
-  loop_var <- shapiro.test(tree_plot_es[, name_roop_dep])
+  loop_var <- shapiro.test(qua_data[, name_roop_dep])
   cat(name_roop_dep, loop_var$p.value > 0.05, "\n")
-  loop_var <- shapiro.test(tree_ind_es[, name_roop_dep])
+  loop_var <- shapiro.test(ind_data[, name_roop_dep])
   cat(name_roop_dep, loop_var$p.value > 0.05, "\n")
 }
 
 # plot ES ~ land use
-func_es_para(tree_plot_es, es_annual, "land_use")
-func_es_nonpara(tree_plot_es, es_annual, "land_use")
+func_es_para(qua_data, es_annual, "land_use")
+func_es_nonpara(qua_data, es_annual, "land_use")
 
 # individual ES ~ land use
-func_es_para(tree_ind_es, es_annual, "land_use")
-func_es_nonpara(tree_ind_es, es_annual, "land_use")
+func_es_para(ind_data, es_annual, "land_use")
+func_es_nonpara(ind_data, es_annual, "land_use")
 
 # individual ES ~ land cover
-tar_land_cover_sgl <- table(tree_ind_es$land_cover) %>% 
+tar_land_cover_sgl <- table(ind_data$land_cover) %>% 
   as.data.frame() %>% 
   group_by(Var1) %>% 
   summarise(num = sum(Freq > 3)) %>% 
@@ -333,9 +335,9 @@ tar_land_cover_sgl <- table(tree_ind_es$land_cover) %>%
   subset(num == 1) %>% 
   .$Var1 %>% 
   as.character()
-func_es_para(subset(tree_ind_es, land_cover %in% tar_land_cover_sgl), 
+func_es_para(subset(ind_data, land_cover %in% tar_land_cover_sgl), 
              es_annual, "land_cover")
-func_es_nonpara(subset(tree_ind_es, land_cover %in% tar_land_cover_sgl), 
+func_es_nonpara(subset(ind_data, land_cover %in% tar_land_cover_sgl), 
                 es_annual, "land_cover")
 
 # individual ES ~ land use * land cover
@@ -355,24 +357,24 @@ func_var_sub <- function(var_es, name_gp, name_subgp, num_sample, num_subgp) {
            paste0(var_gp_subgp_tar$Var1, var_gp_subgp_tar$Var2))
 }
 
-func_var_sub(tree_ind_es, "land_cover", "land_use", 3, 3) %>% 
+func_var_sub(ind_data, "land_cover", "land_use", 3, 3) %>% 
   func_es_inter(es_annual, "land_use", "land_cover")
 
 # Sp-spec anlys ----
 ## species-specific analysis
 # individual ES ~ land use 
-func_var_sub(tree_ind_es, "species", "land_use", 3, 4) %>% 
+func_var_sub(ind_data, "species", "land_use", 3, 4) %>% 
   split(.$species) %>% 
   lapply(func_es_para, es_annual, "land_use")
-func_var_sub(tree_ind_es, "species", "land_use", 3, 4) %>% 
+func_var_sub(ind_data, "species", "land_use", 3, 4) %>% 
   split(.$species) %>% 
   lapply(func_es_nonpara, es_annual, "land_use")
 
 # individual ES ~ land cover 
-func_var_sub(tree_ind_es, "species", "land_cover", 3, 4) %>% 
+func_var_sub(ind_data, "species", "land_cover", 3, 4) %>% 
   split(.$species) %>% 
   lapply(func_es_para, es_annual, "land_cover")
-func_var_sub(tree_ind_es, "species", "land_cover", 3, 4) %>% 
+func_var_sub(ind_data, "species", "land_cover", 3, 4) %>% 
   split(.$species) %>% 
   lapply(func_es_nonpara, es_annual, "land_cover")
 
