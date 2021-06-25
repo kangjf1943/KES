@@ -133,24 +133,34 @@ ind_data$dbh_class[ind_data$dbh <= 5] <- "(00,05]"
 close(my_channel)
 rm(my_channel)
 
-# ES of each plot
+# Quadrat data: 
+# basic info: qua id, land use, tree number, tree cover
+# ESs and ES values
+# ESs per tree
 qua_data <- ind_data %>% 
   select(qua_id, lai, biomass, 
          carbon_storage, carbon_seq, 
          no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
          avo_runoff, 
          carbon_storage_value, carbon_seq_value, 
-         no2_value, o3_value, pm25_value, so2_value,  
+         no2_value, o3_value, pm25_value, so2_value, 
          avo_runoff_value, 
          es_annual_value, 
          total_value) %>% 
   group_by(qua_id) %>% 
-  summarise(across(!starts_with("qua_id"), sum)) %>% 
+  summarise(across(!starts_with("qua_id"), sum), 
+            treenum = n()) %>% 
   ungroup() %>% 
   as.data.frame() %>%
   mutate(qua_id = as.numeric(qua_id)) %>% 
   left_join(info_plot, by = "qua_id") %>% 
   left_join(info_treecover, by = "qua_id")
+# 计算各个样地平均每个个体的ES
+qua_esspertree <- 
+  aggregate(ind_data[es_annual], by = list(ind_data$qua_id), mean)
+names(qua_esspertree) <- c("qua_id", paste(es_annual, "pertree", sep = "_"))
+# 合并数据
+qua_data <- merge(qua_data, qua_esspertree, by = "qua_id")
 
 
 ## analysis begins
