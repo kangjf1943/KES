@@ -156,7 +156,7 @@ qua_data <- ind_data %>%
   as.data.frame() %>%
   mutate(qua_id = as.numeric(qua_id)) %>% 
   left_join(info_plot, by = "qua_id") %>% 
-  left_join(info_treecover, by = "qua_id")
+  left_join(info_treecover, by = "qua_id") %>% 
 # 计算各个样地平均每个个体的ES
 qua_esspertree <- 
   aggregate(ind_data[es_annual], by = list(ind_data$qua_id), mean)
@@ -166,22 +166,14 @@ qua_data <- merge(qua_data, qua_esspertree, by = "qua_id")
 
 # Qudrat data summary ----
 # mean of ESs
-
 qua_data_summary <- qua_data %>% 
   select(land_use, carbon_storage, carbon_seq, 
          no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
-         avo_runoff, ) %>% 
+         avo_runoff) %>% 
   group_by(land_use) %>% 
-  summarise(across(!starts_with("land_use"), mean))
-
-
-
-group_by(land_use) %>% 
-  summarise(mean_no2removal = mean(no2_removal), 
-            sd = sd(no2_removal), 
-            n = n(), 
-            se = sd(no2_removal)/sqrt(n()))
-
+  summarise(n = n(), across(
+    all_of(es_annual), 
+    list(mean = mean, error = function(x) {sd(x)/sqrt(n)})))
 
 ## analysis begins
 ## general description
