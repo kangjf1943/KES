@@ -135,6 +135,34 @@ ind_data <- sqlQuery(my_channel, "select * from [Trees]") %>%
 close(my_channel)
 rm(my_channel)
 
+# ind data summary 
+# mean of individual tree ES
+ind_data_mean <- ind_data %>% 
+  select(land_use, carbon_storage, carbon_seq, 
+         no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
+         avo_runoff) %>% 
+  group_by(land_use) %>% 
+  summarise(across(all_of(es_annual), mean)) %>% 
+  pivot_longer(cols = all_of(es_annual), names_to = "ES", values_to = "mean")
+# se of individual ES
+ind_data_se <- ind_data %>% 
+  select(land_use, carbon_storage, carbon_seq, 
+         no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
+         avo_runoff) %>% 
+  group_by(land_use) %>% 
+  summarise(n = n(), across(all_of(es_annual), list(function(x) {sd(x)/sqrt(n)}))) %>% 
+  mutate(n = NULL) %>% 
+  rename(carbon_seq = carbon_seq_1, 
+         no2_removal = no2_removal_1, 
+         o3_removal = o3_removal_1, 
+         pm25_removal = pm25_removal_1, 
+         so2_removal = so2_removal_1, 
+         avo_runoff = avo_runoff_1) %>% 
+  pivot_longer(cols = all_of(es_annual), names_to = "ES", values_to = "se")
+# join the data
+ind_data_summary <- ind_data_mean %>% 
+  left_join(ind_data_se, by = c("land_use" = "land_use", "ES" = "ES"))
+
 # Quadrat data: 
 # basic info: qua id, land use, tree number, tree cover
 # ESs and ES values
