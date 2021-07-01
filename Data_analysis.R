@@ -7,6 +7,107 @@ library(tidyr)
 library(dunn.test)
 library(openxlsx)
 
+# Function ----
+# functions for test
+# function for parameter method - ANOVA
+func_es_para <- function(var_es, name_depend_var, name_independ_var) {
+  if (length(unique(var_es$species)) == 1) {
+    var_species_name <- var_es$species[1]
+    print(var_species_name)
+  } else {
+    var_species_name <- ""}
+  par(mfrow = c(floor(sqrt(length(name_depend_var))),
+                ceiling(sqrt(length(name_depend_var)))))
+  for (var_loop_colname in name_depend_var) {
+    var_loop_fit <- aov(var_es[, var_loop_colname] ~ 
+                          var_es[, name_independ_var])
+    var_loop_aov_pvalue <- summary(var_loop_fit)[[1]]$`Pr(>F)`[1]
+    print(var_loop_colname)
+    cat("anova p-value:", var_loop_aov_pvalue, "\n")
+    if (var_loop_aov_pvalue < 0.05) {
+      var_loop_tukey <- TukeyHSD(var_loop_fit)
+      cat("Tukey result: \n")
+      print(subset(as.data.frame(var_loop_tukey[[1]]), `p adj` < 0.05))
+      cat("\n")
+      plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
+                ylab = var_loop_colname, 
+                main = var_species_name, 
+                xlab = paste0("anova p-value = ", round(var_loop_aov_pvalue,2)))
+    } else {
+      plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
+                ylab = var_loop_colname, 
+                main = var_species_name, 
+                xlab = paste0("anova p-value = ", round(var_loop_aov_pvalue,2)),
+                col = "grey")
+    }
+  }
+  cat("\n\n")
+  par(mfrow = c(1,1))
+}
+# function for non-parameter method - Kruskal test
+func_es_nonpara <- function(var_es, name_depend_var, name_independ_var) {
+  if (length(unique(var_es$species)) == 1) {
+    var_species_name <- var_es$species[1]
+    print(var_species_name)
+  } else {
+    var_species_name <- ""}
+  par(mfrow = c(floor(sqrt(length(name_depend_var))),
+                ceiling(sqrt(length(name_depend_var)))))
+  for (var_loop_colname in name_depend_var) {
+    var_loop_kruskal <- kruskal.test(var_es[, var_loop_colname] ~ 
+                                       var_es[, name_independ_var])
+    cat(var_loop_colname, ": ", var_loop_kruskal$p.value, "\n")
+    if (var_loop_kruskal$p.value < 0.05) {
+      capture.output(var_loop_dunn <- dunn.test(var_es[, var_loop_colname], 
+                                                var_es[, name_independ_var], table = FALSE))
+      print(var_loop_dunn$comparisons[var_loop_dunn$P.adjusted < 0.05])
+      boxplot(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
+              ylab = var_loop_colname, xlab = "", 
+              main = var_species_name, 
+              sub = paste0("p-value = ", round(var_loop_kruskal$p.value, 2)))
+      cat("\n")
+    } else {
+      boxplot(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
+              ylab = var_loop_colname, xlab = "", 
+              main = var_species_name, 
+              sub = paste0("p-value = ", round(var_loop_kruskal$p.value, 2)), 
+              border = "grey")
+      cat("\n")
+    }
+  }
+}
+# function of ANOVA with interaction effect
+func_es_inter <- function(var_es, name_dep, 
+                          name_indep1, name_indep2) {
+  par(mfrow = c(floor(sqrt(length(name_dep))),
+                ceiling(sqrt(length(name_dep)))))
+  var_pvalue_ls <- vector("list", 6)
+  var_pvalue_ls_i <- 0
+  for (name_loop_dep in name_dep) {
+    var_loop_dep <- var_es[, name_loop_dep]
+    var_loop_indep1 <- var_es[, name_indep1]
+    var_loop_indep2 <- var_es[, name_indep2]
+    var_loop_fit <- aov(var_loop_dep ~ 
+                          var_loop_indep1*var_loop_indep2)
+    cat(name_loop_dep, "\n")
+    var_loop_pvalue <- summary(var_loop_fit)[[1]]
+    print(var_loop_pvalue)
+    var_pvalue_ls_i <- var_pvalue_ls_i + 1
+    var_pvalue_ls[[var_pvalue_ls_i]] <- var_loop_pvalue
+    cat("\n\n")
+    interaction.plot(var_loop_indep1, 
+                     var_loop_indep2,
+                     var_loop_dep,
+                     xlab = "", 
+                     ylab = name_loop_dep,
+                     type = "b", 
+                     col = c("black", "red", "violet", "orange", 
+                             "green", "blue", "lightblue"))
+  }
+  par(mfrow = c(1,1))
+  writexl::write_xlsx(var_pvalue_ls, "Out_func_es_inter.xlsx")
+}
+
 # Settings ----
 es_annual <- c("carbon_seq", 
                "no2_removal", "o3_removal", "pm25_removal", "so2_removal",
@@ -278,105 +379,6 @@ ggplot(qua_data) + geom_line(aes(qua_id, carbon_seq)) +
 
 ## non-species-specific analysis 
 ## individual ES and plot ES across land use or land use cover
-# functions for test
-# function for parameter method - ANOVA
-func_es_para <- function(var_es, name_depend_var, name_independ_var) {
-  if (length(unique(var_es$species)) == 1) {
-    var_species_name <- var_es$species[1]
-    print(var_species_name)
-  } else {
-    var_species_name <- ""}
-  par(mfrow = c(floor(sqrt(length(name_depend_var))),
-                ceiling(sqrt(length(name_depend_var)))))
-  for (var_loop_colname in name_depend_var) {
-    var_loop_fit <- aov(var_es[, var_loop_colname] ~ 
-                          var_es[, name_independ_var])
-    var_loop_aov_pvalue <- summary(var_loop_fit)[[1]]$`Pr(>F)`[1]
-    print(var_loop_colname)
-    cat("anova p-value:", var_loop_aov_pvalue, "\n")
-    if (var_loop_aov_pvalue < 0.05) {
-      var_loop_tukey <- TukeyHSD(var_loop_fit)
-      cat("Tukey result: \n")
-      print(subset(as.data.frame(var_loop_tukey[[1]]), `p adj` < 0.05))
-      cat("\n")
-      plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
-                ylab = var_loop_colname, 
-                main = var_species_name, 
-                xlab = paste0("anova p-value = ", round(var_loop_aov_pvalue,2)))
-    } else {
-      plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
-                ylab = var_loop_colname, 
-                main = var_species_name, 
-                xlab = paste0("anova p-value = ", round(var_loop_aov_pvalue,2)),
-                col = "grey")
-    }
-  }
-  cat("\n\n")
-  par(mfrow = c(1,1))
-}
-# function for non-parameter method - Kruskal test
-func_es_nonpara <- function(var_es, name_depend_var, name_independ_var) {
-  if (length(unique(var_es$species)) == 1) {
-    var_species_name <- var_es$species[1]
-    print(var_species_name)
-  } else {
-    var_species_name <- ""}
-  par(mfrow = c(floor(sqrt(length(name_depend_var))),
-                ceiling(sqrt(length(name_depend_var)))))
-  for (var_loop_colname in name_depend_var) {
-    var_loop_kruskal <- kruskal.test(var_es[, var_loop_colname] ~ 
-                                       var_es[, name_independ_var])
-    cat(var_loop_colname, ": ", var_loop_kruskal$p.value, "\n")
-    if (var_loop_kruskal$p.value < 0.05) {
-      capture.output(var_loop_dunn <- dunn.test(var_es[, var_loop_colname], 
-                                                var_es[, name_independ_var], table = FALSE))
-      print(var_loop_dunn$comparisons[var_loop_dunn$P.adjusted < 0.05])
-      boxplot(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
-              ylab = var_loop_colname, xlab = "", 
-              main = var_species_name, 
-              sub = paste0("p-value = ", round(var_loop_kruskal$p.value, 2)))
-      cat("\n")
-    } else {
-      boxplot(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
-              ylab = var_loop_colname, xlab = "", 
-              main = var_species_name, 
-              sub = paste0("p-value = ", round(var_loop_kruskal$p.value, 2)), 
-              border = "grey")
-      cat("\n")
-    }
-  }
-}
-# function of ANOVA with interaction effect
-func_es_inter <- function(var_es, name_dep, 
-                          name_indep1, name_indep2) {
-  par(mfrow = c(floor(sqrt(length(name_dep))),
-                ceiling(sqrt(length(name_dep)))))
-  var_pvalue_ls <- vector("list", 6)
-  var_pvalue_ls_i <- 0
-  for (name_loop_dep in name_dep) {
-    var_loop_dep <- var_es[, name_loop_dep]
-    var_loop_indep1 <- var_es[, name_indep1]
-    var_loop_indep2 <- var_es[, name_indep2]
-    var_loop_fit <- aov(var_loop_dep ~ 
-                          var_loop_indep1*var_loop_indep2)
-    cat(name_loop_dep, "\n")
-    var_loop_pvalue <- summary(var_loop_fit)[[1]]
-    print(var_loop_pvalue)
-    var_pvalue_ls_i <- var_pvalue_ls_i + 1
-    var_pvalue_ls[[var_pvalue_ls_i]] <- var_loop_pvalue
-    cat("\n\n")
-    interaction.plot(var_loop_indep1, 
-                     var_loop_indep2,
-                     var_loop_dep,
-                     xlab = "", 
-                     ylab = name_loop_dep,
-                     type = "b", 
-                     col = c("black", "red", "violet", "orange", 
-                             "green", "blue", "lightblue"))
-  }
-  par(mfrow = c(1,1))
-  writexl::write_xlsx(var_pvalue_ls, "Out_func_es_inter.xlsx")
-}
 
 # test the assumptions for statistical analysis
 for (name_roop_dep in es_annual) {
