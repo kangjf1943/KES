@@ -315,13 +315,6 @@ ggplot(inddata) +
 quadata_long <- pivot_longer(
   quadata, cols = c(grep("value", colnames(quadata), value = TRUE)), 
   names_to = "es", values_to = "es_annual_value")
-# values of sum, mean, and se
-subset(quadata_long, 
-       es %in% c("es_annual_value", "total_value", "carbon_storage_value")) %>% 
-  group_by(es) %>% 
-  summarise(sum = sum(es_annual_value), 
-            mean = mean(es_annual_value), 
-            sd = sd(es_annual_value))
 # sum of ESs ~ land use
 ggplot(subset(quadata_long, es %in% 
                 c("es_annual_value", "total_value", "carbon_storage_value") == FALSE)) +
