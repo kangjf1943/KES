@@ -301,7 +301,7 @@ names(qua_esspertree) <- c("qua_id", paste(es_annual, "pertree", sep = "_"))
 # 合并数据
 qua_data <- merge(qua_data, qua_esspertree, by = "qua_id")
 
-# Quadrat data summary ----
+## Quadrat data summary ----
 quadata_summary <- func_datasummary(qua_data, land_use)
 
 
