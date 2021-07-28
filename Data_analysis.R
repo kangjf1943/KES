@@ -24,7 +24,8 @@ func_datasummary <- function(oridata, land_class) {
            no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
            avo_runoff) %>% 
     group_by({{land_class}}) %>% 
-    summarise(n = n(), across(all_of(es_annual), list(function(x) {sd(x)/sqrt(n)}))) %>% 
+    summarise(n = n(), across(all_of(es_annual), 
+                              list(function(x) {sd(x)/sqrt(n)}))) %>% 
     mutate(n = NULL) %>% 
     rename(carbon_seq = carbon_seq_1, 
            no2_removal = no2_removal_1, 
