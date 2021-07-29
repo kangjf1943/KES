@@ -43,6 +43,7 @@ func_datasummary <- function(oridata, land_class) {
 
 # parameter method ANOVA
 func_es_para <- function(var_es, name_depend_var, name_independ_var) {
+  var_es <- as.data.frame(var_es)
   if (length(unique(var_es$species)) == 1) {
     var_species_name <- var_es$species[1]
     print(var_species_name)
@@ -79,6 +80,7 @@ func_es_para <- function(var_es, name_depend_var, name_independ_var) {
 
 # function for non-parameter method: Kruskal test
 func_es_nonpara <- function(var_es, name_depend_var, name_independ_var) {
+  var_es <- as.data.frame(var_es)
   if (length(unique(var_es$species)) == 1) {
     var_species_name <- var_es$species[1]
     print(var_species_name)
@@ -111,8 +113,8 @@ func_es_nonpara <- function(var_es, name_depend_var, name_independ_var) {
 }
 
 # function of ANOVA with interaction effect
-func_es_inter <- function(var_es, name_dep, 
-                          name_indep1, name_indep2) {
+func_es_inter <- function(var_es, name_dep, name_indep1, name_indep2) {
+  var_es <- as.data.frame(var_es)
   par(mfrow = c(floor(sqrt(length(name_dep))),
                 ceiling(sqrt(length(name_dep)))))
   var_pvalue_ls <- vector("list", 6)
@@ -226,14 +228,14 @@ inddata <- sqlQuery(my_channel, "select * from [Trees]") %>%
          o3_removal = "O3 Removal (g)", 
          pm25_removal = "PM25 Removal (g)", 
          so2_removal = "SO2 Removal (g)", 
-         total_value = "TREE VALUE ($)",          
+         tree_value = "TREE VALUE ($)",          
          no2_value = "NO2 Value ($)", 
          o3_value = "O3 Value ($)", 
          pm25_value = "PM25 Value ($)",          
          so2_value = "SO2 Value ($)", 
          avo_runoff = "Avoided Runoff (m3)") %>% 
   left_join(itree_input, by = "res_tree_id") %>% 
-  mutate(carbon_storage_value = 51.2/10000*carbon_storage, 
+  mutate(carbon_storage_value = 51.2/1000*carbon_storage, 
          carbon_seq_value = 51.2/1000*carbon_seq, 
          avo_runoff_value = 2.36*avo_runoff) %>% 
   group_by(res_tree_id) %>% 
@@ -241,20 +243,6 @@ inddata <- sqlQuery(my_channel, "select * from [Trees]") %>%
                         no2_value, o3_value, pm25_value, so2_value,  
                         avo_runoff_value)) %>% 
   ungroup() %>% 
-  select(res_tree_id, qua_id, in_tree_id, species_code, species, common_name, 
-         spo_pla, dbh, height, crown_width_ew, crown_width_ns, per_crow_mis, 
-         light_expo, per_shrub_below, per_impervious_below, 
-         land_use, land_cover, 
-         lai, biomass, 
-         carbon_storage, carbon_seq, 
-         no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
-         avo_runoff, 
-         carbon_storage_value, carbon_seq_value, 
-         no2_value, o3_value, pm25_value, so2_value,  
-         avo_runoff_value, 
-         es_annual_value, 
-         total_value) %>% 
-  as.data.frame() %>% 
   mutate(dbh_class = case_when(
     dbh <= 5 ~ "(00,05]", 
     dbh <= 10 ~ "(05,10]", 
@@ -263,81 +251,95 @@ inddata <- sqlQuery(my_channel, "select * from [Trees]") %>%
     dbh <= 25 ~ "(20,25]", 
     dbh <= 30 ~ "(25,30]", 
     dbh > 30 ~ "(30,  )"
-  ))
+  )) %>% 
+  select(res_tree_id, qua_id, in_tree_id, species_code, species, common_name, 
+         spo_pla, dbh, dbh_class, height, crown_width_ew, crown_width_ns,
+         per_crow_mis, light_expo, per_shrub_below, per_impervious_below, 
+         land_use, land_cover, 
+         lai, biomass, 
+         carbon_storage, carbon_seq, 
+         no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
+         avo_runoff, 
+         tree_value, 
+         carbon_storage_value, carbon_seq_value, 
+         no2_value, o3_value, pm25_value, so2_value,  
+         avo_runoff_value, 
+         es_annual_value)
 close(my_channel)
 rm(my_channel)
 
 # Data summary ----
 ## Individual data summary ----
 inddata_summary <- vector("list", 2)
+names(inddata_summary) <- c("by_land_use", "by_land_cover")
 inddata_summary[[1]] <- func_datasummary(inddata, land_use)
 inddata_summary[[2]] <- func_datasummary(inddata, land_cover)
 
 ## Quadrat data ----
-# basic info: qua id, land use, tree number, tree cover
-# ESs and ES values
-# ESs per tree
 quadata <- inddata %>% 
   select(qua_id, lai, biomass, 
          carbon_storage, carbon_seq, 
          no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
          avo_runoff, 
+         tree_value, 
          carbon_storage_value, carbon_seq_value, 
          no2_value, o3_value, pm25_value, so2_value, 
          avo_runoff_value, 
-         es_annual_value, 
-         total_value) %>% 
+         es_annual_value) %>% 
   group_by(qua_id) %>% 
   summarise(across(!starts_with("qua_id"), sum), 
             treenum = n()) %>% 
   ungroup() %>% 
-  as.data.frame() %>%
   mutate(qua_id = as.numeric(qua_id)) %>% 
   left_join(info_plot, by = "qua_id") %>% 
   left_join(info_treecover, by = "qua_id")
-# 计算各个样地平均每个个体的ES
-qua_esspertree <- 
-  aggregate(inddata[es_annual], by = list(inddata$qua_id), mean)
-names(qua_esspertree) <- c("qua_id", paste(es_annual, "pertree", sep = "_"))
-# 合并数据
-quadata <- merge(quadata, qua_esspertree, by = "qua_id")
 
 ## Quadrat data summary ----
 quadata_summary <- func_datasummary(quadata, land_use)
 
 
-# Analysis begins ----
+# Analysis ----
 ## DBH structure ----
 # structure across land use types: calculatd based on land use scale
 ggplot(inddata) + 
-  geom_bar(aes(land_use, fill = dbh_class), color = "grey", position = "fill")
+  geom_bar(aes(land_use, fill = dbh_class), color = "grey", position = "fill") + 
+  labs(x = "Land use class", y = "Proportion", fill = "DBH class") + 
+  theme_bw()
 
-## Sum of ESs value ~ land use ----
-quadata_long <- pivot_longer(
-  quadata, cols = c(grep("value", colnames(quadata), value = TRUE)), 
-  names_to = "es", values_to = "es_annual_value")
-# sum of ESs ~ land use
-ggplot(subset(quadata_long, es %in% 
-                c("es_annual_value", "total_value", "carbon_storage_value") == FALSE)) +
-  geom_bar(aes(land_use, es_annual_value, fill = es), 
-           stat = "identity", position = "stack")
-# proportions of ESs ~ land use
-ggplot(subset(quadata_long, es %in% 
-                c("es_annual_value", "total_value", "carbon_storage_value") == FALSE)) +
-  geom_bar(aes(land_use, es_annual_value, fill = es), 
-           stat = "identity", position = "fill")
-# relationship between carbon seq ~ carbon storage
-ggplot(quadata) + geom_point(aes(carbon_storage, carbon_seq), alpha = 0.5)
+## ESs value ~ land use ----
+quavalue_summary <- quadata %>% 
+  select(land_use, carbon_seq_value, 
+         no2_value, o3_value, pm25_value, so2_value, 
+         avo_runoff_value) %>% 
+  pivot_longer(cols = c(carbon_seq_value, 
+                        no2_value, o3_value, pm25_value, so2_value, 
+                        avo_runoff_value), 
+               names_to = "es", values_to = "es_value") %>%
+  group_by(land_use, es) %>% 
+  summarise(es_value = sum(es_value)) %>% 
+  ungroup()
+ggplot(quavalue_summary, aes(land_use, es_value)) + 
+  geom_bar(aes(fill = es), stat = "identity", position = "stack")
+ggplot(quavalue_summary, aes(land_use, es_value)) + 
+  geom_bar(aes(fill = es), stat = "identity", position = "fill")
+
+## Carbon seq ~ carbon storage ----
+# at individual scale
+ggplot(inddata) + 
+  geom_point(aes(carbon_storage, carbon_seq, color = species), alpha = 0.5) + 
+  guides(color = "none")
+summary(lm(carbon_seq ~ carbon_storage, data = inddata))
+# at quadrat scale 
+ggplot(quadata) + 
+  geom_point(aes(carbon_storage, carbon_seq, color = land_use), alpha = 0.5) 
 summary(lm(carbon_seq ~ carbon_storage, data = quadata))
 
-# Non-species-specific analysis ---- 
+## Non-species-specific analysis ---- 
 # test the assumptions for statistical analysis
-for (name_roop_dep in es_annual) {
-  loop_var <- shapiro.test(quadata[, name_roop_dep])
-  cat(name_roop_dep, loop_var$p.value > 0.05, "\n")
-  loop_var <- shapiro.test(inddata[, name_roop_dep])
-  cat(name_roop_dep, loop_var$p.value > 0.05, "\n")
-}
+apply(as.data.frame(quadata[es_annual]), 2, 
+      function(x) {shapiro.test(x)$p.value > 0.05})
+apply(as.data.frame(inddata[es_annual]), 2, 
+      function(x) {shapiro.test(x)$p.value > 0.05})
 
 # quadrat ES ~ land use
 func_es_para(quadata, es_annual, "land_use")
@@ -364,6 +366,7 @@ func_es_nonpara(subset(inddata, land_cover %in% tar_land_cover_sgl),
 # individual ES ~ land use * land cover
 # target land cover: wide-spread over land use types and with trees >= 3
 func_var_sub <- function(var_es, name_gp, name_subgp, num_sample, num_subgp) {
+  var_es <- as.data.frame(var_es)
   # each pair with sample size larger than or equal to 2
   var_gp_subgp_ct <- table(var_es[,name_gp], var_es[,name_subgp]) %>% 
     as.data.frame() %>% 
