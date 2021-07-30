@@ -158,23 +158,31 @@ func_es_inter <- function(var_es, name_dep, name_indep1, name_indep2) {
     var_loop_indep2 <- var_es[, name_indep2]
     var_loop_fit <- aov(var_loop_dep ~ 
                           var_loop_indep1*var_loop_indep2)
-    cat(name_loop_dep, "\n")
     var_loop_pvalue <- summary(var_loop_fit)[[1]]
-    print(var_loop_pvalue)
     var_pvalue_ls_i <- var_pvalue_ls_i + 1
-    var_pvalue_ls[[var_pvalue_ls_i]] <- var_loop_pvalue
-    cat("\n\n")
-    interaction.plot(var_loop_indep1, 
-                     var_loop_indep2,
-                     var_loop_dep,
-                     xlab = "", 
-                     ylab = name_loop_dep,
+    var_pvalue_ls[[var_pvalue_ls_i]] <- as.data.frame(var_loop_pvalue)
+    # add ES and factor information
+    var_pvalue_ls[[var_pvalue_ls_i]]$"Ecosystem Service" <- 
+      c(name_loop_dep, rep(" ", 3))
+    var_pvalue_ls[[var_pvalue_ls_i]]$"Factor" <- 
+      c(name_indep1, name_indep2, paste(name_indep1, name_indep2, sep = ":"), 
+        "Residuals")
+    # reorder the columns
+    rownames(var_pvalue_ls[[var_pvalue_ls_i]]) <- NULL
+    var_pvalue_ls[[var_pvalue_ls_i]] <- 
+      var_pvalue_ls[[var_pvalue_ls_i]][c(
+        "Ecosystem Service", "Factor", 
+        names(var_pvalue_ls[[var_pvalue_ls_i]])[1:5])]
+    # interaction plot
+    interaction.plot(var_loop_indep1, var_loop_indep2, var_loop_dep,
+                     xlab = "", ylab = name_loop_dep,
                      type = "b", 
                      col = c("black", "red", "violet", "orange", 
                              "green", "blue", "lightblue"))
   }
   par(mfrow = c(1,1))
-  writexl::write_xlsx(var_pvalue_ls, "Out_func_es_inter.xlsx")
+  pvalue_df <- Reduce(rbind, var_pvalue_ls)
+  knitr::kable(pvalue_df, digits = 2)
 }
 
 # Settings ----
