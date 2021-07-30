@@ -163,7 +163,16 @@ info_plot <- read.csv("In_land_use.csv") %>%
   rename(qua_id = KES_qua_id, 
          land_use = Landuse_class) %>% 
   subset(qua_id != "#N/A") %>% 
-  mutate(qua_id = as.numeric(qua_id))
+  mutate(qua_id = as.numeric(qua_id)) %>% 
+  mutate(
+    land_use = case_when(
+      land_use == "Com" ~ "Com", 
+      land_use == "Com-neigh" ~ "ComNeigh", 
+      land_use == "Ind" ~ "Ind", 
+      land_use == "R-high" ~ "ResHigh", 
+      land_use == "R-low" ~ "ResLow", 
+      land_use == "R-other" ~ "ResOther"
+    ))
 
 # tree cover of each quadrat: source from KUP GIS data
 info_treecover <- read.xlsx(xlsxFile = "In_GIS_Kyoto_Biodiversity_Tree_buff.xlsx")
@@ -203,7 +212,7 @@ itree_input <- read.csv("In_TreesWithID.csv") %>%
          per_crow_mis = PercentCrownMissing, 
          per_impervious_below = PercentImperviousBelow, 
          per_shrub_below = PercentShrubBelow
-         ) %>% 
+  ) %>% 
   mutate(qua_id = as.numeric(qua_id)) %>% 
   left_join(info_plot, by = "qua_id") %>% 
   left_join(info_abb_land_cover, by = "land_cover_abb") %>% 
@@ -217,7 +226,7 @@ inddata <- sqlQuery(my_channel, "select * from [Trees]") %>%
          `CARBON STORAGE (KG)`, `GROSS CARBON SEQ (KG/YR)`, `BIOMASS ADJUSTMENT`, 
          grep("\\(g\\)", colnames(.)), grep("\\$", colnames(.)), 
          `Avoided Runoff (m3)`) %>%
-  rename(res_tree_id = TreeID, 
+  rename(res_tree_id = "TreeID", 
          dbh = `DBH (CM)`, 
          lai = `LEAF AREA INDEX`, 
          carbon_storage = `CARBON STORAGE (KG)`, 
@@ -243,15 +252,17 @@ inddata <- sqlQuery(my_channel, "select * from [Trees]") %>%
                         no2_value, o3_value, pm25_value, so2_value,  
                         avo_runoff_value)) %>% 
   ungroup() %>% 
-  mutate(dbh_class = case_when(
-    dbh <= 5 ~ "(00,05]", 
-    dbh <= 10 ~ "(05,10]", 
-    dbh <= 15 ~ "(10,15]", 
-    dbh <= 20 ~ "(15,20]", 
-    dbh <= 25 ~ "(20,25]", 
-    dbh <= 30 ~ "(25,30]", 
-    dbh > 30 ~ "(30,  )"
-  )) %>% 
+  mutate(
+    dbh_class = case_when(
+      dbh <= 5 ~ "(00,05]", 
+      dbh <= 10 ~ "(05,10]", 
+      dbh <= 15 ~ "(10,15]", 
+      dbh <= 20 ~ "(15,20]", 
+      dbh <= 25 ~ "(20,25]", 
+      dbh <= 30 ~ "(25,30]", 
+      dbh > 30 ~ "(30,  )"
+    )
+  ) %>% 
   select(res_tree_id, qua_id, in_tree_id, species_code, species, common_name, 
          spo_pla, dbh, dbh_class, height, crown_width_ew, crown_width_ns,
          per_crow_mis, light_expo, per_shrub_below, per_impervious_below, 
