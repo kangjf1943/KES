@@ -285,8 +285,8 @@ inddata <- sqlQuery(my_channel, "select * from [Trees]") %>%
          so2_value = "SO2 Value ($)", 
          avo_runoff = "Avoided Runoff (m3)") %>% 
   left_join(itree_input, by = "res_tree_id") %>% 
-  mutate(carbon_storage_value = 51.2/1000*carbon_storage, 
-         carbon_seq_value = 51.2/1000*carbon_seq, 
+  mutate(carbon_storage_value = 188/1000*carbon_storage, 
+         carbon_seq_value = 188/1000*carbon_seq, 
          avo_runoff_value = 2.36*avo_runoff) %>% 
   group_by(res_tree_id) %>% 
   mutate(es_annual_value = sum(carbon_seq_value, 
