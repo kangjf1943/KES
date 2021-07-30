@@ -182,7 +182,7 @@ func_es_inter <- function(var_es, name_dep, name_indep1, name_indep2) {
   }
   par(mfrow = c(1,1))
   pvalue_df <- Reduce(rbind, var_pvalue_ls)
-  knitr::kable(pvalue_df, digits = 2)
+  pvalue_df
 }
 
 # Settings ----
