@@ -8,8 +8,30 @@ library(dunn.test)
 library(openxlsx)
 
 # Function ----
+# function to get group labels for individual ES ANOVA
+exfunc_label <- function(mydata, name_es, name_group){
+  # ANOVA
+  HSD <- 
+    TukeyHSD(aov(mydata[[name_es]] ~ mydata[[name_group]]), ordered = FALSE)
+  # extract labels and factor levels from Tukey post-hoc 
+  Tukey.levels <- HSD$`mydata[[name_group]]`[,4]
+  Tukey.labels <- multcompView::multcompLetters(Tukey.levels)['Letters']
+  plot.labels <- names(Tukey.labels[['Letters']])
+  
+  # data.frame out of the factor levels and Tukey's homogenous group letters
+  plot.levels <- data.frame(plot.labels, labels = Tukey.labels[['Letters']],
+                            stringsAsFactors = FALSE)
+  rownames(plot.levels) <- NULL
+  
+  # add ES item and rename the columns
+  names(plot.levels) <- c(name_group, "label")
+  plot.levels$ES <- name_es
+  
+  return(plot.levels)
+}
+
 # function for data summary
-func_datasummary <- function(oridata, land_class) {
+func_datasummary <- function(oridata, land_class, name_land_class) {
   # mean of individual tree ES
   inddata_mean <- oridata %>% 
     select({{land_class}}, carbon_storage, carbon_seq, 
@@ -35,10 +57,21 @@ func_datasummary <- function(oridata, land_class) {
            avo_runoff = avo_runoff_1) %>% 
     pivot_longer(cols = all_of(es_annual), names_to = "ES", values_to = "se")
   # join the data
-  inddata_summary <- inddata_mean %>%
+  data_summary <- inddata_mean %>%
     left_join(inddata_se)
-  inddata_summary$ES <- factor(inddata_summary$ES, levels = es_annual)
-  inddata_summary
+  data_summary$ES <- factor(data_summary$ES, levels = es_annual)
+  
+  # add TukeyHSD group labels
+  data_summary <- 
+    merge(data_summary, 
+          rbind(exfunc_label(oridata, "carbon_seq", name_land_class), 
+                exfunc_label(oridata, "no2_removal", name_land_class), 
+                exfunc_label(oridata, "o3_removal", name_land_class), 
+                exfunc_label(oridata, "pm25_removal", name_land_class), 
+                exfunc_label(oridata, "so2_removal", name_land_class), 
+                exfunc_label(oridata, "avo_runoff", name_land_class)))
+  
+  data_summary
 }
 
 # parameter method ANOVA
@@ -283,8 +316,8 @@ rm(my_channel)
 ## Individual data summary ----
 inddata_summary <- vector("list", 2)
 names(inddata_summary) <- c("by_land_use", "by_land_cover")
-inddata_summary[[1]] <- func_datasummary(inddata, land_use)
-inddata_summary[[2]] <- func_datasummary(inddata, land_cover)
+inddata_summary[[1]] <- func_datasummary(inddata, land_use, "land_use")
+inddata_summary[[2]] <- func_datasummary(inddata, land_cover, "land_cover")
 
 ## Quadrat data ----
 quadata <- inddata %>% 
@@ -306,7 +339,7 @@ quadata <- inddata %>%
   left_join(info_treecover, by = "qua_id")
 
 ## Quadrat data summary ----
-quadata_summary <- func_datasummary(quadata, land_use)
+quadata_summary <- func_datasummary(quadata, land_use, "land_use")
 
 
 # Analysis ----
@@ -387,6 +420,48 @@ func_es_para(subset(inddata, land_cover %in% tar_land_cover_sgl),
              es_annual, "land_cover")
 func_es_nonpara(subset(inddata, land_cover %in% tar_land_cover_sgl), 
                 es_annual, "land_cover")
+
+# conclusion graph
+ggarrange(plotlist = list(
+  ggarrange(plotlist = list(
+    ggplot(quadata_summary, aes(x = land_use, y = mean)) + 
+      geom_bar(stat = "identity") + 
+      geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0.3) + 
+      geom_text(aes(x = land_use, y = Inf, label = label), 
+                vjust = 0.9, size = 3) + 
+      scale_y_continuous(expand = expansion(mult = c(0, 0.3))) + 
+      facet_wrap(~ ES, scales = "free_y", nco = 1, strip.position = "left", 
+                 labeller = labeller(ES = qua_lables)) + 
+      labs(x = "Land use", y = "Quadrat ecosystem services") + 
+      theme_bw() +
+      theme(axis.text.x = element_text(angle = 90)) + 
+      labs(title = "(a)"), 
+    ggplot(inddata_summary[[1]], aes(x = land_use, y = mean)) + 
+      geom_bar(stat = "identity") + 
+      geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0.3) + 
+      geom_text(aes(x = land_use, y = Inf, label = label), 
+                vjust = 0.9, size = 3) + 
+      scale_y_continuous(expand = expansion(mult = c(0, 0.3))) + 
+      facet_wrap(~ ES, scales = "free_y", ncol = 1, strip.position = "left", 
+                 labeller = labeller(ES = ind_labels)) + 
+      labs(x = "Land use", y = "Individual ecosystem services") +
+      theme_bw() + 
+      theme(axis.text.x = element_text(angle = 90)) + 
+      labs(title = "(b)")
+  ), ncol = 2),  
+  ggplot(inddata_summary[[2]], aes(x = land_cover, y = mean)) + 
+    geom_bar(stat = "identity") + 
+    geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0.3) + 
+    geom_text(aes(x = land_cover, y = Inf, label = label), 
+              vjust = 0.9, size = 3) + 
+    scale_y_continuous(expand = expansion(mult = c(0, 0.3))) + 
+    facet_wrap(~ ES, scales = "free_y", ncol = 1, strip.position = "left", 
+               labeller = labeller(ES = ind_labels)) + 
+    labs(x = "Onsite land cover", y = "Individual ecosystem services") +
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90)) + 
+    labs(title = "(c)") 
+), ncol = 2, common.legend = TRUE)
 
 # individual ES ~ land use * land cover
 # target land cover: wide-spread over land use types and with trees >= 3
