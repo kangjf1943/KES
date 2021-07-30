@@ -228,7 +228,7 @@ inddata <- sqlQuery(my_channel, "select * from [Trees]") %>%
          o3_removal = "O3 Removal (g)", 
          pm25_removal = "PM25 Removal (g)", 
          so2_removal = "SO2 Removal (g)", 
-         tree_value = "TREE VALUE ($)",          
+         compensatory_value = "TREE VALUE ($)",          
          no2_value = "NO2 Value ($)", 
          o3_value = "O3 Value ($)", 
          pm25_value = "PM25 Value ($)",          
@@ -260,7 +260,7 @@ inddata <- sqlQuery(my_channel, "select * from [Trees]") %>%
          carbon_storage, carbon_seq, 
          no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
          avo_runoff, 
-         tree_value, 
+         compensatory_value, 
          carbon_storage_value, carbon_seq_value, 
          no2_value, o3_value, pm25_value, so2_value,  
          avo_runoff_value, 
@@ -281,7 +281,7 @@ quadata <- inddata %>%
          carbon_storage, carbon_seq, 
          no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
          avo_runoff, 
-         tree_value, 
+         compensatory_value, 
          carbon_storage_value, carbon_seq_value, 
          no2_value, o3_value, pm25_value, so2_value, 
          avo_runoff_value, 
@@ -306,7 +306,7 @@ ggplot(inddata) +
   labs(x = "Land use class", y = "Proportion", fill = "DBH class") + 
   theme_bw()
 
-## ESs value ~ land use ----
+## Qua avg ESs value ~ land use ----
 quavalue_summary <- quadata %>% 
   select(land_use, carbon_seq_value, 
          no2_value, o3_value, pm25_value, so2_value, 
@@ -316,10 +316,24 @@ quavalue_summary <- quadata %>%
                         avo_runoff_value), 
                names_to = "es", values_to = "es_value") %>%
   group_by(land_use, es) %>% 
-  summarise(es_value = sum(es_value)) %>% 
-  ungroup()
+  summarise(es_value = mean(es_value)) %>% 
+  ungroup() %>%
+  mutate(es = factor(
+    es, levels = c("carbon_seq_value", 
+                   "no2_value", "o3_value", "pm25_value", "so2_value", 
+                   "avo_runoff_value")))
 ggplot(quavalue_summary, aes(land_use, es_value)) + 
-  geom_bar(aes(fill = es), stat = "identity", position = "stack")
+  geom_bar(aes(fill = es), stat = "identity", position = "stack") + 
+  scale_fill_discrete(
+    limits = c("carbon_seq_value", "no2_value", 
+               "o3_value", "pm25_value", 
+               "so2_value", "avo_runoff_value"), 
+    labels = c("Carbon sequestration", "NO2 removal", 
+               "O3 removal", "PM2.5 removal", 
+               "SO2 removal", "Avoided runoff")) + 
+  labs(x = "Land use", y = "Quadrat ecosystem service values (dollars / year)", 
+       fill = "Ecosystem service") + 
+  theme_bw()
 ggplot(quavalue_summary, aes(land_use, es_value)) + 
   geom_bar(aes(fill = es), stat = "identity", position = "fill")
 
