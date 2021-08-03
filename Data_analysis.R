@@ -261,11 +261,11 @@ itree_input <- read.csv("In_TreesWithID.csv") %>%
 
 # individual ES data from Access database
 my_channel <- odbcDriverConnect("Driver={Microsoft Access Driver (*.mdb, *.accdb)};
-        DBQ=C:/Users/kangj/Documents/R/KES/ODS/i_Tree_results/IndividualTree.mdb")
+        DBQ=C:/Users/kangj/Documents/R/KES/ODS/i_Tree_result/IndividualTree.mdb")
 inddata <- sqlQuery(my_channel, "select * from [Trees]") %>% 
   select(TreeID, `DBH (CM)`, `LEAF AREA INDEX`, 
          `CARBON STORAGE (KG)`, `GROSS CARBON SEQ (KG/YR)`, `BIOMASS ADJUSTMENT`, 
-         grep("\\(g\\)", colnames(.)), grep("\\$", colnames(.)), 
+         grep("\\(g\\)", colnames(.)), `TREE VALUE (Yen)`, grep("\\$", colnames(.)), 
          `Avoided Runoff (m3)`) %>%
   rename(res_tree_id = "TreeID", 
          dbh = `DBH (CM)`, 
@@ -278,7 +278,7 @@ inddata <- sqlQuery(my_channel, "select * from [Trees]") %>%
          o3_removal = "O3 Removal (g)", 
          pm25_removal = "PM25 Removal (g)", 
          so2_removal = "SO2 Removal (g)", 
-         compensatory_value = "TREE VALUE ($)",          
+         compensatory_value = "TREE VALUE (Yen)",          
          no2_value = "NO2 Value ($)", 
          o3_value = "O3 Value ($)", 
          pm25_value = "PM25 Value ($)",          
