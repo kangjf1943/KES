@@ -297,12 +297,8 @@ inddata <- sqlQuery(my_channel, "select * from [Trees]") %>%
   ungroup() %>% 
   mutate(
     dbh_class = case_when(
-      dbh <= 5 ~ "(00,05]", 
-      dbh <= 10 ~ "(05,10]", 
-      dbh <= 15 ~ "(10,15]", 
-      dbh <= 20 ~ "(15,20]", 
-      dbh <= 25 ~ "(20,25]", 
-      dbh <= 30 ~ "(25,30]", 
+      dbh <= 15 ~ "(00,15]", 
+      dbh <= 30 ~ "(15,30]", 
       dbh > 30 ~ "(30,  )"
     )
   ) %>% 
