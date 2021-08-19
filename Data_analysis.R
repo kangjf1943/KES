@@ -209,7 +209,7 @@ info_plot <- read.csv("In_land_use.csv") %>%
   mutate(
     land_use = case_when(
       land_use == "Com" ~ "Com", 
-      land_use == "Com-neigh" ~ "ComNeigh", 
+      land_use == "Com-neigh" ~ "ComNbr", 
       land_use == "Ind" ~ "Ind", 
       land_use == "R-high" ~ "ResHigh", 
       land_use == "R-low" ~ "ResLow", 
@@ -217,7 +217,7 @@ info_plot <- read.csv("In_land_use.csv") %>%
     ), 
     land_use = factor(
       land_use, 
-      levels = c("Com", "ComNeigh", "Ind", "ResOther", "ResHigh", "ResLow")))
+      levels = c("Com", "ComNbr", "Ind", "ResOther", "ResHigh", "ResLow")))
 
 # tree cover of each quadrat: source from KUP GIS data
 info_treecover <- read.xlsx(xlsxFile = "In_GIS_Kyoto_Biodiversity_Tree_buff.xlsx")
@@ -295,7 +295,7 @@ inddata <- sqlQuery(my_channel, "select * from [Trees]") %>%
          avo_runoff_value = 2.36*avo_runoff, 
          land_use = factor(
            land_use, 
-           levels = c("Com", "ComNeigh", "Ind", "ResOther", "ResHigh", "ResLow")), 
+           levels = c("Com", "ComNbr", "Ind", "ResOther", "ResHigh", "ResLow")), 
          land_cover = factor(
            land_cover, 
            levels = c("ComInd", "ComNeiBld", "Trans", "Insti", 
