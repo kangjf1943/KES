@@ -311,13 +311,19 @@ inddata <- sqlQuery(my_channel, "select * from [Trees]") %>%
       dbh <= 15 ~ "(00,15]", 
       dbh <= 30 ~ "(15,30]", 
       dbh > 30 ~ "(30,  )"
+    ), 
+    lai_class = case_when(
+      lai <= 3 ~ "(0, 3]", 
+      lai <= 6 ~ "(3, 6]", 
+      lai <= 9 ~ "(6, 9]", 
+      lai > 9 ~ "(9, )" 
     )
   ) %>% 
   select(res_tree_id, qua_id, in_tree_id, species_code, species, common_name, 
          spo_pla, dbh, dbh_class, height, crown_width_ew, crown_width_ns,
          per_crow_mis, light_expo, per_shrub_below, per_impervious_below, 
+         lai, lai_class, biomass, 
          land_use, land_cover, 
-         lai, biomass, 
          carbon_storage, carbon_seq, 
          no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
          avo_runoff, 
@@ -366,6 +372,14 @@ ggplot(inddata) +
   geom_bar(aes(land_use, fill = dbh_class), color = "grey", position = "fill") + 
   labs(x = "Land use class", y = "Proportion", fill = "DBH class") + 
   theme_bw()
+
+## LAI structure ----
+# structure across land use types: calculatd based on land use scale
+ggplot(inddata) + 
+  geom_bar(aes(land_use, fill = lai_class), color = "grey", position = "fill") + 
+  labs(x = "Land use class", y = "Proportion", fill = "LAI class") + 
+  theme_bw()
+
 
 ## Qua avg ESs value ~ land use ----
 quavalue_summary <- quadata %>% 
