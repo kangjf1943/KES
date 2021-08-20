@@ -32,7 +32,7 @@ exfunc_label <- function(mydata, name_es, name_group){
 }
 
 # function for data summary
-func_datasummary <- function(oridata, land_class, name_land_class) {
+func_essummary <- function(oridata, land_class, name_land_class) {
   # mean of individual tree ES
   inddata_mean <- oridata %>% 
     select({{land_class}}, carbon_storage, carbon_seq, 
@@ -337,7 +337,7 @@ rm(my_channel)
 
 # Data summary ----
 ## Individual data summary ----
-inddata_summary <- func_datasummary(inddata, land_use, "land_use")
+indes_summary <- func_essummary(inddata, land_use, "land_use")
 
 ## Quadrat data ----
 quadata <- inddata %>% 
@@ -359,7 +359,7 @@ quadata <- inddata %>%
   left_join(info_treecover, by = "qua_id")
 
 ## Quadrat data summary ----
-quadata_summary <- func_datasummary(quadata, land_use, "land_use")
+quaes_summary <- func_essummary(quadata, land_use, "land_use")
 
 
 # Analysis ----
