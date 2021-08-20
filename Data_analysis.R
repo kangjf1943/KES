@@ -97,14 +97,14 @@ func_es_para <- function(var_es, name_depend_var, name_independ_var) {
       print(subset(as.data.frame(var_loop_tukey[[1]]), `p adj` < 0.05))
       cat("\n")
       plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
-                ylab = var_loop_colname, 
-                main = var_species_name, 
-                xlab = paste0("anova p-value = ", round(var_loop_aov_pvalue,2)))
+                ylab = var_loop_colname, xlab = "", las = 2, 
+                main = paste0(var_species_name, "\n", 
+                             "anova p-value = ", round(var_loop_aov_pvalue,2)))
     } else {
       plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
-                ylab = var_loop_colname, 
-                main = var_species_name, 
-                xlab = paste0("anova p-value = ", round(var_loop_aov_pvalue,2)),
+                ylab = var_loop_colname, xlab = "", las = 2, 
+                main = paste0(var_species_name, "\n", 
+                              "anova p-value = ", round(var_loop_aov_pvalue,2)),
                 col = "grey")
     }
   }
