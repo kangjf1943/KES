@@ -436,6 +436,22 @@ func_es_para(inddata, es_annual, "land_use")
 func_es_nonpara(inddata, es_annual, "land_use")
 
 # Species-specific anlysis ----
+# function to select target species and land use 
+func_var_sub <- function(var_es, name_gp, name_subgp, num_sample, num_subgp) {
+  var_es <- as.data.frame(var_es)
+  # each pair with sample size larger than or equal to 2
+  var_gp_subgp_ct <- table(var_es[,name_gp], var_es[,name_subgp]) %>% 
+    as.data.frame() %>% 
+    subset(Freq >= num_sample)
+  # each group with larger than or equal to 3 subgroups
+  var_gp_ct <- var_gp_subgp_ct %>% group_by(Var1) %>% summarise(n = n()) %>% 
+    subset(n >= num_subgp)
+  # knock out pairs of group-subgroup with not enough sample size  
+  var_gp_subgp_tar <- subset(var_gp_subgp_ct, Var1 %in% var_gp_ct$Var1)
+  # get required subset from original var_es data frame
+  subset(var_es, paste0(var_es[, name_gp], var_es[, name_subgp]) %in% 
+           paste0(var_gp_subgp_tar$Var1, var_gp_subgp_tar$Var2))
+}
 # individual ES ~ land use 
 func_var_sub(inddata, "species", "land_use", 3, 4) %>% 
   split(.$species) %>% 
