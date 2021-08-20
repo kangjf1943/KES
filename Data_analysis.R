@@ -337,10 +337,7 @@ rm(my_channel)
 
 # Data summary ----
 ## Individual data summary ----
-inddata_summary <- vector("list", 2)
-names(inddata_summary) <- c("by_land_use", "by_land_cover")
-inddata_summary[[1]] <- func_datasummary(inddata, land_use, "land_use")
-inddata_summary[[2]] <- func_datasummary(inddata, land_cover, "land_cover")
+inddata_summary <- func_datasummary(inddata, land_use, "land_use")
 
 ## Quadrat data ----
 quadata <- inddata %>% 
@@ -438,83 +435,6 @@ func_es_nonpara(quadata, es_annual, "land_use")
 func_es_para(inddata, es_annual, "land_use")
 func_es_nonpara(inddata, es_annual, "land_use")
 
-# individual ES ~ onsite land cover
-tar_land_cover_sgl <- table(inddata$land_cover) %>% 
-  as.data.frame() %>% 
-  group_by(Var1) %>% 
-  summarise(num = sum(Freq > 3)) %>% 
-  ungroup() %>% 
-  subset(num == 1) %>% 
-  .$Var1 %>% 
-  as.character()
-func_es_para(subset(inddata, land_cover %in% tar_land_cover_sgl), 
-             es_annual, "land_cover")
-func_es_nonpara(subset(inddata, land_cover %in% tar_land_cover_sgl), 
-                es_annual, "land_cover")
-
-# conclusion graph
-ggarrange(plotlist = list(
-  ggarrange(plotlist = list(
-    ggplot(quadata_summary, aes(x = land_use, y = mean)) + 
-      geom_bar(stat = "identity") + 
-      geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0.3) + 
-      geom_text(aes(x = land_use, y = Inf, label = label), 
-                vjust = 0.9, size = 3) + 
-      scale_y_continuous(expand = expansion(mult = c(0, 0.3))) + 
-      facet_wrap(~ ES, scales = "free_y", nco = 1, strip.position = "left", 
-                 labeller = labeller(ES = qua_lables)) + 
-      labs(x = "Land use", y = "Quadrat ecosystem services") + 
-      theme_bw() +
-      theme(axis.text.x = element_text(angle = 90)) + 
-      labs(title = "(a)"), 
-    ggplot(inddata_summary[[1]], aes(x = land_use, y = mean)) + 
-      geom_bar(stat = "identity") + 
-      geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0.3) + 
-      geom_text(aes(x = land_use, y = Inf, label = label), 
-                vjust = 0.9, size = 3) + 
-      scale_y_continuous(expand = expansion(mult = c(0, 0.3))) + 
-      facet_wrap(~ ES, scales = "free_y", ncol = 1, strip.position = "left", 
-                 labeller = labeller(ES = ind_labels)) + 
-      labs(x = "Land use", y = "Individual ecosystem services") +
-      theme_bw() + 
-      theme(axis.text.x = element_text(angle = 90)) + 
-      labs(title = "(b)")
-  ), ncol = 2),  
-  ggplot(inddata_summary[[2]], aes(x = land_cover, y = mean)) + 
-    geom_bar(stat = "identity") + 
-    geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0.3) + 
-    geom_text(aes(x = land_cover, y = Inf, label = label), 
-              vjust = 0.9, size = 3) + 
-    scale_y_continuous(expand = expansion(mult = c(0, 0.3))) + 
-    facet_wrap(~ ES, scales = "free_y", ncol = 1, strip.position = "left", 
-               labeller = labeller(ES = ind_labels)) + 
-    labs(x = "Onsite land cover", y = "Individual ecosystem services") +
-    theme_bw() +
-    theme(axis.text.x = element_text(angle = 90)) + 
-    labs(title = "(c)") 
-), ncol = 2, common.legend = TRUE)
-
-# individual ES ~ land use * land cover
-# target land cover: wide-spread over land use types and with trees >= 3
-func_var_sub <- function(var_es, name_gp, name_subgp, num_sample, num_subgp) {
-  var_es <- as.data.frame(var_es)
-  # each pair with sample size larger than or equal to 2
-  var_gp_subgp_ct <- table(var_es[,name_gp], var_es[,name_subgp]) %>% 
-    as.data.frame() %>% 
-    subset(Freq >= num_sample)
-  # each group with larger than or equal to 3 subgroups
-  var_gp_ct <- var_gp_subgp_ct %>% group_by(Var1) %>% summarise(n = n()) %>% 
-    subset(n >= num_subgp)
-  # knock out pairs of group-subgroup with not enough sample size  
-  var_gp_subgp_tar <- subset(var_gp_subgp_ct, Var1 %in% var_gp_ct$Var1)
-  # get required subset from original var_es data frame
-  subset(var_es, paste0(var_es[, name_gp], var_es[, name_subgp]) %in% 
-           paste0(var_gp_subgp_tar$Var1, var_gp_subgp_tar$Var2))
-}
-
-func_var_sub(inddata, "land_cover", "land_use", 3, 3) %>% 
-  func_es_inter(es_annual, "land_use", "land_cover")
-
 # Species-specific anlysis ----
 # individual ES ~ land use 
 func_var_sub(inddata, "species", "land_use", 3, 4) %>% 
@@ -523,12 +443,4 @@ func_var_sub(inddata, "species", "land_use", 3, 4) %>%
 func_var_sub(inddata, "species", "land_use", 3, 4) %>% 
   split(.$species) %>% 
   lapply(func_es_nonpara, es_annual, "land_use")
-
-# individual ES ~ land cover 
-func_var_sub(inddata, "species", "land_cover", 3, 4) %>% 
-  split(.$species) %>% 
-  lapply(func_es_para, es_annual, "land_cover")
-func_var_sub(inddata, "species", "land_cover", 3, 4) %>% 
-  split(.$species) %>% 
-  lapply(func_es_nonpara, es_annual, "land_cover")
 
