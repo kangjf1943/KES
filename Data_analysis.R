@@ -341,7 +341,7 @@ indes_summary <- func_essummary(inddata, land_use, "land_use")
 
 ## Quadrat data ----
 quadata <- inddata %>% 
-  select(qua_id, lai, biomass, 
+  select(qua_id, dbh, lai, biomass, 
          carbon_storage, carbon_seq, 
          no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
          avo_runoff, 
@@ -426,6 +426,22 @@ apply(as.data.frame(quadata[es_annual]), 2,
       function(x) {shapiro.test(x)$p.value > 0.05})
 apply(as.data.frame(inddata[es_annual]), 2, 
       function(x) {shapiro.test(x)$p.value > 0.05})
+
+# quadrat structure indexes ~ land use
+TukeyHSD(aov(quadata$dbh ~ quadata$land_use)) %>% 
+  .$`quadata$land_use` %>% 
+  as.data.frame() %>% 
+  .[which(.$`p adj` < 0.05), ]
+
+TukeyHSD(aov(quadata$lai ~ quadata$land_use)) %>% 
+  .$`quadata$land_use` %>% 
+  as.data.frame() %>% 
+  .[which(.$`p adj` < 0.05), ]
+
+TukeyHSD(aov(quadata$treenum ~ quadata$land_use)) %>% 
+  .$`quadata$land_use` %>% 
+  as.data.frame() %>% 
+  .[which(.$`p adj` < 0.05), ]
 
 # quadrat ES ~ land use
 func_es_para(quadata, es_annual, "land_use")
