@@ -34,7 +34,7 @@ exfunc_label <- function(mydata, name_es, name_group){
 # function for data summary
 func_essummary <- function(oridata, land_class, name_land_class) {
   # mean of individual tree ES
-  inddata_mean <- oridata %>% 
+  data_mean <- oridata %>% 
     select({{land_class}}, carbon_storage, carbon_seq, 
            no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
            avo_runoff) %>% 
@@ -42,7 +42,7 @@ func_essummary <- function(oridata, land_class, name_land_class) {
     summarise(across(all_of(es_annual), mean)) %>% 
     pivot_longer(cols = all_of(es_annual), names_to = "ES", values_to = "mean")
   # se of individual ES
-  inddata_se <- oridata %>% 
+  data_se <- oridata %>% 
     select({{land_class}}, carbon_storage, carbon_seq, 
            no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
            avo_runoff) %>% 
@@ -58,8 +58,7 @@ func_essummary <- function(oridata, land_class, name_land_class) {
            avo_runoff = avo_runoff_1) %>% 
     pivot_longer(cols = all_of(es_annual), names_to = "ES", values_to = "se")
   # join the data
-  data_summary <- inddata_mean %>%
-    left_join(inddata_se)
+  data_summary <- left_join(data_mean, data_se)
   data_summary$ES <- factor(data_summary$ES, levels = es_annual)
   
   # add TukeyHSD group labels
@@ -71,7 +70,6 @@ func_essummary <- function(oridata, land_class, name_land_class) {
                 exfunc_label(oridata, "pm25_removal", name_land_class), 
                 exfunc_label(oridata, "so2_removal", name_land_class), 
                 exfunc_label(oridata, "avo_runoff", name_land_class)))
-  
   data_summary
 }
 
