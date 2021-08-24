@@ -31,45 +31,6 @@ exfunc_label <- function(mydata, name_es, name_group){
   return(plot.levels)
 }
 
-# function for data summary
-func_essummary <- function(oridata) {
-  # mean of individual tree ES
-  data_mean <- oridata %>% 
-    select(land_use, carbon_storage, all_of(es_annual)) %>% 
-    pivot_longer(cols = c(carbon_storage, all_of(es_annual)), 
-                 names_to = "ES", values_to = "value") %>% 
-    group_by(land_use, ES) %>% 
-    summarise(mean = mean(value), .groups = "keep") %>% 
-    ungroup()
-  
-  # se of individual ES
-  data_se <- oridata %>% 
-    select(land_use, carbon_storage, all_of(es_annual)) %>% 
-    pivot_longer(cols = all_of(c("carbon_storage", es_annual)), 
-                 names_to = "ES", values_to = "value") %>% 
-    group_by(land_use, ES) %>% 
-    summarise(n = n(), se = sd(value)/sqrt(n), .groups = "keep") %>% 
-    ungroup() %>% 
-    mutate(n = NULL)
-  
-  # join the data
-  data_summary <- left_join(data_mean, data_se)
-  data_summary$ES <- factor(data_summary$ES, 
-                            levels = c("carbon_storage", es_annual))
-  
-  # add TukeyHSD group labels
-  data_summary <- 
-    merge(data_summary, 
-          rbind(exfunc_label(oridata, "carbon_storage", "land_use"),
-                exfunc_label(oridata, "carbon_seq", "land_use"), 
-                exfunc_label(oridata, "no2_removal", "land_use"), 
-                exfunc_label(oridata, "o3_removal", "land_use"), 
-                exfunc_label(oridata, "pm25_removal", "land_use"), 
-                exfunc_label(oridata, "so2_removal", "land_use"), 
-                exfunc_label(oridata, "avo_runoff", "land_use")))
-  data_summary
-}
-
 # parameter method ANOVA
 func_es_para <- function(var_es, name_depend_var, name_independ_var) {
   var_es <- as.data.frame(var_es)
@@ -331,9 +292,6 @@ close(my_channel)
 rm(my_channel)
 
 # Data summary ----
-## Individual data summary ----
-indes_summary <- func_essummary(inddata)
-
 ## Quadrat data ----
 quadata <- inddata %>% 
   select(qua_id, dbh, lai, biomass, 
@@ -352,9 +310,6 @@ quadata <- inddata %>%
   mutate(qua_id = as.numeric(qua_id)) %>% 
   left_join(info_plot, by = "qua_id") %>% 
   left_join(info_treecover, by = "qua_id")
-
-## Quadrat data summary ----
-quaes_summary <- func_essummary(quadata)
 
 
 # Analysis ----
@@ -461,6 +416,49 @@ TukeyHSD(aov(inddata$biomass ~ inddata$land_use)) %>%
 # individual ES ~ land use
 func_es_para(inddata, es_annual, "land_use")
 func_es_nonpara(inddata, es_annual, "land_use")
+
+# function for data summary
+func_essummary <- function(oridata) {
+  # mean of individual tree ES
+  data_mean <- oridata %>% 
+    select(land_use, carbon_storage, all_of(es_annual)) %>% 
+    pivot_longer(cols = c(carbon_storage, all_of(es_annual)), 
+                 names_to = "ES", values_to = "value") %>% 
+    group_by(land_use, ES) %>% 
+    summarise(mean = mean(value), .groups = "keep") %>% 
+    ungroup()
+  
+  # se of individual ES
+  data_se <- oridata %>% 
+    select(land_use, carbon_storage, all_of(es_annual)) %>% 
+    pivot_longer(cols = all_of(c("carbon_storage", es_annual)), 
+                 names_to = "ES", values_to = "value") %>% 
+    group_by(land_use, ES) %>% 
+    summarise(n = n(), se = sd(value)/sqrt(n), .groups = "keep") %>% 
+    ungroup() %>% 
+    mutate(n = NULL)
+  
+  # join the data
+  data_summary <- left_join(data_mean, data_se)
+  data_summary$ES <- factor(data_summary$ES, 
+                            levels = c("carbon_storage", es_annual))
+  
+  # add TukeyHSD group labels
+  data_summary <- 
+    merge(data_summary, 
+          rbind(exfunc_label(oridata, "carbon_storage", "land_use"),
+                exfunc_label(oridata, "carbon_seq", "land_use"), 
+                exfunc_label(oridata, "no2_removal", "land_use"), 
+                exfunc_label(oridata, "o3_removal", "land_use"), 
+                exfunc_label(oridata, "pm25_removal", "land_use"), 
+                exfunc_label(oridata, "so2_removal", "land_use"), 
+                exfunc_label(oridata, "avo_runoff", "land_use")))
+  data_summary
+}
+
+indes_summary <- func_essummary(inddata)
+quaes_summary <- func_essummary(quadata)
+
 
 # Species-specific anlysis ----
 # function to select target species and land use 
