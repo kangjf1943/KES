@@ -447,6 +447,22 @@ TukeyHSD(aov(quadata$treenum ~ quadata$land_use)) %>%
 func_es_para(quadata, es_annual, "land_use")
 func_es_nonpara(quadata, es_annual, "land_use")
 
+# individual structure indexes ~ land use
+TukeyHSD(aov(inddata$dbh ~ inddata$land_use)) %>% 
+  .$`inddata$land_use` %>% 
+  as.data.frame() %>% 
+  .[which(.$`p adj` < 0.05), ]
+
+TukeyHSD(aov(inddata$lai ~ inddata$land_use)) %>% 
+  .$`inddata$land_use` %>% 
+  as.data.frame() %>% 
+  .[which(.$`p adj` < 0.05), ]
+
+TukeyHSD(aov(inddata$biomass ~ inddata$land_use)) %>% 
+  .$`inddata$land_use` %>% 
+  as.data.frame() %>% 
+  .[which(.$`p adj` < 0.05), ]
+
 # individual ES ~ land use
 func_es_para(inddata, es_annual, "land_use")
 func_es_nonpara(inddata, es_annual, "land_use")
