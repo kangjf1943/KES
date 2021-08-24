@@ -32,44 +32,41 @@ exfunc_label <- function(mydata, name_es, name_group){
 }
 
 # function for data summary
-func_essummary <- function(oridata, land_class, name_land_class) {
+func_essummary <- function(oridata) {
   # mean of individual tree ES
   data_mean <- oridata %>% 
-    select({{land_class}}, carbon_storage, carbon_seq, 
-           no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
-           avo_runoff) %>% 
-    group_by({{land_class}}) %>% 
-    summarise(across(all_of(es_annual), mean)) %>% 
-    pivot_longer(cols = all_of(es_annual), names_to = "ES", values_to = "mean")
+    select(land_use, carbon_storage, all_of(es_annual)) %>% 
+    pivot_longer(cols = c(carbon_storage, all_of(es_annual)), 
+                 names_to = "ES", values_to = "value") %>% 
+    group_by(land_use, ES) %>% 
+    summarise(mean = mean(value), .groups = "keep") %>% 
+    ungroup()
+  
   # se of individual ES
   data_se <- oridata %>% 
-    select({{land_class}}, carbon_storage, carbon_seq, 
-           no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
-           avo_runoff) %>% 
-    group_by({{land_class}}) %>% 
-    summarise(n = n(), across(all_of(es_annual), 
-                              list(function(x) {sd(x)/sqrt(n)}))) %>% 
-    mutate(n = NULL) %>% 
-    rename(carbon_seq = carbon_seq_1, 
-           no2_removal = no2_removal_1, 
-           o3_removal = o3_removal_1, 
-           pm25_removal = pm25_removal_1, 
-           so2_removal = so2_removal_1, 
-           avo_runoff = avo_runoff_1) %>% 
-    pivot_longer(cols = all_of(es_annual), names_to = "ES", values_to = "se")
+    select(land_use, carbon_storage, all_of(es_annual)) %>% 
+    pivot_longer(cols = all_of(c("carbon_storage", es_annual)), 
+                 names_to = "ES", values_to = "value") %>% 
+    group_by(land_use, ES) %>% 
+    summarise(n = n(), se = sd(value)/sqrt(n), .groups = "keep") %>% 
+    ungroup() %>% 
+    mutate(n = NULL)
+  
   # join the data
   data_summary <- left_join(data_mean, data_se)
-  data_summary$ES <- factor(data_summary$ES, levels = es_annual)
+  data_summary$ES <- factor(data_summary$ES, 
+                            levels = c("carbon_storage", es_annual))
   
   # add TukeyHSD group labels
   data_summary <- 
     merge(data_summary, 
-          rbind(exfunc_label(oridata, "carbon_seq", name_land_class), 
-                exfunc_label(oridata, "no2_removal", name_land_class), 
-                exfunc_label(oridata, "o3_removal", name_land_class), 
-                exfunc_label(oridata, "pm25_removal", name_land_class), 
-                exfunc_label(oridata, "so2_removal", name_land_class), 
-                exfunc_label(oridata, "avo_runoff", name_land_class)))
+          rbind(exfunc_label(oridata, "carbon_storage", "land_use"),
+                exfunc_label(oridata, "carbon_seq", "land_use"), 
+                exfunc_label(oridata, "no2_removal", "land_use"), 
+                exfunc_label(oridata, "o3_removal", "land_use"), 
+                exfunc_label(oridata, "pm25_removal", "land_use"), 
+                exfunc_label(oridata, "so2_removal", "land_use"), 
+                exfunc_label(oridata, "avo_runoff", "land_use")))
   data_summary
 }
 
@@ -335,7 +332,7 @@ rm(my_channel)
 
 # Data summary ----
 ## Individual data summary ----
-indes_summary <- func_essummary(inddata, land_use, "land_use")
+indes_summary <- func_essummary(inddata)
 
 ## Quadrat data ----
 quadata <- inddata %>% 
@@ -357,7 +354,7 @@ quadata <- inddata %>%
   left_join(info_treecover, by = "qua_id")
 
 ## Quadrat data summary ----
-quaes_summary <- func_essummary(quadata, land_use, "land_use")
+quaes_summary <- func_essummary(quadata)
 
 
 # Analysis ----
