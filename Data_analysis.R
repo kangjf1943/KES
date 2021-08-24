@@ -417,6 +417,7 @@ TukeyHSD(aov(inddata$biomass ~ inddata$land_use)) %>%
 func_es_para(inddata, es_annual, "land_use")
 func_es_nonpara(inddata, es_annual, "land_use")
 
+# Visualization
 # function for data summary
 func_essummary <- function(oridata) {
   # mean of individual tree ES
@@ -459,6 +460,33 @@ func_essummary <- function(oridata) {
 indes_summary <- func_essummary(inddata)
 quaes_summary <- func_essummary(quadata)
 
+chart_lables <- c(
+  carbon_storage = "Carbon \n storage \n (kg)",
+  carbon_seq = "Carbon \n sequestration \n (kg)",
+  no2_removal = "NO2 \n removal \n (g)",
+  o3_removal = "O3 \n removal \n (g)", 
+  pm25_removal = "PM2.5 \n removal \n (g)", 
+  so2_removal = "SO2 \n removal \n (g)", 
+  avo_runoff = "Runoff \n reduction \n (m3)"
+)
+func_temp <- function(x) {
+  ggplot(x, aes(x = land_use, y = mean)) + 
+    geom_bar(stat = "identity") + 
+    geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0.3) + 
+    geom_text(aes(x = land_use, y = Inf, label = label), 
+              vjust = 1.1, size = 3) + 
+    scale_y_continuous(expand = expansion(mult = c(0, 0.4))) + 
+    facet_wrap(~ ES, scales = "free_y", ncol = 1, strip.position = "left", 
+               labeller = labeller(ES = chart_lables)) + 
+    theme_bw() +
+    theme(axis.text.x = element_text(angle = 90))
+}
+ggarrange(plotlist = list(
+  func_temp(quaes_summary) + 
+    labs(x = "Land use", y = "Quadrat ecosystem services", title = "(a)"), 
+  func_temp(indes_summary) + 
+    labs(x = "Land use", y = "Single-tree ecosystem services", title = "(b)")
+), ncol = 2)
 
 # Species-specific anlysis ----
 # function to select target species and land use 
