@@ -1,0 +1,16 @@
+﻿Code,Description,Category
+A,Agriculture,Agri
+C,Commercial/Industrial,ComInd
+E,Cemetery,Cemetery
+G,Golf course,Golf
+I,Institutional,Insti
+M,Multi-family residential,MulFamiRes
+N,Commercial-neighbor,ComNeiBld
+O,Other,Other
+P,Park,Park
+R,Residential,LowResBld
+S,Temple/shrine,TemShr
+T,Transportation,Trans
+U,Utility,Utility
+V,Vacant,Vacant
+W,Water/wetland,Water

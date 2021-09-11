@@ -1,0 +1,357 @@
+Qua_id,KES_qua_id,Ward_JP,Ward_EN,Landuse,Landuse_subclass,Landuse_class,Lat,Long,日期,??情况,?注,?地性?,土地利用?情,Land_cover
+1,#N/A,京都市北区,Kita-ku,第二種低層住居専用地域,R low II,R-low,35.0353,135.7298,,,,, ,#N/A
+2,#N/A,京都市北区,Kita-ku,第二種低層住居専用地域,R low II,R-low,35.0311,135.7277,,,,二次采?,,#N/A
+3,#N/A,京都市北区,Kita-ku,第二種低層住居専用地域,R low II,R-low,35.0353,135.7295,,,,,,#N/A
+4,#N/A,京都市北区,Kita-ku,第二種低層住居専用地域,R low II,R-low,35.0353,135.7304,,,,,,#N/A
+5,#N/A,京都市北区,Kita-ku,第二種低層住居専用地域,R low II,R-low,35.0318,135.7288,,,,,,#N/A
+6,1,京都市西京区,Nishiky?-ku,第二種低層住居専用地域,R low II,R-low,34.9841,135.6612,703,F,桂附近的高?低?小区。,二次采?,低?私宅,urban and built-up
+7,2,京都市伏見区,Fushimi-ku,第二種低層住居専用地域,R low II,R-low,34.9466,135.7765,824,F,,二次采?,低?私宅,urban and built-up
+8,#N/A,京都市伏見区,Fushimi-ku,第二種低層住居専用地域,R low II,R-low,34.9466,135.7761,,,,,,#N/A
+9,#N/A,京都市伏見区,Fushimi-ku,第二種低層住居専用地域,R low II,R-low,34.9413,135.7859,,,,,,#N/A
+10,#N/A,京都市伏見区,Fushimi-ku,第二種低層住居専用地域,R low II,R-low,34.9424,135.7852,,,,,,#N/A
+11,#N/A,京都市北区,Kita-ku,第二種低層住居専用地域,R low II,R-low,35.0331,135.728,,,,,,#N/A
+12,#N/A,京都市山科区,Yamashina-ku,第二種中高層住居専用地域,R high II,R-high,34.9712,135.8149,712,0,,二次采?,,#N/A
+13,#N/A,京都市右京区,Uky?-ku,第二種中高層住居専用地域,R high II,R-high,35.0205,135.7239,,,,二次采?,,#N/A
+14,#N/A,京都市山科区,Yamashina-ku,第二種中高層住居専用地域,R high II,R-high,34.9619,135.8121,,,,,,#N/A
+15,3,京都市上京区,Kamigy?-ku,第二種中高層住居専用地域,R high II,R-high,35.0344,135.7611,526,F,,一次采?,寺?神社,urban and built-up
+16,4,京都市山科区,Yamashina-ku,第二種中高層住居専用地域,R high II,R-high,34.9682,135.8102,712,F,低?公寓停??+低?私宅,二次采?,低?公寓,urban and built-up
+17,5,京都市伏見区,Fushimi-ku,第二種中高層住居専用地域,R high II,R-high,34.9549,135.7729,709,F,,二次采?,高?公寓,urban and built-up
+18,6,京都市左京区,Saky?-ku,第二種中高層住居専用地域,R high II,R-high,35.0639,135.7912,623,F,公路?。,一次采?,道路,urban and built-up
+19,#N/A,京都市上京区,Kamigy?-ku,第二種中高層住居専用地域,R high II,R-high,35.0255,135.7685,625,0,寺?和墓地，无植物。,一次采?,,#N/A
+20,#N/A,京都市左京区,Saky?-ku,第二種中高層住居専用地域,R high II,R-high,35.05,135.7665,601,0,京都市音??屋?，无植物。,一次采?,,#N/A
+21,7,京都市山科区,Yamashina-ku,第二種中高層住居専用地域,R high II,R-high,34.9697,135.8048,712,F,?田+低?私宅,二次采?,低?私宅,urban and built-up
+22,8,京都市左京区,Saky?-ku,第二種中高層住居専用地域,R high II,R-high,35.0335,135.7817,523,F,,一次采?,低?私宅,urban and built-up
+23,#N/A,京都市左京区,Saky?-ku,第二種中高層住居専用地域,R high II,R-high,35.0656,135.7803,623,？,公寓内部，无法?入。,一次采?,,#N/A
+24,9,京都市伏見区,Fushimi-ku,第二種中高層住居専用地域,R high II,R-high,34.9571,135.818,715,F,低?私宅+小河+租?店,二次采?,低?私宅,urban and built-up
+25,10,京都市北区,Kita-ku,第二種中高層住居専用地域,R high II,R-high,35.0542,135.7661,601,F,,一次采?,低?公寓,urban and built-up
+26,#N/A,京都市山科区,Yamashina-ku,第二種中高層住居専用地域,R high II,R-high,34.9586,135.811,,,,二次采?,,#N/A
+27,#N/A,京都市左京区,Saky?-ku,第二種中高層住居専用地域,R high II,R-high,35.0504,135.7613,601,？,落在植物?内，再?。,一次采?,,#N/A
+28,#N/A,京都市右京区,Uky?-ku,第二種中高層住居専用地域,R high II,R-high,35.0154,135.6792,,,,,,#N/A
+29,#N/A,京都市山科区,Yamashina-ku,第二種中高層住居専用地域,R high II,R-high,34.965,135.8063,712,0,,二次采?,,#N/A
+30,#N/A,京都市中京区,Nakagy?-ku,第二種中高層住居専用地域,R high II,R-high,35.0196,135.7314,,,,,,#N/A
+31,#N/A,京都市上京区,Kamigy?-ku,第二種中高層住居専用地域,R high II,R-high,35.0304,135.7343,626,IN,森林内，?地?以?入。,一次采?,,#N/A
+32,#N/A,京都市山科区,Yamashina-ku,第二種中高層住居専用地域,R high II,R-high,34.9556,135.8105,,,,,,#N/A
+33,#N/A,京都市山科区,Yamashina-ku,第二種住居地域,R resi II,R-other,34.9765,135.8138,,,,,,#N/A
+34,#N/A,京都市南区,Minami-ku,第二種住居地域,R resi II,R-other,34.9752,135.7636,710,0,?谷川家住宅停??，无植物。,二次采?,,#N/A
+35,#N/A,京都市南区,Minami-ku,第二種住居地域,R resi II,R-other,34.9806,135.7549,710,0,学校操?，无植物。,二次采?,,#N/A
+36,11,京都市山科区,Yamashina-ku,第二種住居地域,R resi II,R-other,34.9894,135.8273,603,F,道路+公?,一次采?,公?,urban and built-up
+37,12,京都市南区,Minami-ku,第二種住居地域,R resi II,R-other,34.9483,135.7382,824,F,棒球?,二次采?,球?,bare land
+38,#N/A,京都市伏見区,Fushimi-ku,第二種住居地域,R resi II,R-other,34.9081,135.73,,,,二次采?,,#N/A
+39,#N/A,京都市右京区,Uky?-ku,第二種住居地域,R resi II,R-other,35.021,135.6946,,,,,,#N/A
+40,#N/A,京都市西京区,Nishiky?-ku,第二種住居地域,R resi II,R-other,34.9737,135.7141,,,,,,#N/A
+41,#N/A,京都市南区,Minami-ku,第二種住居地域,R resi II,R-other,34.9504,135.7413,,,,,,#N/A
+42,#N/A,京都市伏見区,Fushimi-ku,第二種住居地域,R resi II,R-other,34.9311,135.7418,,,,,,#N/A
+43,13,京都市南区,Minami-ku,第二種住居地域,R resi II,R-other,34.9503,135.7384,824,F,公路+墓地+?田,二次采?,道路,crops
+44,#N/A,京都市左京区,Saky?-ku,第二種住居地域,R resi II,R-other,35.0247,135.7737,522,0,京都精?学?操?,一次采?,,#N/A
+45,14,京都市南区,Minami-ku,第二種住居地域,R resi II,R-other,34.9772,135.7634,710,F,,二次采?,低?私宅,urban and built-up
+46,15,京都市東山区,Higashiyama-ku,第二種住居地域,R resi II,R-other,34.9919,135.7739,529,F,,一次采?,低?私宅,urban and built-up
+47,16,京都市上京区,Kamigy?-ku,第二種住居地域,R resi II,R-other,35.0271,135.7599,625,F,御苑内部。,一次采?,寺?神社,urban and built-up
+48,17,京都市左京区,Saky?-ku,第二種住居地域,R resi II,R-other,35.0098,135.7894,521,F,蹴上,一次采?,道路,rice paddy
+49,#N/A,京都市右京区,Uky?-ku,第二種住居地域,R resi II,R-other,35.021,135.6987,,,,,,#N/A
+50,18,京都市伏見区,Fushimi-ku,第二種住居地域,R resi II,R-other,34.9493,135.7478,824,F,低?私宅+停??,二次采?,低?私宅,urban and built-up
+51,#N/A,京都市右京区,Uky?-ku,第二種住居地域,R resi II,R-other,35.0162,135.7145,702,0,断?路，不好??。,二次采?,,#N/A
+52,19,京都市上京区,Kamigy?-ku,第二種住居地域,R resi II,R-other,35.0262,135.7659,625,F,御苑内部。,?用?地,寺?神社,evergreen broad-leaved forest
+53,20,京都市左京区,Saky?-ku,第二種住居地域,R resi II,R-other,35.0106,135.7885,521,F,??厂?迹？,一次采?,机?,urban and built-up
+54,21,京都市左京区,Saky?-ku,第二種住居地域,R resi II,R-other,35.0117,135.7793,522,F,低?私宅+道路+学校?口,一次采?,私宅,urban and built-up
+55,22,京都市上京区,Kamigy?-ku,第二種住居地域,R resi II,R-other,35.0245,135.7549,626,F,?人相?所附近。,一次采?,机?,urban and built-up
+56,#N/A,京都市伏見区,Fushimi-ku,第二種住居地域,R resi II,R-other,34.9617,135.7593,,,,,,#N/A
+57,23,京都市山科区,Yamashina-ku,第二種住居地域,R resi II,R-other,34.9671,135.8192,712,F,??,二次采?,工厂,urban and built-up
+58,24,京都市東山区,Higashiyama-ku,第二種住居地域,R resi II,R-other,34.9956,135.78,529,F,清水五条附近的低?私宅？,一次采?,低?私宅,urban and built-up
+59,#N/A,京都市伏見区,Fushimi-ku,第二種住居地域,R resi II,R-other,34.9378,135.7677,,,,,,#N/A
+60,25,京都市左京区,Saky?-ku,第二種住居地域,R resi II,R-other,35.0102,135.7863,521,F,,一次采?,低?私宅,urban and built-up
+61,#N/A,京都市北区,Kita-ku,第一種低層住居専用地域,R low I,R-low,35.0615,135.7436,717,0,,二次采?,,#N/A
+62,#N/A,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0334,135.7951,622,？,弘和公司私有地，无法?入。,一次采?,,#N/A
+63,26,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0702,135.7895,623,F,小公?和居民区。,一次采?,低?私宅,urban and built-up
+64,#N/A,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.035,135.7725,524,？,和#66均落在下?神社附近，?不??,一次采?,,#N/A
+65,27,京都市山科区,Yamashina-ku,第一種低層住居専用地域,R low I,R-low,34.9679,135.7986,712,F,低?私宅+?田,二次采?,低?私宅,urban and built-up
+66,28,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0363,135.7725,524,F,下?神社。,一次采?,寺?神社,deciduous needle-leaved forest
+67,29,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0716,135.7792,623,F,??附近居民区，?木很少。,一次采?,道路,rice paddy
+68,30,京都市北区,Kita-ku,第一種低層住居専用地域,R low I,R-low,35.0574,135.7613,601,F,,一次采?,低?私宅,urban and built-up
+69,#N/A,京都市北区,Kita-ku,第一種低層住居専用地域,R low I,R-low,35.0398,135.7269,,,,二次采?,,#N/A
+70,#N/A,京都市右京区,Uky?-ku,第一種低層住居専用地域,R low I,R-low,35.0271,135.7161,,,,二次采?,,#N/A
+71,31,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0505,135.77,601,F,,一次采?,低?私宅,urban and built-up
+72,#N/A,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0689,135.7726,,,,二次采?,,#N/A
+73,32,京都市右京区,Uky?-ku,第一種低層住居専用地域,R low I,R-low,35.0215,135.6996,705,F,,二次采?,低?私宅,urban and built-up
+74,33,京都市山科区,Yamashina-ku,第一種低層住居専用地域,R low I,R-low,34.9613,135.8172,714,F,,二次采?,低?私宅,urban and built-up
+75,34,京都市伏見区,Fushimi-ku,第一種低層住居専用地域,R low I,R-low,34.9424,135.7804,824,F,,二次采?,低?私宅,urban and built-up
+76,35,京都市西京区,Nishiky?-ku,第一種低層住居専用地域,R low I,R-low,34.9969,135.6867,705,F,河流+低?私宅,二次采?,河流,urban and built-up
+77,#N/A,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0879,135.7838,,,,二次采?,,#N/A
+78,36,京都市北区,Kita-ku,第一種低層住居専用地域,R low I,R-low,35.0721,135.7441,717,F,低?私宅+?田,二次采?,低?私宅,urban and built-up
+79,#N/A,京都市右京区,Uky?-ku,第一種低層住居専用地域,R low I,R-low,35.0322,135.7043,,,,二次采?,,#N/A
+80,#N/A,京都市伏見区,Fushimi-ku,第一種低層住居専用地域,R low I,R-low,34.9576,135.7808,709,0,?田和水泥小路，无植物。,二次采?,,#N/A
+81,37,京都市右京区,Uky?-ku,第一種低層住居専用地域,R low I,R-low,35.0174,135.6709,705,F,?山附近小庭院,二次采?,其他,evergreen needle-leaved forest
+82,#N/A,京都市山科区,Yamashina-ku,第一種低層住居専用地域,R low I,R-low,34.9938,135.8164,603,？,宅院，无法?入,一次采?,,#N/A
+83,38,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0594,135.7988,623,F,低?私宅,一次采?,低?私宅,urban and built-up
+84,39,京都市西京区,Nishiky?-ku,第一種低層住居専用地域,R low I,R-low,34.9627,135.6842,707,F,低?私宅,二次采?,低?私宅,urban and built-up
+85,#N/A,京都市北区,Kita-ku,第一種低層住居専用地域,R low I,R-low,35.058,135.7541,601,？,无法?入，考?南??地。,一次采?,,#N/A
+86,40,京都市右京区,Uky?-ku,第一種低層住居専用地域,R low I,R-low,35.0264,135.6733,705,F,低?公寓+低?私宅,二次采?,低?私宅,rice paddy
+87,#N/A,京都市西京区,Nishiky?-ku,第一種低層住居専用地域,R low I,R-low,34.9787,135.6637,703,0,?田，无木本植物。,二次采?,,#N/A
+88,#N/A,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0825,135.792,,,,二次采?,,#N/A
+89,41,京都市伏見区,Fushimi-ku,第一種低層住居専用地域,R low I,R-low,34.9607,135.8209,714,F,,二次采?,低?私宅,urban and built-up
+90,#N/A,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0514,135.7782,601,？,有植物，无法?入，考?南?或??的?地,一次采?,,#N/A
+91,#N/A,京都市西京区,Nishiky?-ku,第一種低層住居専用地域,R low I,R-low,34.9835,135.6986,706,？,大部分植物位于民居内部，无法?入。,二次采?,,#N/A
+92,42,京都市北区,Kita-ku,第一種低層住居専用地域,R low I,R-low,35.0621,135.7399,717,F,,二次采?,低?私宅,urban and built-up
+93,43,京都市伏見区,Fushimi-ku,第一種低層住居専用地域,R low I,R-low,34.932,135.7781,824,F,,二次采?,学校,deciduous broad-leaved forest
+94,44,京都市北区,Kita-ku,第一種低層住居専用地域,R low I,R-low,35.0522,135.7659,601,F,,一次采?,低?私宅,urban and built-up
+95,#N/A,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0883,135.7899,,,,二次采?,,#N/A
+96,45,京都市伏見区,Fushimi-ku,第一種低層住居専用地域,R low I,R-low,34.9414,135.7712,824,F,,二次采?,低?私宅,urban and built-up
+97,46,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.04,135.7728,523,F,,一次采?,低?私宅,urban and built-up
+98,47,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0712,135.7757,623,F,公寓附近。,一次采?,低?公寓,urban and built-up
+99,#N/A,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0178,135.7881,522,？,佛教大学周?居民区，?以?入，植物?乱,一次采?,,#N/A
+100,48,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0365,135.7848,523,F,公?,一次采?,公?,urban and built-up
+101,#N/A,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0538,135.7707,601,？,??遮???，考?南?的?地。,一次采?,,#N/A
+102,49,京都市伏見区,Fushimi-ku,第一種低層住居専用地域,R low I,R-low,34.9358,135.7727,824,F,,二次采?,低?私宅,urban and built-up
+103,50,京都市西京区,Nishiky?-ku,第一種低層住居専用地域,R low I,R-low,34.9821,135.6581,703,F,,二次采?,低?私宅,urban and built-up
+104,#N/A,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0738,135.7915,,,,二次采?,,#N/A
+105,51,京都市北区,Kita-ku,第一種低層住居専用地域,R low I,R-low,35.0703,135.7432,717,F,?田+低?私宅,二次采?,低?私宅,rice paddy
+106,#N/A,京都市北区,Kita-ku,第一種低層住居専用地域,R low I,R-low,35.0527,135.7619,601,？,?以?入，考???或南??地。,一次采?,,#N/A
+107,#N/A,京都市北区,Kita-ku,第一種低層住居専用地域,R low I,R-low,35.0473,135.7338,717,？,一?神奇的???内，无法?入。,二次采?,,#N/A
+108,#N/A,京都市北区,Kita-ku,第一種低層住居専用地域,R low I,R-low,35.0376,135.7318,,,,二次采?,,#N/A
+109,52,京都市伏見区,Fushimi-ku,第一種低層住居専用地域,R low I,R-low,34.9604,135.818,715,F,,二次采?,低?私宅,urban and built-up
+110,53,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0606,135.7964,623,F,?田和居民区；田里几乎都是草本植物。,一次采?,低?私宅,urban and built-up
+111,54,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0412,135.7877,523,F,,一次采?,低?私宅,urban and built-up
+112,55,京都市北区,Kita-ku,第一種低層住居専用地域,R low I,R-low,35.0578,135.7637,717,F,,二次采?,低?私宅,urban and built-up
+113,#N/A,京都市右京区,Uky?-ku,第一種低層住居専用地域,R low I,R-low,35.0223,135.7204,,,,二次采?,,#N/A
+114,#N/A,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0891,135.764,,,,二次采?,,#N/A
+115,56,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0462,135.7755,524,F,,一次采?,低?私宅,urban and built-up
+116,#N/A,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0693,135.7913,623,？,??附近，无法?入。,一次采?,,#N/A
+117,#N/A,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0666,135.7704,,,,二次采?,,#N/A
+118,57,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0677,135.7912,623,F,居民区，旁?有个?旧的住宿公寓。,一次采?,低?私宅,urban and built-up
+119,58,京都市右京区,Uky?-ku,第一種低層住居専用地域,R low I,R-low,35.0223,135.6906,705,F,,二次采?,低?私宅,urban and built-up
+120,#N/A,京都市右京区,Uky?-ku,第一種低層住居専用地域,R low I,R-low,35.0271,135.7128,,,,二次采?,,#N/A
+121,59,京都市北区,Kita-ku,第一種低層住居専用地域,R low I,R-low,35.0578,135.758,601,F,,一次采?,低?私宅,urban and built-up
+122,60,京都市伏見区,Fushimi-ku,第一種低層住居専用地域,R low I,R-low,34.9488,135.8206,715,F,低?私宅+苗圃,二次采?,低?私宅,deciduous broad-leaved forest
+123,#N/A,京都市伏見区,Fushimi-ku,第一種低層住居専用地域,R low I,R-low,34.9502,135.779,,,,二次采?,,#N/A
+124,#N/A,京都市左京区,Saky?-ku,第一種低層住居専用地域,R low I,R-low,35.0473,135.7729,524,？,土地利用?化，原????住友林?之家，无法?入。,一次采?,,#N/A
+125,61,京都市右京区,Uky?-ku,第一種低層住居専用地域,R low I,R-low,35.0277,135.6738,705,F,?田+低?私宅,二次采?,低?私宅,rice paddy
+126,#N/A,京都市北区,Kita-ku,第一種低層住居専用地域,R low I,R-low,35.0385,135.7324,,,,二次采?,,#N/A
+127,62,京都市山科区,Yamashina-ku,第一種中高層住居専用地域,R high I,R-high,34.9793,135.8224,712,F,低?公寓+低?私宅,二次采?,低?私宅,urban and built-up
+128,63,京都市山科区,Yamashina-ku,第一種中高層住居専用地域,R high I,R-high,34.9837,135.8113,712,F,球?+公?,二次采?,公?,urban and built-up
+129,64,京都市西京区,Nishiky?-ku,第一種中高層住居専用地域,R high I,R-high,34.9591,135.6728,707,F,大蛇ヶ池公園附近住宅区。,二次采?,政府?地,urban and built-up
+130,65,京都市山科区,Yamashina-ku,第一種中高層住居専用地域,R high I,R-high,34.9703,135.8188,712,F,,二次采?,低?私宅,urban and built-up
+131,66,京都市北区,Kita-ku,第一種中高層住居専用地域,R high I,R-high,35.0536,135.7448,717,F,,二次采?,高?公寓,urban and built-up
+132,#N/A,京都市山科区,Yamashina-ku,第一種中高層住居専用地域,R high I,R-high,34.9879,135.8067,,,,,,#N/A
+133,67,京都市北区,Kita-ku,第一種中高層住居専用地域,R high I,R-high,35.0597,135.7477,717,F,,二次采?,公?,urban and built-up
+134,#N/A,京都市右京区,Uky?-ku,第一種中高層住居専用地域,R high I,R-high,35.0192,135.7011,,,,,,#N/A
+135,68,京都市右京区,Uky?-ku,第一種中高層住居専用地域,R high I,R-high,35.0094,135.7059,706,F,,二次采?,低?私宅,urban and built-up
+136,69,京都市西京区,Nishiky?-ku,第一種中高層住居専用地域,R high I,R-high,34.9802,135.6795,703,F,桂校区内，?2??。,二次采?,学校,urban and built-up
+137,70,京都市右京区,Uky?-ku,第一種中高層住居専用地域,R high I,R-high,35.0076,135.7017,706,F,低?私宅+?田,二次采?,?田,urban and built-up
+138,71,京都市山科区,Yamashina-ku,第一種中高層住居専用地域,R high I,R-high,34.9833,135.838,603,F,,一次采?,低?私宅,urban and built-up
+139,72,京都市伏見区,Fushimi-ku,第一種中高層住居専用地域,R high I,R-high,34.9519,135.814,715,F,,二次采?,道路,urban and built-up
+140,#N/A,京都市西京区,Nishiky?-ku,第一種中高層住居専用地域,R high I,R-high,34.9665,135.6748,703,？,与#164距?略近，性?相近，?不??。,二次采?,,#N/A
+141,73,京都市西京区,Nishiky?-ku,第一種中高層住居専用地域,R high I,R-high,34.9785,135.7137,704,F,,二次采?,低?私宅,urban and built-up
+142,74,京都市伏見区,Fushimi-ku,第一種中高層住居専用地域,R high I,R-high,34.9435,135.8104,715,F,,二次采?,低?私宅,urban and built-up
+143,75,京都市西京区,Nishiky?-ku,第一種中高層住居専用地域,R high I,R-high,34.9727,135.6736,703,F,,二次采?,低?私宅,urban and built-up
+144,76,京都市西京区,Nishiky?-ku,第一種中高層住居専用地域,R high I,R-high,34.9562,135.678,707,F,居住?地附近。,二次采?,高?公寓,urban and built-up
+145,#N/A,京都市伏見区,Fushimi-ku,第一種中高層住居専用地域,R high I,R-high,34.9264,135.7835,,,,,,#N/A
+146,77,京都市右京区,Uky?-ku,第一種中高層住居専用地域,R high I,R-high,35.0129,135.6901,705,F,,二次采?,球?,urban and built-up
+147,78,京都市左京区,Saky?-ku,第一種中高層住居専用地域,R high I,R-high,35.0258,135.793,622,F,居民区,一次采?,低?私宅,urban and built-up
+148,#N/A,京都市左京区,Saky?-ku,第一種中高層住居専用地域,R high I,R-high,35.0463,135.7796,,？,?水厂无法?入，可取附近居民区?方替代。,一次采?,,#N/A
+149,79,京都市山科区,Yamashina-ku,第一種中高層住居専用地域,R high I,R-high,34.9789,135.8228,712,F,,二次采?,低?私宅,urban and built-up
+150,80,京都市伏見区,Fushimi-ku,第一種中高層住居専用地域,R high I,R-high,34.9341,135.7286,707,F,低?私宅+道路+公?,二次采?,道路,urban and built-up
+151,#N/A,京都市山科区,Yamashina-ku,第一種中高層住居専用地域,R high I,R-high,34.9753,135.8256,712,0,,二次采?,,#N/A
+152,81,京都市右京区,Uky?-ku,第一種中高層住居専用地域,R high I,R-high,35.0162,135.6871,705,F,,二次采?,低?私宅,urban and built-up
+153,82,京都市西京区,Nishiky?-ku,第一種中高層住居専用地域,R high I,R-high,34.9681,135.6775,707,F,无法?入，大体估?。,二次采?,低?私宅,urban and built-up
+154,#N/A,京都市伏見区,Fushimi-ku,第一種中高層住居専用地域,R high I,R-high,34.93,135.7269,,,,,,#N/A
+155,83,京都市北区,Kita-ku,第一種中高層住居専用地域,R high I,R-high,35.0537,135.7464,717,F,,二次采?,低?私宅,urban and built-up
+156,84,京都市西京区,Nishiky?-ku,第一種中高層住居専用地域,R high I,R-high,34.9743,135.6729,703,F,低?私宅+停??+?皮房；老??告?我北山杉的地方,二次采?,低?私宅,crops
+157,85,京都市伏見区,Fushimi-ku,第一種中高層住居専用地域,R high I,R-high,34.9539,135.8147,715,F,,二次采?,高?公寓,urban and built-up
+158,86,京都市西京区,Nishiky?-ku,第一種中高層住居専用地域,R high I,R-high,34.9787,135.6837,703,F,桂校区内，?山公路旁。,二次采?,道路,urban and built-up
+159,87,京都市右京区,Uky?-ku,第一種中高層住居専用地域,R high I,R-high,35.0171,135.6956,705,F,,二次采?,低?私宅,urban and built-up
+160,#N/A,京都市右京区,Uky?-ku,第一種中高層住居専用地域,R high I,R-high,35.0186,135.7105,,,,二次采?,,#N/A
+161,88,京都市山科区,Yamashina-ku,第一種中高層住居専用地域,R high I,R-high,34.988,135.8207,712,F,,二次采?,低?私宅,urban and built-up
+162,#N/A,京都市右京区,Uky?-ku,第一種中高層住居専用地域,R high I,R-high,35.0167,135.7,,,,二次采?,,#N/A
+163,89,京都市左京区,Saky?-ku,第一種中高層住居専用地域,R high I,R-high,35.0497,135.7838,622,F,京都工???大学内。,一次采?,学校,urban and built-up
+164,90,京都市西京区,Nishiky?-ku,第一種中高層住居専用地域,R high I,R-high,34.969,135.6735,703,F,河岸?色?道。,二次采?,河流,deciduous broad-leaved forest
+165,91,京都市西京区,Nishiky?-ku,第一種中高層住居専用地域,R high I,R-high,34.9892,135.7072,706,F,,二次采?,低?私宅,urban and built-up
+166,#N/A,京都市北区,Kita-ku,第一種中高層住居専用地域,R high I,R-high,35.0503,135.742,,,,,,#N/A
+167,92,京都市西京区,Nishiky?-ku,第一種中高層住居専用地域,R high I,R-high,34.9681,135.6755,707,F,公?棒球?附近。,二次采?,公?,urban and built-up
+168,#N/A,京都市西京区,Nishiky?-ku,第一種中高層住居専用地域,R high I,R-high,34.9878,135.6667,703,0,国?日本文化研究中心，落在建筑物中，无植物。,二次采?,,#N/A
+169,#N/A,京都市右京区,Uky?-ku,第一種中高層住居専用地域,R high I,R-high,35.0198,135.6875,,,,,,#N/A
+170,#N/A,京都市右京区,Uky?-ku,第一種中高層住居専用地域,R high I,R-high,35.015,135.6846,705,?,5?公寓“ラウンドガーデン嵐山”附近，无法?入。,二次采?,,#N/A
+171,93,京都市右京区,Uky?-ku,第一種中高層住居専用地域,R high I,R-high,35.0167,135.6921,705,F,,二次采?,低?私宅,urban and built-up
+172,94,京都市左京区,Saky?-ku,第一種中高層住居専用地域,R high I,R-high,35.0297,135.7845,621,F,京大?学部北部食堂附近，附近有：?学??温室，停??，花?等。,一次采?,学校,crops
+173,#N/A,京都市左京区,Saky?-ku,第一種中高層住居専用地域,R high I,R-high,35.0489,135.7777,,？,左京区役所附近，无法?入，可??靠街一?（?地?截?）或役所大?前或停??（?地?截?）?行??。,一次采?,,#N/A
+174,#N/A,京都市山科区,Yamashina-ku,第一種中高層住居専用地域,R high I,R-high,34.9831,135.7953,,,,二次采?,,#N/A
+175,95,京都市右京区,Uky?-ku,第一種住居地域,R resi I,R-other,34.992,135.7241,706,F,汽?部件店+低?私宅,二次采?,低?商?,urban and built-up
+176,96,京都市伏見区,Fushimi-ku,第一種住居地域,R resi I,R-other,34.9552,135.7586,709,F,,二次采?,低?私宅,urban and built-up
+177,97,京都市左京区,Saky?-ku,第一種住居地域,R resi I,R-other,35.0261,135.7779,522,F,京大吉田??宿舍,一次采?,低?公寓,urban and built-up
+178,#N/A,京都市伏見区,Fushimi-ku,第一種住居地域,R resi I,R-other,34.9599,135.7622,709,0,アパート附近停??，无植物。,二次采?,,#N/A
+179,98,京都市南区,Minami-ku,第一種住居地域,R resi I,R-other,34.9618,135.7107,704,F,,二次采?,低?私宅,urban and built-up
+180,#N/A,京都市伏見区,Fushimi-ku,第一種住居地域,R resi I,R-other,34.9214,135.7666,,,,二次采?,,#N/A
+181,#N/A,京都市下京区,Shimogy?-ku,第一種住居地域,R resi I,R-other,34.9903,135.7458,629,0,无植物，无可?植地区。,一次采?,,#N/A
+182,#N/A,京都市南区,Minami-ku,第一種住居地域,R resi I,R-other,34.9568,135.7247,,,,,,#N/A
+183,99,京都市南区,Minami-ku,第一種住居地域,R resi I,R-other,34.9629,135.7287,704,F,,二次采?,低?私宅,urban and built-up
+184,#N/A,京都市左京区,Saky?-ku,第一種住居地域,R resi I,R-other,35.0418,135.7853,,？,无法?入，考?南??地,一次采?,,#N/A
+185,100,京都市伏見区,Fushimi-ku,第一種住居地域,R resi I,R-other,34.9541,135.7661,709,F,,二次采?,低?私宅,urban and built-up
+186,101,京都市南区,Minami-ku,第一種住居地域,R resi I,R-other,34.9637,135.7309,704,F,,二次采?,寺?神社,urban and built-up
+187,102,京都市下京区,Shimogy?-ku,第一種住居地域,R resi I,R-other,34.9953,135.7476,710,F,,二次采?,低?私宅,urban and built-up
+188,103,京都市右京区,Uky?-ku,第一種住居地域,R resi I,R-other,35.0135,135.7221,702,F,,二次采?,低?私宅,urban and built-up
+189,104,京都市上京区,Kamigy?-ku,第一種住居地域,R resi I,R-other,35.0248,135.7343,626,F,,一次采?,低?私宅,urban and built-up
+190,#N/A,京都市伏見区,Fushimi-ku,第一種住居地域,R resi I,R-other,34.9641,135.7681,,,,,,#N/A
+191,105,京都市左京区,Saky?-ku,第一種住居地域,R resi I,R-other,35.0315,135.7786,523,F,?店+豆腐店,一次采?,低?商?,urban and built-up
+192,#N/A,京都市右京区,Uky?-ku,第一種住居地域,R resi I,R-other,35.0012,135.7008,706,？,小学内部，无法?入。,二次采?,,#N/A
+193,106,京都市北区,Kita-ku,第一種住居地域,R resi I,R-other,35.0466,135.7373,717,F,,二次采?,低?私宅,urban and built-up
+194,#N/A,京都市左京区,Saky?-ku,第一種住居地域,R resi I,R-other,35.0274,135.774,522,0,居民区无植物,一次采?,,#N/A
+195,107,京都市山科区,Yamashina-ku,第一種住居地域,R resi I,R-other,34.9758,135.8274,712,F,,二次采?,低?私宅,urban and built-up
+196,108,京都市左京区,Saky?-ku,第一種住居地域,R resi I,R-other,35.0482,135.7891,622,F,停??，大型公寓，只有???。,一次采?,高?公寓,urban and built-up
+197,#N/A,京都市上京区,Kamigy?-ku,第一種住居地域,R resi I,R-other,35.0167,135.75,626,IN,幼儿?内部，无法?入。,一次采?,,#N/A
+198,109,京都市上京区,Kamigy?-ku,第一種住居地域,R resi I,R-other,35.0166,135.7469,626,F,取了原?地南?的?地。,一次采?,低?私宅,urban and built-up
+199,110,京都市伏見区,Fushimi-ku,第一種住居地域,R resi I,R-other,34.9436,135.7662,824,F,,二次采?,低?公寓,urban and built-up
+200,#N/A,京都市伏見区,Fushimi-ku,第一種住居地域,R resi I,R-other,34.9207,135.7642,,,,,,#N/A
+201,111,京都市伏見区,Fushimi-ku,第一種住居地域,R resi I,R-other,34.9692,135.7701,710,F,,二次采?,河流,urban and built-up
+202,112,京都市伏見区,Fushimi-ku,第一種住居地域,R resi I,R-other,34.9306,135.7389,825,F,,二次采?,低?私宅,urban and built-up
+203,113,京都市右京区,Uky?-ku,第一種住居地域,R resi I,R-other,34.9986,135.7137,706,F,,二次采?,公?,urban and built-up
+204,114,京都市南区,Minami-ku,第一種住居地域,R resi I,R-other,34.9621,135.7214,704,F,,二次采?,公?,urban and built-up
+205,#N/A,京都市北区,Kita-ku,第一種住居地域,R resi I,R-other,35.0762,135.7644,,,,二次采?,,#N/A
+206,115,京都市西京区,Nishiky?-ku,第一種住居地域,R resi I,R-other,34.9699,135.7134,704,F,,二次采?,低?私宅,urban and built-up
+207,#N/A,京都市山科区,Yamashina-ku,第一種住居地域,R resi I,R-other,34.9884,135.8365,603,？,高速公路及山地?的?地，排除在??范?之外,一次采?,,#N/A
+208,116,京都市上京区,Kamigy?-ku,第一種住居地域,R resi I,R-other,35.0371,135.7535,526,F,,一次采?,寺?神社,urban and built-up
+209,117,京都市西京区,Nishiky?-ku,第一種住居地域,R resi I,R-other,34.969,135.7125,704,F,?道附近住宅区。,二次采?,低?公寓,urban and built-up
+210,118,京都市右京区,Uky?-ku,第一種住居地域,R resi I,R-other,35.0131,135.7015,706,F,,二次采?,低?私宅,urban and built-up
+211,#N/A,京都市伏見区,Fushimi-ku,第一種住居地域,R resi I,R-other,34.9591,135.7628,,,,,,#N/A
+212,#N/A,京都市左京区,Saky?-ku,第一種住居地域,R resi I,R-other,35.0333,135.778,,？,无法?入，考?西??地。,一次采?,,#N/A
+213,119,京都市伏見区,Fushimi-ku,第一種住居地域,R resi I,R-other,34.9438,135.762,824,F,,二次采?,低?私宅,urban and built-up
+214,120,京都市山科区,Yamashina-ku,第一種住居地域,R resi I,R-other,34.9752,135.8118,712,F,修?厂？,二次采?,低?商?,urban and built-up
+215,#N/A,京都市伏見区,Fushimi-ku,工業地域,Ind,Ind,34.9173,135.7355,,,,,,#N/A
+216,#N/A,京都市南区,Minami-ku,工業地域,Ind,Ind,34.9816,135.7199,,,,,,#N/A
+217,121,京都市右京区,Uky?-ku,工業地域,Ind,Ind,35.0104,135.7219,702,F,,二次采?,低?私宅,urban and built-up
+218,122,京都市伏見区,Fushimi-ku,工業地域,Ind,Ind,34.9667,135.7557,710,F,,二次采?,工厂,urban and built-up
+219,123,京都市伏見区,Fushimi-ku,工業地域,Ind,Ind,34.9139,135.7326,825,F,森林公?？,二次采?,其他,deciduous broad-leaved forest
+220,#N/A,京都市右京区,Uky?-ku,工業地域,Ind,Ind,35.0134,135.714,,,,,,#N/A
+221,124,京都市南区,Minami-ku,工業地域,Ind,Ind,34.969,135.7504,710,F,5?写字楼,二次采?,高?商?,urban and built-up
+222,#N/A,京都市南区,Minami-ku,工業地域,Ind,Ind,34.9806,135.7264,704,0,?方落在厂区内，无植物。,二次采?,,#N/A
+223,#N/A,京都市伏見区,Fushimi-ku,工業地域,Ind,Ind,34.9212,135.7414,,,,二次采?,,#N/A
+224,#N/A,京都市伏見区,Fushimi-ku,工業地域,Ind,Ind,34.9169,135.7333,,,,二次采?,,#N/A
+225,125,京都市伏見区,Fushimi-ku,工業地域,Ind,Ind,34.9653,135.7563,710,F,和交通有?的政府部?？,二次采?,机?,urban and built-up
+226,#N/A,京都市伏見区,Fushimi-ku,工業地域,Ind,Ind,34.9196,135.7406,,,,二次采?,,#N/A
+227,#N/A,京都市南区,Minami-ku,工業地域,Ind,Ind,34.9671,135.7303,704,0,商??公路，无植物。,二次采?,,#N/A
+228,#N/A,京都市伏見区,Fushimi-ku,工業地域,Ind,Ind,34.9194,135.7346,,,,二次采?,,#N/A
+229,#N/A,京都市南区,Minami-ku,工業地域,Ind,Ind,34.9509,135.7178,704,0,日本サーモエナー工厂，无植物。,二次采?,,#N/A
+230,126,京都市右京区,Uky?-ku,工業地域,Ind,Ind,34.9886,135.7263,706,F,低?私宅+停??,二次采?,低?私宅,urban and built-up
+231,#N/A,京都市伏見区,Fushimi-ku,工業地域,Ind,Ind,34.9247,135.7397,,,,二次采?,,#N/A
+232,#N/A,京都市右京区,Uky?-ku,工業地域,Ind,Ind,35.0033,135.7152,706,0,政府部?（北部みどり管理事務所等）内部，无植物。,二次采?,,#N/A
+233,#N/A,京都市南区,Minami-ku,工業地域,Ind,Ind,34.95,135.7202,,,,,,#N/A
+234,127,京都市中京区,Nakagy?-ku,工業地域,Ind,Ind,35.0142,135.728,702,F,河流+道路+低?私宅,二次采?,低?私宅,urban and built-up
+235,#N/A,京都市南区,Minami-ku,工業地域,Ind,Ind,34.9707,135.7524,,,,,,#N/A
+236,#N/A,京都市南区,Minami-ku,工業地域,Ind,Ind,34.9567,135.7262,,,,,,#N/A
+237,128,京都市南区,Minami-ku,工業地域,Ind,Ind,34.9729,135.7305,704,F,低?私宅,二次采?,低?私宅,urban and built-up
+238,#N/A,京都市伏見区,Fushimi-ku,工業地域,Ind,Ind,34.9478,135.729,,,,,,#N/A
+239,129,京都市南区,Minami-ku,工業地域,Ind,Ind,34.9651,135.7265,704,F,道路+??店+停??,二次采?,道路,urban and built-up
+240,130,京都市南区,Minami-ku,工業地域,Ind,Ind,34.9547,135.7141,704,F,,二次采?,?田,urban and built-up
+241,#N/A,京都市伏見区,Fushimi-ku,工業地域,Ind,Ind,34.9106,135.733,,,,二次采?,,#N/A
+242,#N/A,京都市南区,Minami-ku,工業地域,Ind,Ind,34.9707,135.7548,710,0,工地，无植物。,二次采?,,#N/A
+243,#N/A,京都市南区,Minami-ku,工業地域,Ind,Ind,34.9751,135.7244,704,0,?方落在工房内，无植物。,二次采?,,#N/A
+244,131,京都市右京区,Uky?-ku,工業地域,Ind,Ind,35.011,135.7135,702,F,,二次采?,低?公寓,urban and built-up
+245,132,京都市伏見区,Fushimi-ku,工業地域,Ind,Ind,34.9248,135.7446,825,F,,二次采?,?田,urban and built-up
+246,#N/A,京都市右京区,Uky?-ku,工業地域,Ind,Ind,34.9934,135.7283,,,,,,#N/A
+247,#N/A,京都市伏見区,Fushimi-ku,工業専用地域,Ind exc,Ind,34.944,135.7261,,,,,,#N/A
+248,#N/A,京都市伏見区,Fushimi-ku,工業専用地域,Ind exc,Ind,34.9419,135.7232,,,,,,#N/A
+249,#N/A,京都市伏見区,Fushimi-ku,工業専用地域,Ind exc,Ind,34.9419,135.7239,,,,,,#N/A
+250,#N/A,京都市伏見区,Fushimi-ku,工業専用地域,Ind exc,Ind,34.9395,135.7245,,,,,,#N/A
+251,#N/A,京都市伏見区,Fushimi-ku,工業専用地域,Ind exc,Ind,34.9372,135.7241,,,,,,#N/A
+252,#N/A,京都市伏見区,Fushimi-ku,工業専用地域,Ind exc,Ind,34.9379,135.7204,707,0,工厂附近及河流，无植物。,二次采?,,#N/A
+253,#N/A,京都市伏見区,Fushimi-ku,工業専用地域,Ind exc,Ind,34.9412,135.7228,,,,,,#N/A
+254,#N/A,京都市伏見区,Fushimi-ku,工業専用地域,Ind exc,Ind,34.9282,135.7187,707,0,日本たばこ産業関西工場内，无植物。,二次采?,,#N/A
+255,133,京都市伏見区,Fushimi-ku,工業専用地域,Ind exc,Ind,34.9271,135.7179,707,F,,二次采?,工厂,urban and built-up
+256,#N/A,京都市伏見区,Fushimi-ku,工業専用地域,Ind exc,Ind,34.9385,135.7206,,,,,,#N/A
+257,#N/A,京都市伏見区,Fushimi-ku,工業専用地域,Ind exc,Ind,34.9264,135.7183,707,0,工厂附近?田及河流，无植物。,二次采?,,#N/A
+258,#N/A,京都市伏見区,Fushimi-ku,工業専用地域,Ind exc,Ind,34.9385,135.721,,,,,,#N/A
+259,134,京都市山科区,Yamashina-ku,近隣商業地域,Com neigh,Com-neigh,34.9951,135.8035,603,F,,一次采?,低?公寓,urban and built-up
+260,135,京都市北区,Kita-ku,近隣商業地域,Com neigh,Com-neigh,35.0273,135.7328,626,F,?和公路，?有一株?杏。,一次采?,道路,urban and built-up
+261,136,京都市下京区,Shimogy?-ku,近隣商業地域,Com neigh,Com-neigh,35.0005,135.75,628,F,植物?少。,一次采?,高?公寓,urban and built-up
+262,#N/A,京都市南区,Minami-ku,近隣商業地域,Com neigh,Com-neigh,34.9749,135.7533,,,,,,#N/A
+263,#N/A,京都市西京区,Nishiky?-ku,近隣商業地域,Com neigh,Com-neigh,34.9848,135.6932,,,,,,#N/A
+264,137,京都市下京区,Shimogy?-ku,近隣商業地域,Com neigh,Com-neigh,34.9931,135.7594,629,F,?本愿寺内,一次采?,寺?神社,urban and built-up
+265,#N/A,京都市伏見区,Fushimi-ku,近隣商業地域,Com neigh,Com-neigh,34.9473,135.8087,,,,,,#N/A
+266,#N/A,京都市中京区,Nakagy?-ku,近隣商業地域,Com neigh,Com-neigh,35.0013,135.7402,,,,,,#N/A
+267,#N/A,京都市中京区,Nakagy?-ku,近隣商業地域,Com neigh,Com-neigh,35.0138,135.753,626,IN,建筑物内，无法?入。,一次采?,,#N/A
+268,138,京都市山科区,Yamashina-ku,近隣商業地域,Com neigh,Com-neigh,34.9915,135.8083,603,F,道路+高?公寓,一次采?,道路,urban and built-up
+269,139,京都市左京区,Saky?-ku,近隣商業地域,Com neigh,Com-neigh,35.0196,135.7825,522,F,,一次采?,高?公寓,urban and built-up
+270,140,京都市下京区,Shimogy?-ku,近隣商業地域,Com neigh,Com-neigh,35.001,135.7505,628,F,,一次采?,低?私宅,urban and built-up
+271,#N/A,京都市山科区,Yamashina-ku,近隣商業地域,Com neigh,Com-neigh,34.9869,135.8161,,,,,,#N/A
+272,#N/A,京都市下京区,Shimogy?-ku,近隣商業地域,Com neigh,Com-neigh,34.9859,135.7519,,,,,,#N/A
+273,#N/A,京都市中京区,Nakagy?-ku,近隣商業地域,Com neigh,Com-neigh,35.0159,135.7625,？,F,,一次采?,待?定,urban and built-up
+274,141,京都市左京区,Saky?-ku,近隣商業地域,Com neigh,Com-neigh,35.0108,135.7758,522,F,,一次采?,低?私宅,urban and built-up
+275,#N/A,京都市下京区,Shimogy?-ku,近隣商業地域,Com neigh,Com-neigh,34.9952,135.7577,529,0,学校操?,一次采?,,#N/A
+276,142,京都市下京区,Shimogy?-ku,近隣商業地域,Com neigh,Com-neigh,34.9906,135.7561,629,F,,一次采?,低?私宅,urban and built-up
+277,#N/A,京都市東山区,Higashiyama-ku,近隣商業地域,Com neigh,Com-neigh,34.996,135.775,529,0,学校操?,一次采?,,#N/A
+278,#N/A,京都市下京区,Shimogy?-ku,近隣商業地域,Com neigh,Com-neigh,34.9931,135.7506,,,,,,#N/A
+279,143,京都市山科区,Yamashina-ku,近隣商業地域,Com neigh,Com-neigh,34.9903,135.819,603,F,,一次采?,低?商?,urban and built-up
+280,#N/A,京都市西京区,Nishiky?-ku,近隣商業地域,Com neigh,Com-neigh,34.9906,135.6947,,,,,,#N/A
+281,144,京都市東山区,Higashiyama-ku,商業地域,Com,Com,34.9995,135.7704,529,F,,一次采?,低?商?,urban and built-up
+282,#N/A,京都市南区,Minami-ku,商業地域,Com,Com,34.9799,135.761,,,,,,#N/A
+283,145,京都市下京区,Shimogy?-ku,商業地域,Com,Com,34.9894,135.7666,529,F,,一次采?,低?商?,urban and built-up
+284,146,京都市下京区,Shimogy?-ku,商業地域,Com,Com,34.9891,135.7651,529,F,采用了北?的?地。,一次采?,高?公寓,urban and built-up
+285,147,京都市下京区,Shimogy?-ku,商業地域,Com,Com,35.0006,135.7663,527,F,博物?+高?公寓+道路,一次采?,高?公寓,urban and built-up
+286,148,京都市下京区,Shimogy?-ku,商業地域,Com,Com,35.0039,135.7606,628,F,,一次采?,高?商?,urban and built-up
+287,#N/A,京都市下京区,Shimogy?-ku,商業地域,Com,Com,34.9864,135.7611,,,,,,#N/A
+288,#N/A,京都市下京区,Shimogy?-ku,商業地域,Com,Com,34.9894,135.7386,,,,,,#N/A
+289,#N/A,京都市伏見区,Fushimi-ku,商業地域,Com,Com,34.9451,135.7515,,,,,,#N/A
+290,#N/A,京都市下京区,Shimogy?-ku,商業地域,Com,Com,34.9965,135.7632,529,0,均?建筑，空中花?无法?入,一次采?,,#N/A
+291,#N/A,京都市下京区,Shimogy?-ku,商業地域,Com,Com,35.003,135.7602,628,？,被公司建筑物包?，无法?入。,一次采?,,#N/A
+292,#N/A,京都市南区,Minami-ku,商業地域,Com,Com,34.9785,135.7569,,,,,,#N/A
+293,149,京都市下京区,Shimogy?-ku,商業地域,Com,Com,34.9994,135.754,628,F,,一次采?,低?私宅,urban and built-up
+294,#N/A,京都市下京区,Shimogy?-ku,商業地域,Com,Com,34.9935,135.7417,,,,,,#N/A
+295,#N/A,京都市下京区,Shimogy?-ku,商業地域,Com,Com,35.0037,135.7604,628,0,四条?丸附近街道，无植物。与#286?地?隔太近，是否放弃？,一次采?,,#N/A
+296,#N/A,京都市東山区,Higashiyama-ku,商業地域,Com,Com,35.009,135.7747,,F,建筑工地，无植物，考?西??地。,一次采?,待?定,urban and built-up
+297,150,京都市中京区,Nakagy?-ku,商業地域,Com,Com,35.0157,135.7715,625,F,?点落在河里，替??西?的?地。,一次采?,低?商?,urban and built-up
+298,151,京都市下京区,Shimogy?-ku,商業地域,Com,Com,35.0035,135.7672,527,F,商?街附近的寺?。,一次采?,寺?神社,urban and built-up
+299,152,京都市中京区,Nakagy?-ku,商業地域,Com,Com,35.0125,135.769,522,F,,一次采?,道路,urban and built-up
+300,153,京都市下京区,Shimogy?-ku,商業地域,Com,Com,34.9986,135.7597,529,F,,一次采?,道路,urban and built-up
+301,154,京都市下京区,Shimogy?-ku,商業地域,Com,Com,34.9926,135.7465,629,F,,一次采?,低?私宅,urban and built-up
+302,#N/A,京都市伏見区,Fushimi-ku,商業地域,Com,Com,34.9486,135.7522,,,,,,#N/A
+303,155,京都市上京区,Kamigy?-ku,商業地域,Com,Com,35.0223,135.7553,626,F,京都府???。,一次采?,机?,urban and built-up
+304,156,京都市東山区,Higashiyama-ku,商業地域,Com,Com,34.9991,135.7704,529,F,?有1?南天,一次采?,低?商?,urban and built-up
+305,157,京都市下京区,Shimogy?-ku,商業地域,Com,Com,34.9895,135.7493,629,F,,一次采?,道路,urban and built-up
+306,#N/A,京都市中京区,Nakagy?-ku,商業地域,Com,Com,35.0087,135.7694,,0,均?建筑，无植物，南?可能有替代?地。,一次采?,,#N/A
+307,158,京都市伏見区,Fushimi-ku,準工業地域,Ind quasi,Ind,34.9644,135.7583,710,F,医院,二次采?,机?,urban and built-up
+308,#N/A,京都市上京区,Kamigy?-ku,準工業地域,Ind quasi,Ind,35.0216,135.7487,626,IN,居民区内部，无法?入。,一次采?,,#N/A
+309,159,京都市北区,Kita-ku,準工業地域,Ind quasi,Ind,35.0357,135.742,526,F,,一次采?,低?私宅,urban and built-up
+310,#N/A,京都市南区,Minami-ku,準工業地域,Ind quasi,Ind,34.9683,135.7068,704,0,?方落在?上自???地附近的建筑物内，无植物。,二次采?,,#N/A
+311,160,京都市上京区,Kamigy?-ku,準工業地域,Ind quasi,Ind,35.0332,135.7431,526,F,寺?,一次采?,寺?神社,urban and built-up
+312,#N/A,京都市伏見区,Fushimi-ku,準工業地域,Ind quasi,Ind,34.9348,135.7521,,,,二次采?,,#N/A
+313,161,京都市伏見区,Fushimi-ku,準工業地域,Ind quasi,Ind,34.9316,135.7514,824,F,,二次采?,低?商?,urban and built-up
+314,#N/A,京都市右京区,Uky?-ku,準工業地域,Ind quasi,Ind,35.0019,135.7251,706,0,足球?内，无植物。,二次采?,,#N/A
+315,#N/A,京都市右京区,Uky?-ku,準工業地域,Ind quasi,Ind,35.0113,135.6953,705,0,停??内，无植物。,二次采?,,#N/A
+316,#N/A,京都市下京区,Shimogy?-ku,準工業地域,Ind quasi,Ind,34.9914,135.7373,701,0,学校操?，无植物。,一次采?,,#N/A
+317,162,京都市上京区,Kamigy?-ku,準工業地域,Ind quasi,Ind,35.0327,135.7409,526,F,,一次采?,低?私宅,urban and built-up
+318,163,京都市南区,Minami-ku,準工業地域,Ind quasi,Ind,34.9576,135.7162,704,F,,二次采?,低?私宅,urban and built-up
+319,#N/A,京都市伏見区,Fushimi-ku,準工業地域,Ind quasi,Ind,34.9386,135.755,,,,,,#N/A
+320,#N/A,京都市中京区,Nakagy?-ku,準工業地域,Ind quasi,Ind,34.9994,135.7341,701,0,公寓附近，无植物。,一次采?,,#N/A
+321,164,京都市伏見区,Fushimi-ku,準工業地域,Ind quasi,Ind,34.9314,135.7216,707,F,学校附近。,二次采?,学校,urban and built-up
+322,#N/A,京都市右京区,Uky?-ku,準工業地域,Ind quasi,Ind,35.0047,135.7172,,,,,,#N/A
+323,#N/A,京都市北区,Kita-ku,準工業地域,Ind quasi,Ind,35.0458,135.7156,,,,二次采?,,#N/A
+324,#N/A,京都市伏見区,Fushimi-ku,準工業地域,Ind quasi,Ind,34.9372,135.7267,707,0,?田及民居，无植物。,二次采?,,#N/A
+325,#N/A,京都市下京区,Shimogy?-ku,準工業地域,Ind quasi,Ind,34.9868,135.7423,710,？,?道博物?内，无法?入。,二次采?,,#N/A
+326,165,京都市左京区,Saky?-ku,準工業地域,Ind quasi,Ind,35.0355,135.7791,523,F,高?公寓+工厂?迹？,一次采?,高?公寓,urban and built-up
+327,166,京都市上京区,Kamigy?-ku,準工業地域,Ind quasi,Ind,35.022,135.7489,626,F,,一次采?,低?私宅,urban and built-up
+328,#N/A,京都市伏見区,Fushimi-ku,準工業地域,Ind quasi,Ind,34.9453,135.755,,,,二次采?,,#N/A
+329,167,京都市伏見区,Fushimi-ku,準工業地域,Ind quasi,Ind,34.9021,135.7122,825,F,道路+高?公寓,二次采?,道路,urban and built-up
+330,#N/A,京都市北区,Kita-ku,準工業地域,Ind quasi,Ind,35.0436,135.7169,,,,二次采?,,#N/A
+331,168,京都市南区,Minami-ku,準工業地域,Ind quasi,Ind,34.9564,135.7122,704,F,,二次采?,低?私宅,urban and built-up
+332,169,京都市上京区,Kamigy?-ku,準工業地域,Ind quasi,Ind,35.0325,135.7442,526,F,,一次采?,低?私宅,urban and built-up
+333,#N/A,京都市伏見区,Fushimi-ku,準工業地域,Ind quasi,Ind,34.9568,135.7565,709,0,竹田站地?站出口，无植物。,二次采?,,#N/A
+334,170,京都市右京区,Uky?-ku,準工業地域,Ind quasi,Ind,35.0021,135.7273,706,F,,二次采?,公?,urban and built-up
+335,#N/A,京都市山科区,Yamashina-ku,準工業地域,Ind quasi,Ind,34.9811,135.7959,,,,二次采?,,#N/A
+336,#N/A,京都市西京区,Nishiky?-ku,準工業地域,Ind quasi,Ind,34.9703,135.7064,,,,,,#N/A
+337,#N/A,京都市伏見区,Fushimi-ku,準工業地域,Ind quasi,Ind,34.9455,135.7542,,,,二次采?,,#N/A
+338,171,京都市伏見区,Fushimi-ku,準工業地域,Ind quasi,Ind,34.9411,135.7629,824,F,,二次采?,低?私宅,urban and built-up
+339,#N/A,京都市伏見区,Fushimi-ku,準工業地域,Ind quasi,Ind,34.9387,135.7491,,,,二次采?,,#N/A
+340,#N/A,京都市上京区,Kamigy?-ku,準工業地域,Ind quasi,Ind,35.0271,135.7446,626,IN,幼儿?内部，无法?入；考?北?寺?通路附近?地。,一次采?,,#N/A
+341,172,京都市北区,Kita-ku,準工業地域,Ind quasi,Ind,35.0357,135.7447,？,F,,一次采?,低?私宅,urban and built-up
+342,#N/A,京都市北区,Kita-ku,準工業地域,Ind quasi,Ind,35.047,135.718,,,,二次采?,,#N/A
+343,173,京都市中京区,Nakagy?-ku,準工業地域,Ind quasi,Ind,35.0073,135.7376,701,F,,一次采?,低?私宅,urban and built-up
+344,#N/A,京都市上京区,Kamigy?-ku,準工業地域,Ind quasi,Ind,35.0242,135.7376,626,IN,寺?内部，无法?入，可以考????街?地。,一次采?,,#N/A
+345,#N/A,京都市上京区,Kamigy?-ku,準工業地域,Ind quasi,Ind,35.0285,135.7404,626,IN,居民区内部，无法?入。,一次采?,,#N/A
+346,#N/A,京都市伏見区,Fushimi-ku,準住居地域,R quasi,R-other,34.952,135.7452,,,,,,#N/A
+347,#N/A,京都市伏見区,Fushimi-ku,準住居地域,R quasi,R-other,34.946,135.8093,,,,,,#N/A
+348,#N/A,京都市伏見区,Fushimi-ku,準住居地域,R quasi,R-other,34.9526,135.7455,,,,,,#N/A
+349,174,京都市伏見区,Fushimi-ku,準住居地域,R quasi,R-other,34.9437,135.8074,715,F,只有一条??。,二次采?,低?公寓,urban and built-up
+350,19,京都市伏見区,Fushimi-ku,準住居地域,R quasi,R-other,34.9234,135.7715,823,F,,二次采?,低?公寓,urban and built-up
+351,#N/A,京都市伏見区,Fushimi-ku,準住居地域,R quasi,R-other,34.9309,135.7271,,,,,,#N/A
+352,#N/A,京都市伏見区,Fushimi-ku,準住居地域,R quasi,R-other,34.9128,135.7245,,,,二次采?,,#N/A
+353,#N/A,京都市南区,Minami-ku,準住居地域,R quasi,R-other,34.9658,135.7421,,,,二次采?,,#N/A
+354,#N/A,京都市南区,Minami-ku,準住居地域,R quasi,R-other,34.9659,135.7432,,,,,,#N/A
+355,#N/A,京都市南区,Minami-ku,準住居地域,R quasi,R-other,34.9636,135.7151,,,,,,#N/A
+356,#N/A,京都市西京区,Nishiky?-ku,準住居地域,R quasi,R-other,34.975,135.667,,,,,,#N/A

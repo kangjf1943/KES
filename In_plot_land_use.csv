@@ -1,0 +1,19 @@
+Level,Landuse_JP,Description,Abbreviation,Landuse_class,Area_ha,Area_prop,Qua_tot,Qua_sele,Qua_tree,Qua_shrub,Qua_inv,Qua_inv_prop
+subclass,‘æˆêí’á‘wZ‹ê—p’nˆæ,Category ‡T exclusively low-rise residential zone,R low I,R low,3502.794439,24%,75390,49,34,35,36,21%
+subclass,‘æ“ñí’á‘wZ‹ê—p’nˆæ,Category ‡U Exclusively low-rise residential zone,R low II,R low,16.12194599,0%,222,1,1,2,2,1%
+subclass,‘æˆêí’†‚‘wZ‹ê—p’nˆæ,Category ‡T mid/high-rise oriented residential zone,R high I,R high,2294.430122,16%,50494,33,31,29,33,19%
+subclass,‘æ“ñí’†‚‘wZ‹ê—p’nˆæ,Category ‡U mid/high-rise oriented residential zone,R high II,R high,732.4003149,5%,14211,10,7,7,8,5%
+subclass,‘æˆêíZ‹’nˆæ,Category ‡T residential zone,R resi I,R other,1884.796486,13%,39714,26,22,22,26,15%
+subclass,‘æ“ñíZ‹’nˆæ,Category ‡U residential zone,R resi II,R other,1141.555442,7%,23053,15,12,13,14,8%
+subclass,€Z‹’nˆæ,Quasi-residential zone,R quasi,R other,86.66797211,0%,1282,1,0,2,2,1%
+subclass,‹ß—×¤‹Æ’nˆæ,Neighborhood commercial zone,Com neigh,Com neigh,864.1172458,5%,16153,11,9,8,10,6%
+subclass,¤‹Æ’nˆæ,Commercial zone,Com,Com,1009.131848,7%,20752,14,12,13,14,8%
+subclass,€H‹Æ’nˆæ,Quasi-industrial zone,Ind quasi,Ind,1844.379633,12%,38594,25,14,15,16,9%
+subclass,H‹Æ’nˆæ,Industorial zone,Ind,Ind,1301.575622,9%,28324,19,9,10,12,7%
+subclass,H‹Æê—p’nˆæ,Exclusively industrial zone,Ind exc,Ind,66.90953472,0%,1509,1,0,1,1,1%
+class,-,-,-,R low,3518.916385,24%,75612,50,35,37,38,22%
+class,-,-,-,R high,3026.830437,21%,64705,43,38,36,41,24%
+class,-,-,-,R other,3113.0199,21%,64049,42,34,37,42,24%
+class,-,-,-,Com neigh,864.1172458,5%,16153,11,9,8,10,6%
+class,-,-,-,Com,1009.131848,7%,20752,14,12,13,14,8%
+class,-,-,-,Ind,3212.86479,22%,68427,45,23,26,29,17%
