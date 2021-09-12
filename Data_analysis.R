@@ -219,31 +219,26 @@ itree_input <- read.csv("In_TreesWithID.csv") %>%
   left_join(info_abb_land_cover, by = "land_cover_abb") %>% 
   left_join(info_species_code, by = "species_code")
 
-# individual ES data from Access database
-my_channel <- odbcDriverConnect("Driver={Microsoft Access Driver (*.mdb, *.accdb)};
-        DBQ=C:/Users/kangj/Documents/R/KES/ODS/i_Tree_result/IndividualTree.mdb")
-inddata <- sqlQuery(my_channel, "select * from [Trees]") %>% 
-  select(TreeID, `DBH (CM)`, `LEAF AREA INDEX`, 
-         `CARBON STORAGE (KG)`, `GROSS CARBON SEQ (KG/YR)`, `BIOMASS ADJUSTMENT`, 
-         grep("\\(g\\)", colnames(.)), `TREE VALUE (Yen)`, grep("\\$", colnames(.)), 
-         `Avoided Runoff (m3)`) %>%
+# individual ES data from Excel file
+# The Excel file is from Access data
+inddata <- read.xlsx("Trees.xlsx", sheet = "Trees") %>% 
   rename(res_tree_id = "TreeID", 
-         dbh = `DBH (CM)`, 
-         lai = `LEAF AREA INDEX`, 
-         carbon_storage = `CARBON STORAGE (KG)`, 
-         carbon_seq = `GROSS CARBON SEQ (KG/YR)`, 
-         biomass = `BIOMASS ADJUSTMENT`,
-         co_removal = "CO Removal (g)",
-         no2_removal = "NO2 Removal (g)", 
-         o3_removal = "O3 Removal (g)", 
-         pm25_removal = "PM25 Removal (g)", 
-         so2_removal = "SO2 Removal (g)", 
-         compensatory_value = "TREE VALUE (Yen)",          
-         no2_value = "NO2 Value ($)", 
-         o3_value = "O3 Value ($)", 
-         pm25_value = "PM25 Value ($)",          
-         so2_value = "SO2 Value ($)", 
-         avo_runoff = "Avoided Runoff (m3)") %>% 
+         dbh = "DBH.(CM)", 
+         lai = "LEAF.AREA.INDEX", 
+         carbon_storage = "CARBON.STORAGE.(KG)", 
+         carbon_seq = `GROSS.CARBON.SEQ.(KG/YR)`, 
+         biomass = `BIOMASS.ADJUSTMENT`,
+         co_removal = "CO.Removal.(g)",
+         no2_removal = "NO2.Removal.(g)", 
+         o3_removal = "O3.Removal.(g)", 
+         pm25_removal = "PM25.Removal.(g)", 
+         so2_removal = "SO2.Removal.(g)", 
+         compensatory_value = "TREE.VALUE.(Yen)",          
+         no2_value = "NO2.Value.($)", 
+         o3_value = "O3.Value.($)", 
+         pm25_value = "PM25.Value.($)",          
+         so2_value = "SO2.Value.($)", 
+         avo_runoff = "Avoided.Runoff.(m3)") %>% 
   left_join(itree_input, by = "res_tree_id") %>% 
   mutate(compensatory_value = compensatory_value/100, 
          carbon_storage_value = 188/1000*carbon_storage, 
@@ -288,8 +283,6 @@ inddata <- sqlQuery(my_channel, "select * from [Trees]") %>%
          no2_value, o3_value, pm25_value, so2_value,  
          avo_runoff_value, 
          es_annual_value)
-close(my_channel)
-rm(my_channel)
 
 # Data summary ----
 ## Quadrat data ----
