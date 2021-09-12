@@ -259,9 +259,9 @@ inddata <- read.xlsx("Trees.xlsx", sheet = "Trees") %>%
   ungroup() %>% 
   mutate(
     dbh_class = case_when(
-      dbh <= 15 ~ "(00,15]", 
-      dbh <= 30 ~ "(15,30]", 
-      dbh > 30 ~ "(30,  )"
+      dbh <= 15 ~ "0 < DBH ≤ 15", 
+      dbh <= 30 ~ "15 < DBH ≤ 30", 
+      dbh > 30 ~ "DBH > 30"
     ), 
     lai_class = case_when(
       lai <= 3 ~ "(0, 3]", 
