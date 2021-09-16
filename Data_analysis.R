@@ -264,10 +264,10 @@ inddata <- read.xlsx("Trees.xlsx", sheet = "Trees") %>%
       dbh > 30 ~ "DBH > 30"
     ), 
     lai_class = case_when(
-      lai <= 3 ~ "(0, 3]", 
-      lai <= 6 ~ "(3, 6]", 
-      lai <= 9 ~ "(6, 9]", 
-      lai > 9 ~ "(9, )" 
+      lai <= 3 ~ "0 < LAI ≤ 3", 
+      lai <= 6 ~ "3 < LAI ≤ 6", 
+      lai <= 9 ~ "6 < LAI ≤ 9", 
+      lai > 9 ~ "LAI > 9" 
     )
   ) %>% 
   select(res_tree_id, qua_id, in_tree_id, species_code, species, common_name, 
