@@ -7,71 +7,10 @@ library(RODBC)
 library(tidyr)
 library(openxlsx)
 
-# Function ----
-# function to get group labels for individual ES ANOVA
-exfunc_label <- function(mydata, name_es, name_group){
-  # ANOVA
-  HSD <- 
-    TukeyHSD(aov(mydata[[name_es]] ~ mydata[[name_group]]), ordered = FALSE)
-  # extract labels and factor levels from Tukey post-hoc 
-  Tukey.levels <- HSD$`mydata[[name_group]]`[,4]
-  Tukey.labels <- multcompView::multcompLetters(Tukey.levels)['Letters']
-  plot.labels <- names(Tukey.labels[['Letters']])
-  
-  # data.frame out of the factor levels and Tukey's homogenous group letters
-  plot.levels <- data.frame(plot.labels, labels = Tukey.labels[['Letters']],
-                            stringsAsFactors = FALSE)
-  rownames(plot.levels) <- NULL
-  
-  # add ES item and rename the columns
-  names(plot.levels) <- c(name_group, "label")
-  plot.levels$ES <- name_es
-  
-  return(plot.levels)
-}
-
-# parameter method ANOVA
-func_es_para <- function(var_es, name_depend_var, name_independ_var) {
-  var_es <- as.data.frame(var_es)
-  if (length(unique(var_es$species)) == 1) {
-    var_species_name <- var_es$species[1]
-    print(var_species_name)
-  } else {
-    var_species_name <- ""}
-  par(mfrow = c(floor(sqrt(length(name_depend_var))),
-                ceiling(sqrt(length(name_depend_var)))))
-  for (var_loop_colname in name_depend_var) {
-    var_loop_fit <- aov(var_es[, var_loop_colname] ~ 
-                          var_es[, name_independ_var])
-    var_loop_aov_pvalue <- summary(var_loop_fit)[[1]]$`Pr(>F)`[1]
-    print(var_loop_colname)
-    cat("anova p-value:", var_loop_aov_pvalue, "\n")
-    if (var_loop_aov_pvalue < 0.05) {
-      var_loop_tukey <- TukeyHSD(var_loop_fit)
-      cat("Tukey result: \n")
-      print(subset(as.data.frame(var_loop_tukey[[1]]), `p adj` < 0.05))
-      cat("\n")
-      plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
-                ylab = var_loop_colname, xlab = "", las = 2, 
-                main = paste0(var_species_name, "\n", 
-                             "anova p-value = ", round(var_loop_aov_pvalue,2)))
-    } else {
-      plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
-                ylab = var_loop_colname, xlab = "", las = 2, 
-                main = paste0(var_species_name, "\n", 
-                              "anova p-value = ", round(var_loop_aov_pvalue,2)),
-                col = "grey")
-    }
-  }
-  cat("\n\n")
-  par(mfrow = c(1,1))
-}
-
 # Settings ----
 es_annual <- c("carbon_seq", 
                "no2_removal", "o3_removal", "pm25_removal", "so2_removal",
                "avo_runoff")
-es_annual_value <- c("carbon_seq_value", es_annual)
 
 # Data read ----
 # code book of land cover
@@ -310,6 +249,43 @@ TukeyHSD(aov(quadata$treenum ~ quadata$land_use)) %>%
   as.data.frame() %>% 
   .[which(.$`p adj` < 0.05), ]
 
+# parameter method ANOVA
+func_es_para <- function(var_es, name_depend_var, name_independ_var) {
+  var_es <- as.data.frame(var_es)
+  if (length(unique(var_es$species)) == 1) {
+    var_species_name <- var_es$species[1]
+    print(var_species_name)
+  } else {
+    var_species_name <- ""}
+  par(mfrow = c(floor(sqrt(length(name_depend_var))),
+                ceiling(sqrt(length(name_depend_var)))))
+  for (var_loop_colname in name_depend_var) {
+    var_loop_fit <- aov(var_es[, var_loop_colname] ~ 
+                          var_es[, name_independ_var])
+    var_loop_aov_pvalue <- summary(var_loop_fit)[[1]]$`Pr(>F)`[1]
+    print(var_loop_colname)
+    cat("anova p-value:", var_loop_aov_pvalue, "\n")
+    if (var_loop_aov_pvalue < 0.05) {
+      var_loop_tukey <- TukeyHSD(var_loop_fit)
+      cat("Tukey result: \n")
+      print(subset(as.data.frame(var_loop_tukey[[1]]), `p adj` < 0.05))
+      cat("\n")
+      plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
+                ylab = var_loop_colname, xlab = "", las = 2, 
+                main = paste0(var_species_name, "\n", 
+                              "anova p-value = ", round(var_loop_aov_pvalue,2)))
+    } else {
+      plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
+                ylab = var_loop_colname, xlab = "", las = 2, 
+                main = paste0(var_species_name, "\n", 
+                              "anova p-value = ", round(var_loop_aov_pvalue,2)),
+                col = "grey")
+    }
+  }
+  cat("\n\n")
+  par(mfrow = c(1,1))
+}
+
 # quadrat ES ~ land use
 func_es_para(quadata, es_annual, "land_use")
 
@@ -333,6 +309,28 @@ TukeyHSD(aov(inddata$biomass ~ inddata$land_use)) %>%
 func_es_para(inddata, es_annual, "land_use")
 
 # Visualization
+# function to get group labels for individual ES ANOVA
+exfunc_label <- function(mydata, name_es, name_group){
+  # ANOVA
+  HSD <- 
+    TukeyHSD(aov(mydata[[name_es]] ~ mydata[[name_group]]), ordered = FALSE)
+  # extract labels and factor levels from Tukey post-hoc 
+  Tukey.levels <- HSD$`mydata[[name_group]]`[,4]
+  Tukey.labels <- multcompView::multcompLetters(Tukey.levels)['Letters']
+  plot.labels <- names(Tukey.labels[['Letters']])
+  
+  # data.frame out of the factor levels and Tukey's homogenous group letters
+  plot.levels <- data.frame(plot.labels, labels = Tukey.labels[['Letters']],
+                            stringsAsFactors = FALSE)
+  rownames(plot.levels) <- NULL
+  
+  # add ES item and rename the columns
+  names(plot.levels) <- c(name_group, "label")
+  plot.levels$ES <- name_es
+  
+  return(plot.levels)
+}
+
 # function for data summary
 func_essummary <- function(oridata) {
   # mean of individual tree ES
