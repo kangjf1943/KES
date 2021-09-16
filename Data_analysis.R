@@ -5,7 +5,6 @@ library(ggpubr)
 library(dplyr)
 library(RODBC)
 library(tidyr)
-library(dunn.test)
 library(openxlsx)
 
 # Function ----
@@ -66,80 +65,6 @@ func_es_para <- function(var_es, name_depend_var, name_independ_var) {
   }
   cat("\n\n")
   par(mfrow = c(1,1))
-}
-
-# function for non-parameter method: Kruskal test
-func_es_nonpara <- function(var_es, name_depend_var, name_independ_var) {
-  var_es <- as.data.frame(var_es)
-  if (length(unique(var_es$species)) == 1) {
-    var_species_name <- var_es$species[1]
-    print(var_species_name)
-  } else {
-    var_species_name <- ""}
-  par(mfrow = c(floor(sqrt(length(name_depend_var))),
-                ceiling(sqrt(length(name_depend_var)))))
-  for (var_loop_colname in name_depend_var) {
-    var_loop_kruskal <- kruskal.test(var_es[, var_loop_colname] ~ 
-                                       var_es[, name_independ_var])
-    cat(var_loop_colname, ": ", var_loop_kruskal$p.value, "\n")
-    if (var_loop_kruskal$p.value < 0.05) {
-      capture.output(var_loop_dunn <- dunn.test(var_es[, var_loop_colname], 
-                                                var_es[, name_independ_var], table = FALSE))
-      print(var_loop_dunn$comparisons[var_loop_dunn$P.adjusted < 0.05])
-      boxplot(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
-              ylab = var_loop_colname, xlab = "", 
-              main = var_species_name, 
-              sub = paste0("p-value = ", round(var_loop_kruskal$p.value, 2)))
-      cat("\n")
-    } else {
-      boxplot(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
-              ylab = var_loop_colname, xlab = "", 
-              main = var_species_name, 
-              sub = paste0("p-value = ", round(var_loop_kruskal$p.value, 2)), 
-              border = "grey")
-      cat("\n")
-    }
-  }
-}
-
-# function of ANOVA with interaction effect
-func_es_inter <- function(var_es, name_dep, name_indep1, name_indep2) {
-  var_es <- as.data.frame(var_es)
-  par(mfrow = c(floor(sqrt(length(name_dep))),
-                ceiling(sqrt(length(name_dep)))))
-  var_pvalue_ls <- vector("list", 6)
-  var_pvalue_ls_i <- 0
-  for (name_loop_dep in name_dep) {
-    var_loop_dep <- var_es[, name_loop_dep]
-    var_loop_indep1 <- var_es[, name_indep1]
-    var_loop_indep2 <- var_es[, name_indep2]
-    var_loop_fit <- aov(var_loop_dep ~ 
-                          var_loop_indep1*var_loop_indep2)
-    var_loop_pvalue <- summary(var_loop_fit)[[1]]
-    var_pvalue_ls_i <- var_pvalue_ls_i + 1
-    var_pvalue_ls[[var_pvalue_ls_i]] <- as.data.frame(var_loop_pvalue)
-    # add ES and factor information
-    var_pvalue_ls[[var_pvalue_ls_i]]$"Ecosystem Service" <- 
-      c(name_loop_dep, rep(" ", 3))
-    var_pvalue_ls[[var_pvalue_ls_i]]$"Factor" <- 
-      c(name_indep1, name_indep2, paste(name_indep1, name_indep2, sep = ":"), 
-        "Residuals")
-    # reorder the columns
-    rownames(var_pvalue_ls[[var_pvalue_ls_i]]) <- NULL
-    var_pvalue_ls[[var_pvalue_ls_i]] <- 
-      var_pvalue_ls[[var_pvalue_ls_i]][c(
-        "Ecosystem Service", "Factor", 
-        names(var_pvalue_ls[[var_pvalue_ls_i]])[1:5])]
-    # interaction plot
-    interaction.plot(var_loop_indep1, var_loop_indep2, var_loop_dep,
-                     xlab = "", ylab = name_loop_dep,
-                     type = "b", 
-                     col = c("black", "red", "violet", "orange", 
-                             "green", "blue", "lightblue"))
-  }
-  par(mfrow = c(1,1))
-  pvalue_df <- Reduce(rbind, var_pvalue_ls)
-  pvalue_df
 }
 
 # Settings ----
@@ -320,7 +245,6 @@ ggplot(inddata) +
   labs(x = "Land use class", y = "Proportion", fill = "LAI class") + 
   theme_bw()
 
-
 ## Qua avg ESs value ~ land use ----
 quavalue_summary <- quadata %>% 
   select(land_use, carbon_seq_value, 
@@ -388,7 +312,6 @@ TukeyHSD(aov(quadata$treenum ~ quadata$land_use)) %>%
 
 # quadrat ES ~ land use
 func_es_para(quadata, es_annual, "land_use")
-func_es_nonpara(quadata, es_annual, "land_use")
 
 # individual structure indexes ~ land use
 TukeyHSD(aov(inddata$dbh ~ inddata$land_use)) %>% 
@@ -408,7 +331,6 @@ TukeyHSD(aov(inddata$biomass ~ inddata$land_use)) %>%
 
 # individual ES ~ land use
 func_es_para(inddata, es_annual, "land_use")
-func_es_nonpara(inddata, es_annual, "land_use")
 
 # Visualization
 # function for data summary
@@ -502,7 +424,4 @@ func_var_sub <- function(var_es, name_gp, name_subgp, num_sample, num_subgp) {
 func_var_sub(inddata, "species", "land_use", 3, 4) %>% 
   split(.$species) %>% 
   lapply(func_es_para, es_annual, "land_use")
-func_var_sub(inddata, "species", "land_use", 3, 4) %>% 
-  split(.$species) %>% 
-  lapply(func_es_nonpara, es_annual, "land_use")
 
