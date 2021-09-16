@@ -7,12 +7,12 @@ library(RODBC)
 library(tidyr)
 library(openxlsx)
 
-# Settings ----
+# Data ----
+# factor level of annual ES
 es_annual <- c("carbon_seq", 
                "no2_removal", "o3_removal", "pm25_removal", "so2_removal",
                "avo_runoff")
 
-# Data read ----
 # code book of land cover
 info_abb_land_cover <- read.csv("In_abb_land_cover.csv")
 names(info_abb_land_cover) <- c("land_cover_abb", "description", "land_cover")
@@ -148,8 +148,7 @@ inddata <- read.xlsx("Trees.xlsx", sheet = "Trees") %>%
          avo_runoff_value, 
          es_annual_value)
 
-# Data summary ----
-## Quadrat data ----
+# Quadrat data
 quadata <- inddata %>% 
   select(qua_id, dbh, lai, biomass, 
          carbon_storage, carbon_seq, 
@@ -215,18 +214,7 @@ ggplot(quavalue_summary, aes(land_use, es_value)) +
 ggplot(quavalue_summary, aes(land_use, es_value)) + 
   geom_bar(aes(fill = es), stat = "identity", position = "fill")
 
-## Carbon seq ~ carbon storage ----
-# at individual scale
-ggplot(inddata) + 
-  geom_point(aes(carbon_storage, carbon_seq, color = species), alpha = 0.5) + 
-  guides(color = "none")
-summary(lm(carbon_seq ~ carbon_storage, data = inddata))
-# at quadrat scale 
-ggplot(quadata) + 
-  geom_point(aes(carbon_storage, carbon_seq, color = land_use), alpha = 0.5) 
-summary(lm(carbon_seq ~ carbon_storage, data = quadata))
-
-## Non-species-specific analysis ---- 
+## Quadrat and individual ESs ~ land use ---- 
 # test the assumptions for statistical analysis
 apply(as.data.frame(quadata[es_annual]), 2, 
       function(x) {shapiro.test(x)$p.value > 0.05})
@@ -401,7 +389,19 @@ ggarrange(plotlist = list(
     labs(x = "Land use", y = "Single-tree ecosystem services", title = "(b)")
 ), ncol = 2)
 
-# Species-specific anlysis ----
+## Carbon seq ~ carbon storage ----
+# at quadrat scale 
+ggplot(quadata) + 
+  geom_point(aes(carbon_storage, carbon_seq, color = land_use), alpha = 0.5) 
+summary(lm(carbon_seq ~ carbon_storage, data = quadata))
+
+# at individual scale
+ggplot(inddata) + 
+  geom_point(aes(carbon_storage, carbon_seq, color = species), alpha = 0.5) + 
+  guides(color = "none")
+summary(lm(carbon_seq ~ carbon_storage, data = inddata))
+
+# Species-specific analysis ----
 # function to select target species and land use 
 func_var_sub <- function(var_es, name_gp, name_subgp, num_sample, num_subgp) {
   var_es <- as.data.frame(var_es)
