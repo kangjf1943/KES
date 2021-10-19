@@ -39,13 +39,6 @@ info_plot <- read.csv("In_land_use.csv") %>%
       land_use, 
       levels = c("ResLow", "ResHigh", "ResOther", "Ind", "ComNbr", "Com")))
 
-# tree cover of each quadrat: source from KUP GIS data
-info_treecover <- read.xlsx(xlsxFile = "In_GIS_Kyoto_Biodiversity_Tree_buff.xlsx")
-info_treecover <- info_treecover[c("KES_qua_id", "Shape_Area")]
-names(info_treecover) <- c("qua_id", "treecover")
-# 问题：因为将样地边界内外的植物冠层都计算在内，所以有个样地树冠覆盖面积超过了400m2
-info_treecover$treecover[info_treecover$treecover > 400] <- 400
-
 # tree species list: downloaded from web and parsed by R
 info_species_code <- read.csv("In_itree_species_list.csv") %>% 
   mutate(species = paste(Genus, Species.Name)) %>% 
@@ -164,8 +157,7 @@ quadata <- inddata %>%
             treenum = n()) %>% 
   ungroup() %>% 
   mutate(qua_id = as.numeric(qua_id)) %>% 
-  left_join(info_plot, by = "qua_id") %>% 
-  left_join(info_treecover, by = "qua_id")
+  left_join(info_plot, by = "qua_id")
 
 
 # Analysis ----
