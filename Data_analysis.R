@@ -13,12 +13,6 @@ es_annual <- c("carbon_seq",
                "no2_removal", "o3_removal", "pm25_removal", "so2_removal",
                "avo_runoff")
 
-# code book of land cover
-info_abb_land_cover <- read.csv("In_abb_land_cover.csv")
-names(info_abb_land_cover) <- c("land_cover_abb", "description", "land_cover")
-info_abb_land_cover <- info_abb_land_cover %>% 
-  select(land_cover_abb, land_cover)
-
 # land use of quadrats, source from KUP program
 info_plot <- read.csv("Land_use.csv") %>% 
   select(KES_qua_id, Landuse_class) %>% 
