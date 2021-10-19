@@ -20,7 +20,7 @@ info_abb_land_cover <- info_abb_land_cover %>%
   select(land_cover_abb, land_cover)
 
 # land use of quadrats, source from KUP program
-info_plot <- read.csv("In_land_use.csv") %>% 
+info_plot <- read.csv("Land_use.csv") %>% 
   select(KES_qua_id, Landuse_class) %>% 
   rename(qua_id = KES_qua_id, 
          land_use = Landuse_class) %>% 
@@ -40,7 +40,7 @@ info_plot <- read.csv("In_land_use.csv") %>%
       levels = c("ResLow", "ResHigh", "ResOther", "Ind", "ComNbr", "Com")))
 
 # tree species list: downloaded from web and parsed by R
-info_species_code <- read.csv("In_itree_species_list.csv") %>% 
+info_species_code <- read.csv("iTree_species_list.csv") %>% 
   mutate(species = paste(Genus, Species.Name)) %>% 
   rename(species_code = SppCode, 
          genus = Genus, 
@@ -53,7 +53,7 @@ info_species_code <- read.csv("In_itree_species_list.csv") %>%
 info_species_code$species[info_species_code$species == " "] <- NA
 
 # i-Tree input data: from Dr. Hirabayashi
-itree_input <- read.csv("In_TreesWithID.csv") %>% 
+itree_input <- read.csv("iTrees_input.csv") %>% 
   select(ID, PlotId, TreeId, FieldLandUse, TreeStatus, 
          Species, TreeHeightTotal, CrownWidth1, CrownWidth2, CrownLightExposure,
          PercentCrownMissing, PercentImperviousBelow, PercentShrubBelow) %>% 
