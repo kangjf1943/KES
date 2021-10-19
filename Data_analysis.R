@@ -47,14 +47,13 @@ info_species_code <- read.csv("iTree_species_list.csv") %>%
 info_species_code$species[info_species_code$species == " "] <- NA
 
 # i-Tree input data: from Dr. Hirabayashi
-itree_input <- read.csv("iTrees_input.csv") %>% 
+itree_input <- read.csv("iTree_input.csv") %>% 
   select(ID, PlotId, TreeId, FieldLandUse, TreeStatus, 
          Species, TreeHeightTotal, CrownWidth1, CrownWidth2, CrownLightExposure,
          PercentCrownMissing, PercentImperviousBelow, PercentShrubBelow) %>% 
   rename(res_tree_id = ID, 
          qua_id = PlotId, 
          in_tree_id = TreeId, 
-         land_cover_abb = FieldLandUse, 
          spo_pla = TreeStatus, 
          species_code = Species, 
          height = TreeHeightTotal, 
@@ -67,7 +66,6 @@ itree_input <- read.csv("iTrees_input.csv") %>%
   ) %>% 
   mutate(qua_id = as.numeric(qua_id)) %>% 
   left_join(info_plot, by = "qua_id") %>% 
-  left_join(info_abb_land_cover, by = "land_cover_abb") %>% 
   left_join(info_species_code, by = "species_code")
 
 # individual ES data from Excel file
@@ -97,12 +95,8 @@ inddata <- read.xlsx("Trees.xlsx", sheet = "Trees") %>%
          avo_runoff_value = 2.36*avo_runoff, 
          land_use = factor(
            land_use, 
-           levels = c("ResLow", "ResHigh", "ResOther", "Ind", "ComNbr", "Com")), 
-         land_cover = factor(
-           land_cover, 
-           levels = c("ComInd", "ComNeiBld", "Trans", "Insti", 
-                      "MulFamiRes", "LowResBld", "Park", "TemShr", 
-                      "Golf", "Vacant", "Water", "Agri", "Cemetery"))) %>% 
+           levels = c("ResLow", "ResHigh", "ResOther", "Ind", "ComNbr", "Com"))
+         ) %>% 
   group_by(res_tree_id) %>% 
   mutate(es_annual_value = sum(carbon_seq_value, 
                         no2_value, o3_value, pm25_value, so2_value,  
@@ -125,7 +119,7 @@ inddata <- read.xlsx("Trees.xlsx", sheet = "Trees") %>%
          spo_pla, dbh, dbh_class, height, crown_width_ew, crown_width_ns,
          per_crow_mis, light_expo, per_shrub_below, per_impervious_below, 
          lai, lai_class, biomass, 
-         land_use, land_cover, 
+         land_use, 
          carbon_storage, carbon_seq, 
          no2_removal, o3_removal, pm25_removal, so2_removal, co_removal, 
          avo_runoff, 
