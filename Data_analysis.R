@@ -221,22 +221,6 @@ apply(as.data.frame(quadata[es_annual]), 2,
 apply(as.data.frame(inddata[es_annual]), 2, 
       function(x) {shapiro.test(x)$p.value > 0.05})
 
-# quadrat structure indexes ~ land use
-TukeyHSD(aov(quadata$dbh ~ quadata$land_use)) %>% 
-  .$`quadata$land_use` %>% 
-  as.data.frame() %>% 
-  .[which(.$`p adj` < 0.05), ]
-
-TukeyHSD(aov(quadata$lai ~ quadata$land_use)) %>% 
-  .$`quadata$land_use` %>% 
-  as.data.frame() %>% 
-  .[which(.$`p adj` < 0.05), ]
-
-TukeyHSD(aov(quadata$treenum ~ quadata$land_use)) %>% 
-  .$`quadata$land_use` %>% 
-  as.data.frame() %>% 
-  .[which(.$`p adj` < 0.05), ]
-
 # parameter method ANOVA
 func_es_para <- function(var_es, name_depend_var, name_independ_var) {
   var_es <- as.data.frame(var_es)
@@ -276,27 +260,10 @@ func_es_para <- function(var_es, name_depend_var, name_independ_var) {
 
 # quadrat ES ~ land use
 func_es_para(quadata, es_annual, "land_use")
-
-# individual structure indexes ~ land use
-TukeyHSD(aov(inddata$dbh ~ inddata$land_use)) %>% 
-  .$`inddata$land_use` %>% 
-  as.data.frame() %>% 
-  .[which(.$`p adj` < 0.05), ]
-
-TukeyHSD(aov(inddata$lai ~ inddata$land_use)) %>% 
-  .$`inddata$land_use` %>% 
-  as.data.frame() %>% 
-  .[which(.$`p adj` < 0.05), ]
-
-TukeyHSD(aov(inddata$biomass ~ inddata$land_use)) %>% 
-  .$`inddata$land_use` %>% 
-  as.data.frame() %>% 
-  .[which(.$`p adj` < 0.05), ]
-
 # individual ES ~ land use
 func_es_para(inddata, es_annual, "land_use")
 
-# Visualization
+# graph for quadrat and individual ESs ~ land use 
 # function to get group labels for individual ES ANOVA
 exfunc_label <- function(mydata, name_es, name_group){
   # ANOVA
@@ -320,11 +287,11 @@ exfunc_label <- function(mydata, name_es, name_group){
 }
 
 # function for data summary
-func_essummary <- function(oridata) {
+func_summary <- function(oridata, cols) {
   # mean of individual tree ES
   data_mean <- oridata %>% 
-    select(land_use, carbon_storage, all_of(es_annual)) %>% 
-    pivot_longer(cols = c(carbon_storage, all_of(es_annual)), 
+    select(land_use, carbon_storage, all_of(cols)) %>% 
+    pivot_longer(cols = c(carbon_storage, all_of(cols)), 
                  names_to = "ES", values_to = "value") %>% 
     group_by(land_use, ES) %>% 
     summarise(mean = mean(value), .groups = "keep") %>% 
@@ -332,8 +299,8 @@ func_essummary <- function(oridata) {
   
   # se of individual ES
   data_se <- oridata %>% 
-    select(land_use, carbon_storage, all_of(es_annual)) %>% 
-    pivot_longer(cols = all_of(c("carbon_storage", es_annual)), 
+    select(land_use, carbon_storage, all_of(cols)) %>% 
+    pivot_longer(cols = all_of(c("carbon_storage", cols)), 
                  names_to = "ES", values_to = "value") %>% 
     group_by(land_use, ES) %>% 
     summarise(n = n(), se = sd(value)/sqrt(n), .groups = "keep") %>% 
@@ -343,23 +310,33 @@ func_essummary <- function(oridata) {
   # join the data
   data_summary <- left_join(data_mean, data_se)
   data_summary$ES <- factor(data_summary$ES, 
-                            levels = c("carbon_storage", es_annual))
+                            levels = c("carbon_storage", cols))
   
-  # add TukeyHSD group labels
-  data_summary <- 
-    merge(data_summary, 
-          rbind(exfunc_label(oridata, "carbon_storage", "land_use"),
-                exfunc_label(oridata, "carbon_seq", "land_use"), 
-                exfunc_label(oridata, "no2_removal", "land_use"), 
-                exfunc_label(oridata, "o3_removal", "land_use"), 
-                exfunc_label(oridata, "pm25_removal", "land_use"), 
-                exfunc_label(oridata, "so2_removal", "land_use"), 
-                exfunc_label(oridata, "avo_runoff", "land_use")))
+  # return result
   data_summary
 }
 
-indes_summary <- func_essummary(inddata)
-quaes_summary <- func_essummary(quadata)
+quaes_summary <- func_summary(quadata, es_annual)
+quaes_summary <- 
+  merge(quaes_summary,
+        rbind(exfunc_label(quadata, "carbon_storage", "land_use"),
+              exfunc_label(quadata, "carbon_seq", "land_use"),
+              exfunc_label(quadata, "no2_removal", "land_use"),
+              exfunc_label(quadata, "o3_removal", "land_use"),
+              exfunc_label(quadata, "pm25_removal", "land_use"),
+              exfunc_label(quadata, "so2_removal", "land_use"),
+              exfunc_label(quadata, "avo_runoff", "land_use")))
+
+indes_summary <- func_summary(inddata, es_annual)
+indes_summary <- 
+  merge(indes_summary,
+        rbind(exfunc_label(inddata, "carbon_storage", "land_use"),
+              exfunc_label(inddata, "carbon_seq", "land_use"),
+              exfunc_label(inddata, "no2_removal", "land_use"),
+              exfunc_label(inddata, "o3_removal", "land_use"),
+              exfunc_label(inddata, "pm25_removal", "land_use"),
+              exfunc_label(inddata, "so2_removal", "land_use"),
+              exfunc_label(inddata, "avo_runoff", "land_use")))
 
 chart_lables <- c(
   carbon_storage = "Carbon \n storage \n (kg)",
@@ -370,7 +347,8 @@ chart_lables <- c(
   so2_removal = "SO2 \n removal \n (g)", 
   avo_runoff = "Runoff \n reduction \n (m3)"
 )
-func_temp <- function(x) {
+
+func_compplot <- function(x) {
   ggplot(x, aes(x = land_use, y = mean)) + 
     geom_bar(stat = "identity") + 
     geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0.3) + 
@@ -383,11 +361,66 @@ func_temp <- function(x) {
     theme(axis.text.x = element_text(angle = 90))
 }
 ggarrange(plotlist = list(
-  func_temp(quaes_summary) + 
+  func_compplot(quaes_summary) + 
     labs(x = "Land use", y = "Quadrat ecosystem services", title = "(a)"), 
-  func_temp(indes_summary) + 
+  func_compplot(indes_summary) + 
     labs(x = "Land use", y = "Single-tree ecosystem services", title = "(b)")
 ), ncol = 2)
+
+
+## Quadrat structure indexes ~ land use ----
+quastr_summary <- func_summary(quadata, c("dbh", "lai", "treenum"))
+quastr_summary <- 
+  merge(quastr_summary,
+        rbind(exfunc_label(quadata, "dbh", "land_use"),
+              exfunc_label(quadata, "lai", "land_use"), 
+              exfunc_label(quadata, "treenum", "land_use")))
+indstr_summary <- func_summary(inddata, c("dbh", "lai", "biomass"))
+indstr_summary <- 
+  merge(indstr_summary,
+        rbind(exfunc_label(inddata, "dbh", "land_use"),
+              exfunc_label(inddata, "lai", "land_use"), 
+              exfunc_label(inddata, "o3_removal", "land_use")))
+
+# quadrat structure indexes ~ land use 
+chart_lables <- c(
+  dbh = "DBH (cm)",
+  lai = "LAI", 
+  treenum = "Number of trees"
+)
+func_compplot(quastr_summary) + 
+  labs(x = "Land use", y = "")
+
+TukeyHSD(aov(quadata$dbh ~ quadata$land_use)) %>% 
+  .$`quadata$land_use` %>% 
+  as.data.frame() %>% 
+  .[which(.$`p adj` < 0.05), ]
+TukeyHSD(aov(quadata$lai ~ quadata$land_use)) %>% 
+  .$`quadata$land_use` %>% 
+  as.data.frame() %>% 
+  .[which(.$`p adj` < 0.05), ]
+TukeyHSD(aov(quadata$treenum ~ quadata$land_use)) %>% 
+  .$`quadata$land_use` %>% 
+  as.data.frame() %>% 
+  .[which(.$`p adj` < 0.05), ]
+
+# individual structure indexes ~ land use 
+chart_lables <- c(
+  dbh = "DBH (cm)",
+  lai = "LAI"
+)
+func_compplot(indstr_summary) + 
+  labs(x = "Land use", y = "")
+
+TukeyHSD(aov(inddata$dbh ~ inddata$land_use)) %>% 
+  .$`inddata$land_use` %>% 
+  as.data.frame() %>% 
+  .[which(.$`p adj` < 0.05), ]
+TukeyHSD(aov(inddata$lai ~ inddata$land_use)) %>% 
+  .$`inddata$land_use` %>% 
+  as.data.frame() %>% 
+  .[which(.$`p adj` < 0.05), ]
+
 
 ## Carbon seq ~ carbon storage ----
 # at quadrat scale 
