@@ -6,6 +6,7 @@ library(dplyr)
 library(RODBC)
 library(tidyr)
 library(openxlsx)
+library(dunn.test)
 
 # Data ----
 # factor level of annual ES
@@ -212,26 +213,27 @@ func_es_para <- function(var_es, name_depend_var, name_independ_var) {
   par(mfrow = c(floor(sqrt(length(name_depend_var))),
                 ceiling(sqrt(length(name_depend_var)))))
   for (var_loop_colname in name_depend_var) {
-    var_loop_fit <- aov(var_es[, var_loop_colname] ~ 
-                          var_es[, name_independ_var])
-    var_loop_aov_pvalue <- summary(var_loop_fit)[[1]]$`Pr(>F)`[1]
+    var_loop_fit <- kruskal.test(var_es[, var_loop_colname] ~ 
+                                   var_es[, name_independ_var])
+    var_loop_aov_pvalue <- var_loop_fit$p.value
     print(var_loop_colname)
-    cat("anova p-value:", var_loop_aov_pvalue, "\n")
+    cat("p-value:", var_loop_aov_pvalue, "\n")
     if (var_loop_aov_pvalue < 0.05) {
-      var_loop_tukey <- TukeyHSD(var_loop_fit)
+      var_loop_tukey <- 
+        dunn.test(var_es[, var_loop_colname],var_es[, name_independ_var])
       cat("Tukey result: \n")
-      print(subset(as.data.frame(var_loop_tukey[[1]]), `p adj` < 0.05))
+      # print(subset(as.data.frame(var_loop_tukey[[1]]), `p adj` < 0.05))
       cat("\n")
-      plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
+      boxplot(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
                 ylab = var_loop_colname, xlab = "", las = 2, 
                 main = paste0(var_species_name, "\n", 
                               "anova p-value = ", round(var_loop_aov_pvalue,2)))
     } else {
-      plotmeans(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
+      boxplot(var_es[, var_loop_colname] ~ var_es[, name_independ_var], 
                 ylab = var_loop_colname, xlab = "", las = 2, 
                 main = paste0(var_species_name, "\n", 
                               "anova p-value = ", round(var_loop_aov_pvalue,2)),
-                col = "grey")
+                border = "grey")
     }
   }
   cat("\n\n")
