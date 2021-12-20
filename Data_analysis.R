@@ -264,39 +264,6 @@ func_es_comp(quadata, es_annual, "land_use")
 # individual ES ~ land use
 func_es_comp(inddata, es_annual, "land_use")
 
-# graph for quadrat and individual ESs ~ land use 
-func_compplot <- function(x, name_es, name_yaxis) {
-  x <- x[, c("land_use", as.character(name_es))]
-  names(x) <- c("land_use", "name_es")
-  ggplot(x) + 
-    geom_violin(aes(x = land_use, y = name_es), fill = "grey") + 
-    scale_y_continuous(limits = c(0, quantile(x$name_es, probs = 0.75))) + 
-    theme_bw() +
-    labs(x = "", y = name_yaxis)
-}
-
-# a list for plots 
-plot_ls <- vector("list", length = 6)
-
-plot_df <- data.frame(
-  es_abb = es_annual, 
-  es_full = c("Carbon \n storage \n (kg)", "NO2 \n removal \n (g)", 
-              "O3 \n removal \n (g)", "PM2.5 \n removal \n (g)", 
-              "SO2 \n removal \n (g)", "Runoff \n reduction \n (m3)"), 
-  pvalue = c(1:6)
-)
-
-for (i in 1:6) {
-  plot_ls[[i]] <- 
-    func_compplot(x = inddata, name_es = plot_df$es_abb[i], 
-                  name_yaxis = plot_df$pvalue[i])
-}
-
-for (i in 1:5) {
-  plot_ls[[i]] <- plot_ls[[i]] + scale_x_discrete(labels = NULL)
-}
-Reduce("/", plot_ls)
-
 
 ## Quadrat structure indexes ~ land use ----
 quastr_summary <- func_summary(quadata, c("dbh", "lai", "treenum"))
