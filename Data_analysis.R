@@ -264,22 +264,7 @@ fun_comparison(quadata, es_annual, "land_use")
 # individual ES ~ land use
 fun_comparison(inddata, es_annual, "land_use")
 
-
-## Quadrat structure indexes ~ land use ----
-quastr_summary <- func_summary(quadata, c("dbh", "lai", "treenum"))
-quastr_summary <- 
-  merge(quastr_summary,
-        rbind(exfunc_label(quadata, "dbh", "land_use"),
-              exfunc_label(quadata, "lai", "land_use"), 
-              exfunc_label(quadata, "treenum", "land_use")))
-indstr_summary <- func_summary(inddata, c("dbh", "lai", "biomass"))
-indstr_summary <- 
-  merge(indstr_summary,
-        rbind(exfunc_label(inddata, "dbh", "land_use"),
-              exfunc_label(inddata, "lai", "land_use"), 
-              exfunc_label(inddata, "o3_removal", "land_use")))
-
-## Qua structure indexes ~ land use ----
+## Qua structure ~ land use ----
 # test assumption of normality 
 apply(as.data.frame(quadata[c("dbh", "lai", "treenum")]), 2, 
       function(x) {shapiro.test(x)$p.value > 0.05})
