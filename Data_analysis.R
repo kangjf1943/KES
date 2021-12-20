@@ -20,7 +20,6 @@ info_plot <- read.csv("Land_use.csv") %>%
   rename(qua_id = KES_qua_id, 
          land_use = Landuse_class) %>% 
   subset(qua_id != "#N/A") %>% 
-  mutate(qua_id = as.numeric(qua_id)) %>% 
   mutate(
     land_use = case_when(
       land_use == "Com" ~ "Com", 
@@ -65,7 +64,7 @@ itree_input <- read.csv("iTree_input.csv") %>%
          per_impervious_below = PercentImperviousBelow, 
          per_shrub_below = PercentShrubBelow
   ) %>% 
-  mutate(qua_id = as.numeric(qua_id)) %>% 
+  mutate(qua_id = as.factor(qua_id)) %>% 
   left_join(info_plot, by = "qua_id") %>% 
   left_join(info_species_code, by = "species_code")
 
@@ -145,7 +144,6 @@ quadata <- inddata %>%
   summarise(across(!starts_with("qua_id"), sum), 
             treenum = n()) %>% 
   ungroup() %>% 
-  mutate(qua_id = as.numeric(qua_id)) %>% 
   left_join(info_plot, by = "qua_id")
 
 
@@ -202,25 +200,37 @@ apply(as.data.frame(quadata[es_annual]), 2,
 apply(as.data.frame(inddata[es_annual]), 2, 
       function(x) {shapiro.test(x)$p.value > 0.05})
 
-# parameter method ANOVA
-func_es_para <- function(var_es, name_depend_var, name_independ_var) {
+# function for non-parametric statistical analysis 
+func_es_comp <- function(var_es, name_depend_var, name_independ_var) {
   var_es <- as.data.frame(var_es)
   if (length(unique(var_es$species)) == 1) {
     var_species_name <- var_es$species[1]
     print(var_species_name)
   } else {
     var_species_name <- ""}
+  
+  # store the statistics: chi-square and p value
+  chi <- vector("numeric")
+  pvalue <- vector("numeric")
+  
+  # prepare the canvas for boxplots 
   par(mfrow = c(floor(sqrt(length(name_depend_var))),
                 ceiling(sqrt(length(name_depend_var)))))
+  
+  # get statistics, post hoc comparison, and plots 
   for (var_loop_colname in name_depend_var) {
-    var_loop_fit <- kruskal.test(var_es[, var_loop_colname] ~ 
-                                   var_es[, name_independ_var])
-    var_loop_aov_pvalue <- var_loop_fit$p.value
     print(var_loop_colname)
-    cat("p-value:", var_loop_aov_pvalue, "\n")
+    
+    var_loop_fit <- 
+      kruskal.test(var_es[, var_loop_colname] ~ var_es[, name_independ_var])
+    chi <- c(chi, var_loop_fit$statistic)
+    var_loop_aov_pvalue <- var_loop_fit$p.value
+    pvalue <- c(pvalue, var_loop_aov_pvalue)
+    
     if (var_loop_aov_pvalue < 0.05) {
       var_loop_tukey <- 
-        dunn.test(var_es[, var_loop_colname],var_es[, name_independ_var])
+        dunn.test(var_es[, var_loop_colname], var_es[, name_independ_var], 
+                  method = "Bonferroni")
       cat("Tukey result: \n")
       # print(subset(as.data.frame(var_loop_tukey[[1]]), `p adj` < 0.05))
       cat("\n")
@@ -238,116 +248,54 @@ func_es_para <- function(var_es, name_depend_var, name_independ_var) {
   }
   cat("\n\n")
   par(mfrow = c(1,1))
+  
+  # data frame of the statistics 
+  output <- data.frame(chi = chi, pvalue = pvalue)
+  output$mark <- ""
+  output$mark[which(output$pvalue < 0.05)] <- "*"
+  output$mark[which(output$pvalue < 0.01)] <- "**"
+  output$mark[which(output$pvalue < 0.001)] <- "***"
+  
+  return(output)
 }
 
 # quadrat ES ~ land use
-func_es_para(quadata, es_annual, "land_use")
+func_es_comp(quadata, es_annual, "land_use")
 # individual ES ~ land use
-func_es_para(inddata, es_annual, "land_use")
+func_es_comp(inddata, es_annual, "land_use")
 
 # graph for quadrat and individual ESs ~ land use 
-# function to get group labels for individual ES ANOVA
-exfunc_label <- function(mydata, name_es, name_group){
-  # ANOVA
-  HSD <- 
-    TukeyHSD(aov(mydata[[name_es]] ~ mydata[[name_group]]), ordered = FALSE)
-  # extract labels and factor levels from Tukey post-hoc 
-  Tukey.levels <- HSD$`mydata[[name_group]]`[,4]
-  Tukey.labels <- multcompView::multcompLetters(Tukey.levels)['Letters']
-  plot.labels <- names(Tukey.labels[['Letters']])
-  
-  # data.frame out of the factor levels and Tukey's homogenous group letters
-  plot.levels <- data.frame(plot.labels, labels = Tukey.labels[['Letters']],
-                            stringsAsFactors = FALSE)
-  rownames(plot.levels) <- NULL
-  
-  # add ES item and rename the columns
-  names(plot.levels) <- c(name_group, "label")
-  plot.levels$ES <- name_es
-  
-  return(plot.levels)
+func_compplot <- function(x, name_es, name_yaxis) {
+  x <- x[, c("land_use", as.character(name_es))]
+  names(x) <- c("land_use", "name_es")
+  ggplot(x) + 
+    geom_violin(aes(x = land_use, y = name_es), fill = "grey") + 
+    scale_y_continuous(limits = c(0, quantile(x$name_es, probs = 0.75))) + 
+    theme_bw() +
+    labs(x = "", y = name_yaxis)
 }
 
-# function for data summary
-func_summary <- function(oridata, cols) {
-  # mean of individual tree ES
-  data_mean <- oridata %>% 
-    select(land_use, carbon_storage, all_of(cols)) %>% 
-    pivot_longer(cols = c(carbon_storage, all_of(cols)), 
-                 names_to = "ES", values_to = "value") %>% 
-    group_by(land_use, ES) %>% 
-    summarise(mean = mean(value), .groups = "keep") %>% 
-    ungroup()
-  
-  # se of individual ES
-  data_se <- oridata %>% 
-    select(land_use, carbon_storage, all_of(cols)) %>% 
-    pivot_longer(cols = all_of(c("carbon_storage", cols)), 
-                 names_to = "ES", values_to = "value") %>% 
-    group_by(land_use, ES) %>% 
-    summarise(n = n(), se = sd(value)/sqrt(n), .groups = "keep") %>% 
-    ungroup() %>% 
-    mutate(n = NULL)
-  
-  # join the data
-  data_summary <- left_join(data_mean, data_se)
-  data_summary$ES <- factor(data_summary$ES, 
-                            levels = c("carbon_storage", cols))
-  
-  # return result
-  data_summary
-}
+# a list for plots 
+plot_ls <- vector("list", length = 6)
 
-quaes_summary <- func_summary(quadata, es_annual)
-quaes_summary <- 
-  merge(quaes_summary,
-        rbind(exfunc_label(quadata, "carbon_storage", "land_use"),
-              exfunc_label(quadata, "carbon_seq", "land_use"),
-              exfunc_label(quadata, "no2_removal", "land_use"),
-              exfunc_label(quadata, "o3_removal", "land_use"),
-              exfunc_label(quadata, "pm25_removal", "land_use"),
-              exfunc_label(quadata, "so2_removal", "land_use"),
-              exfunc_label(quadata, "avo_runoff", "land_use")))
-
-indes_summary <- func_summary(inddata, es_annual)
-indes_summary <- 
-  merge(indes_summary,
-        rbind(exfunc_label(inddata, "carbon_storage", "land_use"),
-              exfunc_label(inddata, "carbon_seq", "land_use"),
-              exfunc_label(inddata, "no2_removal", "land_use"),
-              exfunc_label(inddata, "o3_removal", "land_use"),
-              exfunc_label(inddata, "pm25_removal", "land_use"),
-              exfunc_label(inddata, "so2_removal", "land_use"),
-              exfunc_label(inddata, "avo_runoff", "land_use")))
-
-chart_lables <- c(
-  carbon_storage = "Carbon \n storage \n (kg)",
-  carbon_seq = "Carbon \n sequestration \n (kg)",
-  no2_removal = "NO2 \n removal \n (g)",
-  o3_removal = "O3 \n removal \n (g)", 
-  pm25_removal = "PM2.5 \n removal \n (g)", 
-  so2_removal = "SO2 \n removal \n (g)", 
-  avo_runoff = "Runoff \n reduction \n (m3)"
+plot_df <- data.frame(
+  es_abb = es_annual, 
+  es_full = c("Carbon \n storage \n (kg)", "NO2 \n removal \n (g)", 
+              "O3 \n removal \n (g)", "PM2.5 \n removal \n (g)", 
+              "SO2 \n removal \n (g)", "Runoff \n reduction \n (m3)"), 
+  pvalue = c(1:6)
 )
 
-func_compplot <- function(x) {
-  ggplot(x, aes(x = land_use, y = mean)) + 
-    geom_bar(stat = "identity") + 
-    geom_errorbar(aes(ymin = mean - se, ymax = mean + se), width = 0.3) + 
-    geom_text(aes(x = land_use, y = Inf, label = label), 
-              vjust = 1.1, size = 3) + 
-    scale_y_continuous(expand = expansion(mult = c(0, 0.4))) + 
-    facet_wrap(~ ES, scales = "free_y", ncol = 1, strip.position = "left", 
-               labeller = labeller(ES = chart_lables)) + 
-    theme_bw() +
-    theme(axis.text.x = element_text(angle = 90))
+for (i in 1:6) {
+  plot_ls[[i]] <- 
+    func_compplot(x = inddata, name_es = plot_df$es_abb[i], 
+                  name_yaxis = plot_df$pvalue[i])
 }
-ggarrange(plotlist = list(
-  func_compplot(quaes_summary) + 
-    labs(x = "Land use", y = "Quadrat ecosystem services", title = "(a)"), 
-  func_compplot(indes_summary) + 
-    labs(x = "Land use", y = "Single-tree ecosystem services", title = "(b)")
-), ncol = 2)
+
+for (i in 1:5) {
+  plot_ls[[i]] <- plot_ls[[i]] + scale_x_discrete(labels = NULL)
+}
+Reduce("/", plot_ls)
 
 
 ## Quadrat structure indexes ~ land use ----
@@ -436,5 +384,5 @@ func_var_sub <- function(var_es, name_gp, name_subgp, num_sample, num_subgp) {
 # individual ES ~ land use 
 func_var_sub(inddata, "species", "land_use", 3, 4) %>% 
   split(.$species) %>% 
-  lapply(func_es_para, es_annual, "land_use")
+  lapply(func_es_comp, es_annual, "land_use")
 
