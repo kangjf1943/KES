@@ -318,6 +318,19 @@ TukeyHSD(aov(inddata$lai ~ inddata$land_use)) %>%
   as.data.frame() %>% 
   .[which(.$`p adj` < 0.05), ]
 
+
+## Carbon seq ~ carbon storage ----
+# at quadrat scale 
+ggplot(quadata) + 
+  geom_point(aes(carbon_storage, carbon_seq, color = land_use), alpha = 0.5) 
+summary(lm(carbon_seq ~ carbon_storage, data = quadata))
+
+# at individual scale
+ggplot(inddata) + 
+  geom_point(aes(carbon_storage, carbon_seq, color = species), alpha = 0.5) + 
+  guides(color = "none")
+summary(lm(carbon_seq ~ carbon_storage, data = inddata))
+
 # Species-specific analysis ----
 # function to select target species and land use 
 func_var_sub <- function(var_es, name_gp, name_subgp, num_sample, num_subgp) {
@@ -340,17 +353,4 @@ func_var_sub(inddata, "species", "land_use", 3, 4) %>%
   split(.$species) %>% 
   lapply(fun_comparison, es_annual, "land_use") %>% 
   write.xlsx("Output_Species-specific_comparison.xlsx")
-
-
-## Carbon seq ~ carbon storage ----
-# at quadrat scale 
-ggplot(quadata) + 
-  geom_point(aes(carbon_storage, carbon_seq, color = land_use), alpha = 0.5) 
-summary(lm(carbon_seq ~ carbon_storage, data = quadata))
-
-# at individual scale
-ggplot(inddata) + 
-  geom_point(aes(carbon_storage, carbon_seq, color = species), alpha = 0.5) + 
-  guides(color = "none")
-summary(lm(carbon_seq ~ carbon_storage, data = inddata))
 
