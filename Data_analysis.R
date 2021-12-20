@@ -201,7 +201,7 @@ apply(as.data.frame(inddata[es_annual]), 2,
       function(x) {shapiro.test(x)$p.value > 0.05})
 
 # function for non-parametric statistical analysis 
-func_es_comp <- function(var_es, name_depend_var, name_independ_var) {
+fun_comparison <- function(var_es, name_depend_var, name_independ_var) {
   var_es <- as.data.frame(var_es)
   if (length(unique(var_es$species)) == 1) {
     var_species_name <- var_es$species[1]
@@ -260,9 +260,9 @@ func_es_comp <- function(var_es, name_depend_var, name_independ_var) {
 }
 
 # quadrat ES ~ land use
-func_es_comp(quadata, es_annual, "land_use")
+fun_comparison(quadata, es_annual, "land_use")
 # individual ES ~ land use
-func_es_comp(inddata, es_annual, "land_use")
+fun_comparison(inddata, es_annual, "land_use")
 
 
 ## Quadrat structure indexes ~ land use ----
@@ -351,5 +351,5 @@ func_var_sub <- function(var_es, name_gp, name_subgp, num_sample, num_subgp) {
 # individual ES ~ land use 
 func_var_sub(inddata, "species", "land_use", 3, 4) %>% 
   split(.$species) %>% 
-  lapply(func_es_comp, es_annual, "land_use")
+  lapply(fun_comparison, es_annual, "land_use")
 
