@@ -279,44 +279,16 @@ indstr_summary <-
               exfunc_label(inddata, "lai", "land_use"), 
               exfunc_label(inddata, "o3_removal", "land_use")))
 
-# quadrat structure indexes ~ land use 
-chart_lables <- c(
-  dbh = "DBH (cm)",
-  lai = "LAI", 
-  treenum = "Number of trees"
-)
-func_compplot(quastr_summary) + 
-  labs(x = "Land use", y = "")
+## Qua structure indexes ~ land use ----
+# test assumption of normality 
+apply(as.data.frame(quadata[c("dbh", "lai", "treenum")]), 2, 
+      function(x) {shapiro.test(x)$p.value > 0.05})
+apply(as.data.frame(inddata[c("dbh", "lai")]), 2, 
+      function(x) {shapiro.test(x)$p.value > 0.05})
 
-TukeyHSD(aov(quadata$dbh ~ quadata$land_use)) %>% 
-  .$`quadata$land_use` %>% 
-  as.data.frame() %>% 
-  .[which(.$`p adj` < 0.05), ]
-TukeyHSD(aov(quadata$lai ~ quadata$land_use)) %>% 
-  .$`quadata$land_use` %>% 
-  as.data.frame() %>% 
-  .[which(.$`p adj` < 0.05), ]
-TukeyHSD(aov(quadata$treenum ~ quadata$land_use)) %>% 
-  .$`quadata$land_use` %>% 
-  as.data.frame() %>% 
-  .[which(.$`p adj` < 0.05), ]
-
-# individual structure indexes ~ land use 
-chart_lables <- c(
-  dbh = "DBH (cm)",
-  lai = "LAI"
-)
-func_compplot(indstr_summary) + 
-  labs(x = "Land use", y = "")
-
-TukeyHSD(aov(inddata$dbh ~ inddata$land_use)) %>% 
-  .$`inddata$land_use` %>% 
-  as.data.frame() %>% 
-  .[which(.$`p adj` < 0.05), ]
-TukeyHSD(aov(inddata$lai ~ inddata$land_use)) %>% 
-  .$`inddata$land_use` %>% 
-  as.data.frame() %>% 
-  .[which(.$`p adj` < 0.05), ]
+# Kruskal-Wallis rank sum test
+fun_comparison(quadata, c("dbh", "lai", "treenum"), "land_use")
+fun_comparison(inddata, c("dbh", "lai"), "land_use")
 
 
 ## Carbon seq ~ carbon storage ----
