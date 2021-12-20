@@ -351,5 +351,6 @@ func_var_sub <- function(var_es, name_gp, name_subgp, num_sample, num_subgp) {
 # individual ES ~ land use 
 func_var_sub(inddata, "species", "land_use", 3, 4) %>% 
   split(.$species) %>% 
-  lapply(fun_comparison, es_annual, "land_use")
+  lapply(fun_comparison, es_annual, "land_use") %>% 
+  write.xlsx("Output_Species-specific_comparison.xlsx")
 
